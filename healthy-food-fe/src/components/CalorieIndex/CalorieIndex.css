@@ -1,0 +1,169 @@
+/* CalorieIndex Component Styles */
+.calorie-index-container {
+  padding: 20px;
+}
+
+.calorie-index-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.calorie-index-content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.calorie-index-content h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.calorie-index-content p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.search-section {
+  margin-bottom: 30px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #BF9528;
+  box-shadow: 0 0 0 2px rgba(191, 149, 40, 0.1);
+}
+
+.table-container {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.food-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.food-table thead {
+  background-color: #f8f9fa;
+}
+
+.food-table th {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.food-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e9ecef;
+  color: #333;
+}
+
+.food-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.food-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.no-results {
+  padding: 40px;
+  text-align: center;
+  color: #666;
+}
+
+.calorie-info {
+  background: #f8f9fa;
+  padding: 30px;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+.calorie-info h3 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.calorie-info p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.calorie-tips h4 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.calorie-tips ul {
+  list-style: none;
+  padding: 0;
+}
+
+.calorie-tips li {
+  padding: 8px 0;
+  color: #666;
+  position: relative;
+  padding-left: 20px;
+}
+
+.calorie-tips li:before {
+  content: "•";
+  color: #BF9528;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .food-table {
+    font-size: 14px;
+  }
+  
+  .food-table th,
+  .food-table td {
+    padding: 10px 8px;
+  }
+  
+  .calorie-info {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calorie-index-container {
+    padding: 15px;
+  }
+  
+  .calorie-index-title {
+    font-size: 20px;
+  }
+  
+  .food-table {
+    font-size: 12px;
+  }
+  
+  .food-table th,
+  .food-table td {
+    padding: 8px 6px;
+  }
+} 

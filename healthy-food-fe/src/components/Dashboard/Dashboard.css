@@ -1,0 +1,138 @@
+/* Dashboard Analytics Layout */
+.dashboard-analytics-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 16px 48px 16px;
+  background: #fafbfc;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.dashboard-date-filter-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  margin-bottom: 32px;
+}
+
+.dashboard-datepicker-block {
+  min-width: 320px;
+  background: #f3eaff;
+  border-radius: 12px;
+  padding: 24px 20px 20px 20px;
+  box-shadow: 0 2px 8px rgba(180, 120, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.dashboard-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #6b4bb6;
+  margin-bottom: 8px;
+}
+
+.dashboard-datepicker {
+  width: 100%;
+  font-size: 16px;
+  padding: 10px 12px;
+  border: 2px solid #c3b6e6;
+  border-radius: 8px;
+  background: #fff;
+  color: #6b4bb6;
+  outline: none;
+  margin-bottom: 8px;
+  transition: border 0.2s;
+}
+.dashboard-datepicker:focus {
+  border: 2px solid #a084e8;
+}
+
+.dashboard-radar-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(180, 120, 255, 0.07);
+  padding: 24px 0 16px 0;
+}
+
+.dashboard-chart-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #22223b;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.dashboard-chart-desc {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.dashboard-section {
+  margin-top: 32px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(180, 120, 255, 0.07);
+  padding: 24px 16px 16px 16px;
+}
+
+.dashboard-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.dashboard-select {
+  font-size: 15px;
+  padding: 8px 12px;
+  border: 2px solid #c3b6e6;
+  border-radius: 8px;
+  background: #f3eaff;
+  color: #6b4bb6;
+  outline: none;
+  transition: border 0.2s;
+}
+.dashboard-select:focus {
+  border: 2px solid #a084e8;
+}
+
+/* Chart container responsive */
+.recharts-responsive-container {
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .dashboard-date-filter-row {
+    flex-direction: column;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .dashboard-radar-block {
+    padding: 16px 0 8px 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-analytics-container {
+    padding: 8px 2px 24px 2px;
+  }
+  .dashboard-section {
+    padding: 12px 2px 8px 2px;
+  }
+  .dashboard-datepicker-block {
+    min-width: unset;
+    padding: 12px 8px 8px 8px;
+  }
+  .dashboard-chart-title {
+    font-size: 16px;
+  }
+}

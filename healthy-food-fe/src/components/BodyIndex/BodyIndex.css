@@ -1,0 +1,158 @@
+/* BodyIndex Component Styles */
+.body-index-container {
+  padding: 20px;
+}
+
+.body-index-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.body-index-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.body-index-content h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.body-index-content p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.calculator-form {
+  background: #f9f9f9;
+  padding: 30px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #BF9528;
+  box-shadow: 0 0 0 2px rgba(191, 149, 40, 0.1);
+}
+
+.calculate-button {
+  width: 100%;
+  padding: 12px 20px;
+  background-color: #BF9528;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.calculate-button:hover:not(:disabled) {
+  background-color: #a67e1f;
+}
+
+.calculate-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.bmi-result {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+}
+
+.bmi-result h3 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.bmi-value {
+  font-size: 48px;
+  font-weight: bold;
+  color: #BF9528;
+  margin-bottom: 10px;
+}
+
+.bmi-category {
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.bmi-info {
+  text-align: left;
+  margin-top: 20px;
+}
+
+.bmi-info p {
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.bmi-info ul {
+  list-style: none;
+  padding: 0;
+}
+
+.bmi-info li {
+  padding: 5px 0;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .calculator-form {
+    padding: 20px;
+  }
+  
+  .bmi-result {
+    padding: 20px;
+  }
+  
+  .bmi-value {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .body-index-container {
+    padding: 15px;
+  }
+  
+  .body-index-title {
+    font-size: 20px;
+  }
+  
+  .calculator-form {
+    padding: 15px;
+  }
+} 
