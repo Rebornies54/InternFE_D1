@@ -1,169 +1,623 @@
 /* CalorieIndex Component Styles */
-.calorie-index-container {
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+  background-color: #ffffff;
+  color: #333;
+}
+
+.calorie-calculator-container {
+  max-width: 800px;
+  margin: 0 auto;
   padding: 20px;
 }
 
-.calorie-index-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
+.calculator-title {
   text-align: center;
-  margin-bottom: 30px;
+  margin: 0 auto 32px auto;
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 100%;
 }
 
-.calorie-index-content {
-  max-width: 1000px;
-  margin: 0 auto;
-}
 
-.calorie-index-content h2 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.calorie-index-content p {
-  color: #666;
-  margin-bottom: 30px;
-}
-
-.search-section {
-  margin-bottom: 30px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 16px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #BF9528;
-  box-shadow: 0 0 0 2px rgba(191, 149, 40, 0.1);
-}
-
-.table-container {
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
-}
-
-.food-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.food-table thead {
-  background-color: #f8f9fa;
-}
-
-.food-table th {
-  padding: 16px 12px;
-  text-align: left;
-  font-weight: 600;
-  color: #333;
-  border-bottom: 2px solid #e9ecef;
-}
-
-.food-table td {
-  padding: 12px;
-  border-bottom: 1px solid #e9ecef;
-  color: #333;
-}
-
-.food-table tbody tr:hover {
-  background-color: #f8f9fa;
-}
-
-.food-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.no-results {
-  padding: 40px;
-  text-align: center;
-  color: #666;
-}
-
-.calorie-info {
-  background: #f8f9fa;
-  padding: 30px;
-  border-radius: 8px;
-  margin-top: 30px;
-}
-
-.calorie-info h3 {
-  color: #333;
-  margin-bottom: 15px;
-}
-
-.calorie-info p {
-  color: #666;
-  line-height: 1.6;
+/* Form container */
+.calculator-form-container {
   margin-bottom: 20px;
 }
 
-.calorie-tips h4 {
-  color: #333;
-  margin-bottom: 10px;
+/* Form elements */
+.form-row {
+  margin-bottom: 15px;
 }
 
-.calorie-tips ul {
-  list-style: none;
-  padding: 0;
+.form-row label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  font-weight: 500;
 }
 
-.calorie-tips li {
-  padding: 8px 0;
+.input-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+input[type="number"] {
+  width: 180px;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.unit {
   color: #666;
+}
+
+/* Gender options */
+.gender-options {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: center;
+}
+
+.form-row-gender {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 87px;
+  height: 22px;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+input[type="checkbox"] {
+  margin-right: 5px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Activity dropdown */
+.activity-wrapper {
   position: relative;
-  padding-left: 20px;
+  width: 100%;
 }
 
-.calorie-tips li:before {
-  content: "•";
-  color: #BF9528;
-  font-weight: bold;
+.activity-select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  appearance: none;
+  padding-right: 25px;
+}
+
+.activity-wrapper:after {
+  content: '▼';
+  font-size: 12px;
+  color: #666;
   position: absolute;
-  left: 0;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
-/* Responsive */
+/* Buttons */
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.calculate-btn {
+  background-color: #D13D9E;
+  color: #FFFFFF;
+  border: 1px solid #D13D9E;
+  padding: 4px 15px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 60px;
+  height: 32px;
+  opacity: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transform: rotate(0deg);
+  white-space: nowrap;
+}
+
+.reset-btn {
+  background-color: #FFFFFF;
+  color: #D13D9E;
+  border: 1px solid #D13D9E;
+  padding: 4px 15px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 88px;
+  height: 32px;
+  opacity: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transform: rotate(0deg);
+  white-space: nowrap;
+}
+
+
+
+.calculator-note {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+  margin-top: 0px;
+}
+
+/* Results section */
+.results-section {
+  width: 1347px;
+  height: 785px;
+  opacity: 1;
+  margin: 20px 0 0 46px;
+  border: 2px solid #e5e5e5;
+  background: #fff;
+  padding: 20px;
+}
+
+.total-calories {
+  width: 488px;
+  height: 126px;
+  min-height: 72px;
+  opacity: 1;
+  background: #FEF7FF;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.total-calories h2 {
+  width: 456px;
+  height: 48px;
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 120%;
+  letter-spacing: 0;
+  color: #1D1B20;
+  vertical-align: middle;
+  margin-bottom: 4px;
+  background: linear-gradient(0deg, #1D1B20, #1D1B20), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+.total-calories p {
+  width: 456px;
+  height: 60px;
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: 0;
+  color: #49454F;
+  opacity: 1;
+  margin: 0;
+}
+
+/* Weight scenarios */
+.weight-scenarios {
+  width: 1179px;
+  height: 306px;
+  gap: 64px;
+  opacity: 1;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.scenario-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.scenario-box {
+  flex: 1;
+  background-color: white;
+  padding: 15px;
+}
+
+.scenario-box h3 {
+  width: 350px;
+  height: 58px;
+  opacity: 1;
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 120%;
+  letter-spacing: -0.02em;
+  color: #1E1E1E;
+  margin-bottom: 0px;
+}
+
+.scenario-box p {
+  opacity: 1;
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: 0;
+  color: #757575;
+  margin-bottom: 3px;
+}
+
+/* Dropdown styling to match the image */
+.activity-select {
+  height: 36px;
+}
+
+#height {
+  width: 150px !important;
+  height: 40px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+#weight {
+  width: 300px !important;
+  height: 40px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+#age {
+  width: 240px;
+}
+
+/* Responsive styles */
 @media (max-width: 768px) {
-  .food-table {
-    font-size: 14px;
+  .scenario-row {
+    flex-direction: column;
   }
   
-  .food-table th,
-  .food-table td {
-    padding: 10px 8px;
+  input[type="number"], 
+  .activity-select {
+    width: 100%;
   }
   
-  .calorie-info {
-    padding: 20px;
+  #age, #height, #weight {
+    width: 100%;
   }
 }
 
-@media (max-width: 480px) {
-  .calorie-index-container {
-    padding: 15px;
+/* Style adjustments to match the image */
+.form-row label {
+  color: #000;
+}
+
+/* Fix for checkboxes to make them work like radio buttons */
+input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin-right: 5px;
+  position: relative;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #000;
+  border-color: #000;
+}
+
+input[type="checkbox"]:checked:after {
+  content: "✓";
+  color: white;
+  position: absolute;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Activity dropdown improvements */
+.activity-select option {
+  padding: 8px;
+}
+
+/* Update results section to match image better */
+.results-section {
+  background-color: #D9D9D9;
+}
+
+.total-calories {
+  border-radius: 0;
+}
+
+.scenario-box {
+  border-radius: 0;
+}
+
+/* Style adjustments for the dropdown to better match the image */
+.activity-select {
+  background-color: white;
+  padding-left: 10px;
+}
+
+.activity-wrapper {
+  max-width: 517px;
+}
+
+/* Adjust font weights to match image */
+.scenario-box h3 {
+  font-weight: 500;
+}
+
+.total-calories h2 {
+  font-weight: 500;
+}
+
+/* Layout 2 cột cho form */
+.calculator-form-2col {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 40px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.form-left-col, .form-right-col {
+  width: 517px;
+  min-width: 517px;
+  max-width: 517px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 1;
+}
+.form-right-col {
+  margin-top: 167px;
+}
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.form-left-col label, .form-right-col label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.form-left-col .input-wrapper, .form-right-col .activity-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.form-left-col input[type="number"], .form-right-col .activity-select-large {
+  width: 100%;
+  height: 40px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+@media (max-width: 900px) {
+  .calculator-form-2col {
+    flex-direction: column;
+    gap: 0;
+    align-items: stretch;
   }
-  
-  .calorie-index-title {
-    font-size: 20px;
+  .form-left-col, .form-right-col {
+    width: 100%;
+    min-width: 0;
   }
-  
-  .food-table {
-    font-size: 12px;
+}
+
+.form-row-2col {
+  display: flex;
+  gap: 40px;
+  align-items: flex-end;
+  width: 100%;
+  justify-content: flex-start;
+}
+.form-col {
+  width: 517px;
+  min-width: 517px;
+  max-width: 517px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.form-col label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.form-col input,
+.form-col select {
+  width: 100%;
+  height: 40px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+#height, #weight {
+  width: 100% !important;
+}
+
+.form-row-full {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 16px;
+}
+.form-row-full label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.form-row-full .activity-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.form-row-full .activity-select-large {
+  width: 100%;
+  height: 40px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.form-row-2label {
+  display: flex;
+  gap: 40px;
+  align-items: flex-end;
+  width: 100%;
+  margin-bottom: 2px;
+}
+.form-row-2label label {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+}
+.form-row-2input {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 16px;
+}
+.form-row-2input .input-wrapper,
+.form-row-2input .activity-wrapper {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.form-row-2input input,
+.form-row-2input select {
+  width: 100%;
+  height: 40px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+.form-row-full {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.form-row-full label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.form-row-full .input-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.form-row-full input {
+  width: 100%;
+  height: 40px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+@media (max-width: 900px) {
+  .form-row-2label, .form-row-2input {
+    flex-direction: column;
+    gap: 0;
+    align-items: stretch;
   }
-  
-  .food-table th,
-  .food-table td {
-    padding: 8px 6px;
-  }
-} 
+}
+
+.activity-select.activity-select-large option {
+  background-color: #F0F0F0;
+}
+
+.activity-select.activity-select-large option[value=""] {
+  color: #B41E8E;
+  font-style: italic;
+}
+.activity-select.activity-select-large option[value="ちょっとする 1~3回/週"],
+.activity-select.activity-select-large option[value="そこそこする 4~5回/週"],
+.activity-select.activity-select-large option[value="とてもする 6~7回/週、それ以上"] {
+  color: #1D1B20;
+}
+.activity-select.activity-select-large option[value=""],
+.activity-select.activity-select-large option[value="あまりしない・ほとんどしない"] {
+  color: #B41E8E;
+  font-style: italic;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.results-inner-box {
+  width: 1307px;
+  height: 524px;
+  opacity: 1;
+  padding: 48px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1.5px solid #e5e5e5;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.select-placeholder-fake {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #B41E8E;
+  font-size: 15px;
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
+  background: transparent;
+  font-style: normal;
+  line-height: 40px;
+}
+.select-placeholder-wrapper {
+  position: relative;
+  width: 100%;
+}
+.activity-select.activity-select-large option[value="あまりしない・ほとんどしない"] {
+  color: #B41E8E;
+  font-style: normal;
+}
+
+.activity-select:focus + .select-placeholder,
+.activity-select:not([value=""]) + .select-placeholder {
+  display: none;
+}
+

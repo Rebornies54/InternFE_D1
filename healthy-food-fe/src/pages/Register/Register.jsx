@@ -17,8 +17,8 @@ const RegisterSchema = Yup.object().shape({
 });
 
 // Form field component for consistent styling
-const FormField = ({ label, name, type = "text", as, placeholder, required, children, className }) => (
-  <div className="register-form-group">
+const FormField = ({ label, name, type = "text", as, placeholder, required, children, className, groupClassName }) => (
+  <div className={`register-form-group ${groupClassName || ''}`}>
     <label htmlFor={name} className="register-label">
       {required && <span className="register-required-mark">*</span>}
       {label}
@@ -99,6 +99,7 @@ const Register = () => {
                     type="date"
                     placeholder="DD.MM.YYYY"
                     className="register-input-birthday"
+                    groupClassName="register-form-group-birthday"
                   />
                   
                   <FormField
@@ -107,6 +108,7 @@ const Register = () => {
                     required={true}
                     placeholder="Nhập Email"
                     className="register-input-email"
+                    groupClassName="register-form-group-email"
                   />
                 </div>
                 
@@ -119,6 +121,7 @@ const Register = () => {
                     required={true}
                     placeholder="パスワードを入力"
                     className="register-input-password"
+                    groupClassName="register-form-group-password"
                   />
                   
                   <FormField
@@ -127,6 +130,7 @@ const Register = () => {
                     required={true}
                     placeholder="電話番号を入力"
                     className="register-input-phone"
+                    groupClassName="register-form-group-phone"
                   />
                 </div>
                 

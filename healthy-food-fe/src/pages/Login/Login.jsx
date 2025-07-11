@@ -31,7 +31,7 @@ const Login = () => (
               <Field id="password" name="password" type="password" placeholder="パスワードを入力" className="login-input" />
               <ErrorMessage name="password" component="div" style={{ color: 'red', fontSize: '0.95rem' }} />
             </div>
-            <button type="submit" className="login-button">Login</button>
+            <button type="submit" className="login-button">ログイン</button>
           </Form>
         )}
       </Formik>
