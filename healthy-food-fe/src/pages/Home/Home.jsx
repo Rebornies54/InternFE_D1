@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { Routes, Route, Link, useLocation, Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo/healthy-food-logo.png';
 import { User, ChevronDown, ChevronRight } from 'lucide-react';
-import ScrollToTop from '../../components/ScrollToTop';
 import './home.css';
 
 // Import các component mới
@@ -11,6 +10,7 @@ import BodyIndex from '../../components/BodyIndex';
 import CalorieIndex from '../../components/CalorieIndex';
 import CalorieCalculation from '../../components/CalorieCalculation';
 import Dashboard from '../../components/Dashboard';
+import Profile from '../../components/Profile';
 
 // Static data
 const navTabs = [
@@ -20,6 +20,31 @@ const navTabs = [
   { label: 'Calorie Calculation', path: '/home/calorie-calculation', key: 'calculation' },
   { label: 'Dashboard', path: '/home/dashboard', key: 'dashboard' },
 ];
+
+// Custom NavLink component for better control
+const NavLink = ({ to, children, className }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  const handleClick = (e) => {
+    e.preventDefault();
+    
+    // Luôn navigate để đảm bảo ScrollToTop được trigger
+    navigate(to);
+  };
+  
+  const isActive = location.pathname === to;
+  
+  return (
+    <a 
+      href={to}
+      onClick={handleClick}
+      className={`${className} ${isActive ? 'active' : ''}`}
+    >
+      {children}
+    </a>
+  );
+};
 
 // Components
 const Header = () => {
@@ -34,17 +59,17 @@ const Header = () => {
         </div>
         <nav className="home-nav">
           {navTabs.map(tab => (
-            <Link
+            <NavLink
               key={tab.key}
               to={tab.path}
-              className={`home-nav-link ${tab.key} ${location.pathname === tab.path ? 'active' : ''}`}
+              className={`home-nav-link ${tab.key}`}
             >
               {tab.label}
-            </Link>
+            </NavLink>
           ))}
         </nav>
         <div className="home-user-group">
-          <Link to="/login" className="user-link">
+          <Link to="/home/profile" className="user-link">
             <User size={24} className="user-icon" />
             <span>user</span>
           </Link>
@@ -130,9 +155,31 @@ const BlogLayout = ({ children }) => {
     popular: false,
     alacarte: false
   });
+  
   const toggleMenu = (menu) => {
     setExpandedMenus(prev => ({ ...prev, [menu]: !prev[menu] }));
   };
+  
+  // Guardar el estado expandido en localStorage para mantenerlo entre navegaciones
+  useEffect(() => {
+    try {
+      const savedMenuState = localStorage.getItem('blogExpandedMenus');
+      if (savedMenuState) {
+        setExpandedMenus(JSON.parse(savedMenuState));
+      }
+    } catch (e) {
+      console.error("Error loading menu state from localStorage", e);
+    }
+  }, []);
+  
+  useEffect(() => {
+    try {
+      localStorage.setItem('blogExpandedMenus', JSON.stringify(expandedMenus));
+    } catch (e) {
+      console.error("Error saving menu state to localStorage", e);
+    }
+  }, [expandedMenus]);
+  
   return (
     <div className="home-container">
       <Header />
@@ -191,6 +238,12 @@ const DashboardPage = () => (
   </PageLayout>
 );
 
+const ProfilePage = () => (
+  <PageLayout>
+    <Profile />
+  </PageLayout>
+);
+
 const Home = () => {
   return <Outlet />;
 };
@@ -200,5 +253,6 @@ Home.BodyIndexPage = BodyIndexPage;
 Home.CalorieIndexPage = CalorieIndexPage;
 Home.CalorieCalculationPage = CalorieCalculationPage;
 Home.DashboardPage = DashboardPage;
+Home.ProfilePage = ProfilePage;
 
 export default Home;

@@ -89,7 +89,8 @@ body, html {
 .register-form-row {
   display: flex;
   gap: 24px;
-  width: 100%;
+  width: 724px;
+  align-items: flex-start;
 }
 
 .register-form-group {
@@ -98,6 +99,18 @@ body, html {
   align-items: flex-start;
   gap: 4px;
   width: 100%;
+}
+
+.register-form-group-email,
+.register-form-group-phone {
+  margin-left: 10px;
+}
+
+.register-form-group-birthday,
+.register-form-group-email,
+.register-form-group-password,
+.register-form-group-phone {
+  width: 341px;
 }
 
 /** Labels **/
@@ -185,12 +198,11 @@ body, html {
 }
 
 .register-select-gender-wrapper { width: 341px; }
-.register-select-province-wrapper { width: 679px; }
-.register-select-district-wrapper { width: 706px; }
-
 .register-select-province-wrapper {
+  width: 679px; 
   margin-bottom: 32px;
 }
+.register-select-district-wrapper { width: 706px; }
 /** Error Messages **/
 .register-error {
   color: red;
@@ -204,12 +216,11 @@ body, html {
   height: 40px;
   gap: 8px;
   padding: 9px 12px;
-  border-width: 1.5px;
-  border-style: solid;
-  border-color: #2D2D2D;
+  border: 1.5px solid #2D2D2D;
   background: #fff;
   color: #2D2D2D;
   border-radius: 0;
+  font-family: var(--font-family);
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;

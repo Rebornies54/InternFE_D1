@@ -67,14 +67,12 @@ function Dashboard() {
         </div>
         <div className="dashboard-radar-block">
           <h3 className="dashboard-chart-title">Thống kê lượng calo đã nạp vào cơ thể</h3>
-          <ResponsiveContainer width={420} height={350}>
-            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-              <PolarGrid />
-              <PolarAngleAxis dataKey="subject" />
-              <PolarRadiusAxis angle={30} domain={[0, 300]} />
-              <Radar name="Calo" dataKey="A" stroke="#e573c7" fill="#e573c7" fillOpacity={0.25} dot={{ r: 5, fill: '#e573c7' }} />
-            </RadarChart>
-          </ResponsiveContainer>
+          <RadarChart width={420} height={350} cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+            <PolarGrid />
+            <PolarAngleAxis dataKey="subject" />
+            <PolarRadiusAxis angle={30} domain={[0, 300]} />
+            <Radar name="Calo" dataKey="A" stroke="#e573c7" fill="#e573c7" fillOpacity={0.25} dot={{ r: 5, fill: '#e573c7' }} />
+          </RadarChart>
           <div className="dashboard-chart-desc">Biểu đồ lượng calo theo từng loại thực phẩm nạp vào trong ngày</div>
         </div>
       </div>

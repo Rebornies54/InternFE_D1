@@ -49,7 +49,7 @@ const FoodCard = ({ title, description }) => (
 const Blog = () => {
   return (
     <div className="blog-container">
-      <h1 className="blog-title">ブログ・健康的な食事の秘訣</h1>
+      <h1 className="blog-title">メニュー一覧・健康的な食事の秘訣</h1>
       <div className="blog-card-grid">
         {foodCards.map((card, index) => (
           <FoodCard

@@ -1,0 +1,312 @@
+.profile-tab-content {
+  width: 870px;
+  height: 219px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: 'Montserrat', Arial, sans-serif;
+  opacity: 1;
+}
+
+.profile-section-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.profile-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.profile-btn-add {
+  width: 180px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 2px;
+  padding: 4px 15px;
+  border-width: 1px;
+  border: 1px solid #D13D9E;
+  color: #D9D9D9;
+  /* background: #D9D9D9; */
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  opacity: 1;
+  box-sizing: border-box;
+  color: #000000;
+  font-weight: 700;
+  background: none;
+}
+
+.profile-btn-add:hover {
+  background: none;
+  color: #000000;
+}
+
+.profile-address-block {
+  width: 822px;
+  height: 123px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 17px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  opacity: 1;
+}
+
+.profile-address-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.profile-address-name {
+  font-weight: 700;
+  font-size: 15px;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: 0;
+  color: #262626;
+}
+
+.profile-address-phone {
+  font-size: 13px;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.profile-address-detail {
+  font-size: 14px;
+  color: #BFBFBF;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.profile-btn-update {
+    width: auto; 
+    height: auto;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+    letter-spacing: 0;
+    background-color: #fff;
+    border: 1px solid #D13D9E;
+    color: #333;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 15px;
+    align-self: flex-start;
+    /* margin-left: auto; */
+    opacity: 1;
+  }
+  
+
+.profile-divider {
+  width: 100%;
+  height: 1px;
+  background: #F0F0F0;
+  margin-top: 8px;
+  margin-bottom: 0;
+  border: none;
+}
+
+.address-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.15);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.address-modal {
+  width: 588px;
+  height: 578px;
+  background: #FFFFFF;
+  border-radius: 2px;
+  opacity: 1;
+  box-shadow:
+    0px 9px 28px 8px #0000000D,
+    0px 6px 16px 0px #00000014,
+    0px 3px 6px -4px #0000001F;
+  padding: 32px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.address-modal-title {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #000000;
+  margin: 0;
+}
+
+
+.address-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.address-modal-row {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.address-modal-field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 4px;
+}
+
+.address-modal-field label {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 22px;
+  letter-spacing: 0;
+  /* leading-trim: NONE; */
+  color: #262626;
+  margin-bottom: 4px;
+}
+
+.required {
+  color: #FF2D2D;
+  margin-right: 2px;
+}
+
+.address-modal-field input,
+.address-modal-field select {
+  width: 524px;
+  height: 32px;
+  border-radius: 8px;
+  border-width: 1px;
+  border: 1px solid #D9D9D9;
+  background: #fff;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 14px;
+  padding: 4px 12px;
+  box-sizing: border-box;
+  outline: none;
+  opacity: 1;
+}
+
+.address-modal-field input::placeholder {
+  color: #BFBFBF;
+  font-weight: 400;
+}
+
+.address-modal-field select:disabled {
+  color: #BFBFBF;
+}
+
+.address-modal-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: url("data:image/svg+xml;utf8,<svg fill='%23BFBFBF' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 12px center/16px 16px;
+  padding-right: 36px;
+}
+
+.address-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: auto;
+  padding-bottom: 8px;
+}
+
+.profile-btn-update[type="button"] {
+  width: 64px;
+  height: 34px;
+  gap: 10px;
+  border-radius: 2px;
+  padding: 4px 15px;
+  border-width: 1px;
+  background: #FFFFFF;
+  border: 1px solid #D13D9E;
+  opacity: 1;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.profile-btn-update[type="submit"] {
+  width: 96px;
+  height: 34px;
+  gap: 8px;
+  border-radius: 2px;
+  padding: 4px 15px;
+  border-width: 1px;
+  background: #D9D9D9;
+  border: 1px solid #D13D9E;
+  opacity: 1;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.address-modal-row .address-modal-field input {
+  width: 254px;
+  height: 32px;
+  border-radius: 8px;
+  border-width: 1px;
+  padding: 5px 12px;
+  box-sizing: border-box;
+  opacity: 1;
+  gap: 4px;
+}
+
+.address-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0;
+}
+
+.address-modal-close {
+  background: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  font-size: 18px;
+  color: #BFBFBF;
+  cursor: pointer;
+  padding: 0 8px 0 16px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.address-modal-divider {
+  width: 100%;
+  height: 1px;
+  background: #F0F0F0;
+  margin: 8px 0 24px 0;
+  border: none;
+}
