@@ -474,12 +474,6 @@
   padding: 0;
 }
 
-.food-database-table,
-.food-database-table th,
-.food-database-table td {
-  /* background: #F9F9F9 !important; */
-}
-
 .food-database-table-wrapper {
   background: #F9F9F9;
   border-radius: 8px;
