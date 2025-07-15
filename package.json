@@ -1,13 +1,28 @@
 {
-  "dependencies": {
-    "@date-io/date-fns": "^3.2.1",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.2.0",
-    "@mui/material": "^7.2.0",
-    "@mui/x-date-pickers": "^8.7.0",
-    "date-fns": "^4.1.0",
-    "dayjs": "^1.11.13",
-    "recharts": "^3.0.2"
+  "name": "healthy-food-app",
+  "version": "1.0.0",
+  "description": "Healthy Food Application - Full Stack",
+  "scripts": {
+    "install-all": "npm install && cd healthy-food-be && npm install && cd ../healthy-food-fe && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd healthy-food-be && npm run dev",
+    "dev:frontend": "cd healthy-food-fe && npm run dev",
+    "build": "cd healthy-food-fe && npm run build",
+    "setup-db": "cd healthy-food-be && npm run setup-db",
+    "start:backend": "cd healthy-food-be && npm start",
+    "start:frontend": "cd healthy-food-fe && npm run preview"
+  },
+  "keywords": [
+    "healthy-food",
+    "nutrition",
+    "calorie-tracking",
+    "react",
+    "nodejs",
+    "mysql"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }
