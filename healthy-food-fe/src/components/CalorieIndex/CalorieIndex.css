@@ -265,8 +265,16 @@ input[type="radio"]:checked::after {
 .total-calories h2 {
   font-size: 24px;
   font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 15px;
+  font-size: 20px;
+  line-height: 120%;
+  letter-spacing: 0;
+  color: #1D1B20;
+  vertical-align: middle;
+  margin-bottom: 4px;
+  background: linear-gradient(0deg, #1D1B20, #1D1B20), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .calorie-value {
