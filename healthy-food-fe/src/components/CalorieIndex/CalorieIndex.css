@@ -6,618 +6,389 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
+:root {
+  --primary-color: #333333;
+  --pink-color: #ff4081;       
+  --pink-light: #ffe4ec;  
+  --primary-light: #f9f9f9;
+  --primary-dark: #212121;
+  --secondary-color: #444444;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --text-light: #f5f5f5;
+  --border-color: #e0e0e0;
+  --background-light: #ffffff;
+  --background-dark: #f5f5f5;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --radius: 8px;
+  --transition: all 0.3s ease;
+}
+
 body {
-  background-color: #ffffff;
-  color: #333;
+  background-color: var(--background-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
 }
 
 .calorie-calculator-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
 }
 
 .calculator-title {
   text-align: center;
-  margin: 0 auto 32px auto;
-  font-size: 25px;
-  font-weight: 800;
-  line-height: 100%;
+  margin-bottom: 32px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
-
-/* Form container */
-.calculator-form-container {
-  margin-bottom: 20px;
+/* Calculator Card */
+.calculator-card {
+  background-color: var(--background-light);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 30px;
+  margin-bottom: 30px;
+  border: 1px solid var(--border-color);
 }
 
-/* Form elements */
-.form-row {
-  margin-bottom: 15px;
+/* Form Layout */
+.calculator-form {
+  width: 100%;
 }
 
-.form-row label {
-  display: block;
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
   font-size: 14px;
-  margin-bottom: 5px;
   font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
 }
 
 .input-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
 }
 
 input[type="number"] {
-  width: 180px;
-  padding: 8px 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  margin-right: 5px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: 16px;
+  background-color: var(--background-light);
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+input[type="number"]:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(33, 33, 33, 0.1);
 }
 
 .unit {
-  color: #666;
+  position: absolute;
+  right: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  pointer-events: none;
 }
 
-/* Gender options */
+/* Gender Options */
 .gender-options {
   display: flex;
-  flex-direction: row;
-  gap: 32px;
-  align-items: center;
-}
-
-.form-row-gender {
-  display: flex;
-  align-items: center;
-  gap: 48px;
+  gap: 20px;
+  margin-top: 5px;
 }
 
 .radio-label {
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: 87px;
-  height: 22px;
   cursor: pointer;
-  font-size: 14px;
-  opacity: 1;
-  transform: rotate(0deg);
 }
 
-input[type="checkbox"] {
-  margin-right: 5px;
-  width: 16px;
-  height: 16px;
-}
-
-/* Activity dropdown */
-.activity-wrapper {
+input[type="radio"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  margin-right: 8px;
   position: relative;
-  width: 100%;
+  transition: var(--transition);
+}
+
+input[type="radio"]:checked {
+  border-color: var(--primary-color);
+}
+
+input[type="radio"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+}
+
+.radio-text {
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+/* Activity Dropdown */
+.activity-group {
+  grid-column: 1 / -1;
+  margin-bottom: 25px;
+}
+
+.select-wrapper {
+  position: relative;
 }
 
 .activity-select {
   width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  background-color: white;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: 16px;
+  background-color: var(--background-light);
+  color: var(--text-primary);
   appearance: none;
-  padding-right: 25px;
+  cursor: pointer;
+  transition: var(--transition);
 }
 
-.activity-wrapper:after {
-  content: '▼';
-  font-size: 12px;
-  color: #666;
+.activity-select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(33, 33, 33, 0.1);
+}
+
+.select-wrapper::after {
+  content: "▼";
   position: absolute;
-  right: 10px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
+  color: var(--text-secondary);
   pointer-events: none;
+  font-size: 12px;
 }
 
 /* Buttons */
 .button-group {
   display: flex;
-  gap: 10px;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .calculate-btn {
-  background-color: #D13D9E;
-  color: #FFFFFF;
-  border: 1px solid #D13D9E;
-  padding: 4px 15px;
-  border-radius: 2px;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 14px;
-  width: 60px;
-  height: 32px;
-  opacity: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transform: rotate(0deg);
-  white-space: nowrap;
+  transition: var(--transition);
+  background-color: var(--pink-color) !important;
+  border: 1px solid #000000 !important;
+  color: #ffffff !important;
+}
+
+.calculate-btn:hover {
+  background-color: var(--pink-color) !important;
+  border: 1px solid #000000 !important;
+  color: #ffffff !important;
 }
 
 .reset-btn {
-  background-color: #FFFFFF;
-  color: #D13D9E;
-  border: 1px solid #D13D9E;
-  padding: 4px 15px;
-  border-radius: 2px;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 14px;
-  width: 88px;
-  height: 32px;
-  opacity: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  transform: rotate(0deg);
-  white-space: nowrap;
+  transition: var(--transition);
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  color: #000000;
 }
 
 
-
+/* Note */
 .calculator-note {
-  font-size: 12px;
-  color: #666;
-  white-space: nowrap;
-  margin-top: 0px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 10px;
 }
 
-/* Results section */
-.results-section {
-  width: 1347px;
-  height: 785px;
-  opacity: 1;
-  margin: 20px 0 0 46px;
-  border: 2px solid #e5e5e5;
-  background: #fff;
-  padding: 20px;
+/* Results Section */
+.results-container {
+  margin-top: 40px;
+}
+
+.results-card {
+  background-color: var(--background-light);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
 }
 
 .total-calories {
-  width: 488px;
-  height: 126px;
-  min-height: 72px;
-  opacity: 1;
-  background: #FEF7FF;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  background-color: var(--primary-light);
+  padding: 30px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
 }
+
 .total-calories h2 {
-  width: 456px;
-  height: 48px;
-  font-family: 'Inter', Arial, sans-serif;
+  font-size: 24px;
   font-weight: 700;
-  font-size: 20px;
-  line-height: 120%;
-  letter-spacing: 0;
-  color: #1D1B20;
-  vertical-align: middle;
-  margin-bottom: 4px;
-  background: linear-gradient(0deg, #1D1B20, #1D1B20), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
+  color: var(--text-primary);
+  margin-bottom: 15px;
 }
+
+.calorie-value {
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 15px;
+  padding: 15px;
+  display: inline-block;
+  border-radius: var(--radius);
+  background-color: var(--background-light);
+  border: 2px solid var(--primary-color);
+}
+
 .total-calories p {
-  width: 456px;
-  height: 60px;
-  font-family: 'Inter', Arial, sans-serif;
-  font-weight: 400;
   font-size: 16px;
-  line-height: 140%;
-  letter-spacing: 0;
-  color: #49454F;
-  opacity: 1;
-  margin: 0;
+  color: var(--text-secondary);
 }
 
-/* Weight scenarios */
 .weight-scenarios {
-  width: 1179px;
-  height: 306px;
-  gap: 64px;
-  opacity: 1;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
+  padding: 30px;
 }
 
-.scenario-row {
+.scenarios-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.scenario-column h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+  color: var(--text-primary);
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.weight-loss h4 {
+  border-bottom-color: #ff6b6b;
+}
+
+.weight-gain h4 {
+  border-bottom-color: #51cf66;
+}
+
+.scenario-item {
   display: flex;
   justify-content: space-between;
-  gap: 15px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.scenario-box {
-  flex: 1;
-  background-color: white;
-  padding: 15px;
+.scenario-item:last-child {
+  border-bottom: none;
 }
 
-.scenario-box h3 {
-  width: 350px;
-  height: 58px;
-  opacity: 1;
-  font-family: 'Inter', Arial, sans-serif;
+.scenario-label {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+.scenario-value {
+  font-size: 18px;
   font-weight: 600;
-  font-size: 20px;
-  line-height: 120%;
-  letter-spacing: -0.02em;
-  color: #1E1E1E;
-  margin-bottom: 0px;
-}
-
-.scenario-box p {
-  opacity: 1;
-  font-family: 'Inter', Arial, sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 140%;
-  letter-spacing: 0;
-  color: #757575;
-  margin-bottom: 3px;
-}
-
-/* Dropdown styling to match the image */
-.activity-select {
-  height: 36px;
-}
-
-#height {
-  width: 150px !important;
-  height: 40px;
-  font-size: 15px;
-  box-sizing: border-box;
-}
-
-#weight {
-  width: 300px !important;
-  height: 40px;
-  font-size: 15px;
-  box-sizing: border-box;
-}
-
-#age {
-  width: 240px;
+  color: var(--text-primary);
+  background-color: var(--primary-light);
+  padding: 6px 12px;
+  border-radius: 4px;
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .scenario-row {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .scenario-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .button-group {
     flex-direction: column;
   }
   
-  input[type="number"], 
-  .activity-select {
+  .calculate-btn, .reset-btn {
     width: 100%;
   }
   
-  #age, #height, #weight {
-    width: 100%;
+  .calorie-value {
+    font-size: 36px;
   }
 }
 
-/* Style adjustments to match the image */
-.form-row label {
-  color: #000;
-}
-
-/* Fix for checkboxes to make them work like radio buttons */
-input[type="checkbox"] {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  margin-right: 5px;
-  position: relative;
-}
-
-input[type="checkbox"]:checked {
-  background-color: #000;
-  border-color: #000;
-}
-
-input[type="checkbox"]:checked:after {
-  content: "✓";
-  color: white;
-  position: absolute;
-  font-size: 12px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* Activity dropdown improvements */
-.activity-select option {
-  padding: 8px;
-}
-
-/* Update results section to match image better */
-.results-section {
-  background-color: #D9D9D9;
-}
-
-.total-calories {
-  border-radius: 0;
-}
-
-.scenario-box {
-  border-radius: 0;
-}
-
-/* Style adjustments for the dropdown to better match the image */
-.activity-select {
-  background-color: white;
-  padding-left: 10px;
-}
-
-.activity-wrapper {
-  max-width: 517px;
-}
-
-/* Adjust font weights to match image */
-.scenario-box h3 {
-  font-weight: 500;
-}
-
-.total-calories h2 {
-  font-weight: 500;
-}
-
-/* Layout 2 cột cho form */
-.calculator-form-2col {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 40px;
-  width: 100%;
-  margin-bottom: 20px;
-}
-.form-left-col, .form-right-col {
-  width: 517px;
-  min-width: 517px;
-  max-width: 517px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  opacity: 1;
-}
-.form-right-col {
-  margin-top: 167px;
-}
-.form-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.form-left-col label, .form-right-col label {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 2px;
-}
-.form-left-col .input-wrapper, .form-right-col .activity-wrapper {
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-.form-left-col input[type="number"], .form-right-col .activity-select-large {
-  width: 100%;
-  height: 40px;
-  font-size: 15px;
-  box-sizing: border-box;
-}
-@media (max-width: 900px) {
-  .calculator-form-2col {
-    flex-direction: column;
-    gap: 0;
-    align-items: stretch;
+@media (max-width: 480px) {
+  .calculator-card,
+  .results-card {
+    padding: 20px;
   }
-  .form-left-col, .form-right-col {
-    width: 100%;
-    min-width: 0;
+  
+  .total-calories {
+    padding: 20px;
+  }
+  
+  .weight-scenarios {
+    padding: 20px;
+  }
+  
+  .calorie-value {
+    font-size: 32px;
+    padding: 10px;
   }
 }
-
-.form-row-2col {
-  display: flex;
-  gap: 40px;
-  align-items: flex-end;
-  width: 100%;
-  justify-content: flex-start;
-}
-.form-col {
-  width: 517px;
-  min-width: 517px;
-  max-width: 517px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.form-col label {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 2px;
-}
-.form-col input,
-.form-col select {
-  width: 100%;
-  height: 40px;
-  font-size: 15px;
-  box-sizing: border-box;
-}
-#height, #weight {
-  width: 100% !important;
-}
-
-.form-row-full {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-top: 16px;
-}
-.form-row-full label {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 2px;
-}
-.form-row-full .activity-wrapper {
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-.form-row-full .activity-select-large {
-  width: 100%;
-  height: 40px;
-  font-size: 15px;
-  box-sizing: border-box;
-}
-
-.form-row-2label {
-  display: flex;
-  gap: 40px;
-  align-items: flex-end;
-  width: 100%;
-  margin-bottom: 2px;
-}
-.form-row-2label label {
-  flex: 1;
-  font-size: 14px;
-  font-weight: 500;
-}
-.form-row-2input {
-  display: flex;
-  gap: 40px;
-  align-items: flex-start;
-  width: 100%;
-  margin-bottom: 16px;
-}
-.form-row-2input .input-wrapper,
-.form-row-2input .activity-wrapper {
-  flex: 1;
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-.form-row-2input input,
-.form-row-2input select {
-  width: 100%;
-  height: 40px;
-  font-size: 15px;
-  box-sizing: border-box;
-}
-.form-row-full {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 8px;
-}
-.form-row-full label {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 2px;
-}
-.form-row-full .input-wrapper {
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-.form-row-full input {
-  width: 100%;
-  height: 40px;
-  font-size: 15px;
-  box-sizing: border-box;
-}
-@media (max-width: 900px) {
-  .form-row-2label, .form-row-2input {
-    flex-direction: column;
-    gap: 0;
-    align-items: stretch;
-  }
-}
-
-.activity-select.activity-select-large option {
-  background-color: #F0F0F0;
-}
-
-.activity-select.activity-select-large option[value=""] {
-  color: #B41E8E;
-  font-style: italic;
-}
-.activity-select.activity-select-large option[value="ちょっとする 1~3回/週"],
-.activity-select.activity-select-large option[value="そこそこする 4~5回/週"],
-.activity-select.activity-select-large option[value="とてもする 6~7回/週、それ以上"] {
-  color: #1D1B20;
-}
-.activity-select.activity-select-large option[value=""],
-.activity-select.activity-select-large option[value="あまりしない・ほとんどしない"] {
-  color: #B41E8E;
-  font-style: italic;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-}
-
-.results-inner-box {
-  width: 1307px;
-  height: 524px;
-  opacity: 1;
-  padding: 48px;
-  margin: 0 auto;
-  background: #fff;
-  border: 1.5px solid #e5e5e5;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-}
-
-.select-placeholder-fake {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #B41E8E;
-  font-size: 15px;
-  pointer-events: none;
-  user-select: none;
-  z-index: 2;
-  background: transparent;
-  font-style: normal;
-  line-height: 40px;
-}
-.select-placeholder-wrapper {
-  position: relative;
-  width: 100%;
-}
-.activity-select.activity-select-large option[value="あまりしない・ほとんどしない"] {
-  color: #B41E8E;
-  font-style: normal;
-}
-
-.activity-select:focus + .select-placeholder,
-.activity-select:not([value=""]) + .select-placeholder {
-  display: none;
-}
-

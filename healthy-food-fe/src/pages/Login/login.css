@@ -163,4 +163,110 @@
     width: 100%;
     min-width: 0;
   }
+}
+
+.error-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(28, 26, 28, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+.error-modal {
+  background: white;
+  border-radius: 8px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: modalSlideIn 0.3s ease-out;
+  border: 1px solid #D9D9D9;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.error-modal-content {
+  text-align: center;
+}
+
+.error-modal-title {
+  color: #1A202C;
+  font-family: Montserrat, sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  margin: 0 0 16px 0;
+}
+
+.error-modal-message {
+  color: #262626;
+  font-family: Montserrat, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 24px 0;
+  line-height: 1.4;
+}
+
+.error-modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.error-modal-btn {
+  padding: 12px 24px;
+  border-radius: 0px;
+  font-family: Montserrat, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1.5px solid #23262F;
+  min-height: 44px;
+  background: #fff;
+  color: #23262F;
+}
+
+.error-modal-btn-primary {
+  background: #fff;
+  color: #23262F;
+  border: 1.5px solid #23262F;
+}
+
+.error-modal-btn-primary:hover {
+  background: #23262F;
+  color: #fff;
+  border: 1.5px solid #23262F;
+  transform: translateY(-1px);
+}
+
+/* Responsive for error modal */
+@media (max-width: 480px) {
+  .error-modal {
+    margin: 20px;
+    padding: 24px;
+  }
+  
+  .error-modal-title {
+    font-size: 20px;
+  }
+  
+  .error-modal-message {
+    font-size: 14px;
+  }
 } 

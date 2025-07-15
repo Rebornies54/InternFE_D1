@@ -3,8 +3,8 @@ import './BodyIndex.css';
 
 const foodList = [
   {
-    name: '料理A',
-    description: '内容...',
+    name: 'Dish A',
+    description: 'Content...',
     images: [
       'https://via.placeholder.com/786x247?text=Image+1',
       'https://via.placeholder.com/786x247?text=Image+2',
@@ -43,7 +43,6 @@ const BodyIndex = () => {
   const [activeImg, setActiveImg] = useState(0);
   const [dragStartX, setDragStartX] = useState(null);
 
-  // Prevent page scrolling when using mouse wheel on number inputs
   const handleWheel = (e) => {
     if (document.activeElement === e.target) {
       e.stopPropagation();
@@ -72,41 +71,40 @@ const BodyIndex = () => {
 
   return (
     <div className="body-index-container">
-      <h1 className="body-index-title">カロリー指標（BMI）の計算</h1>
+      <h1 className="body-index-title">Calorie Index (BMI) Calculation</h1>
       <div className="body-index-content">
-        {/* Form section */}
         <div className="body-index-form-section">
           <div className="body-index-form-row">
             <div className="body-index-form-inputs">
               <div className="body-index-form-group">
-                <label>身長</label>
+                <label className="body-index-label">Height</label>
                 <input
                   type="number"
                   value={height}
                   onChange={e => setHeight(e.target.value)}
-                  placeholder="身長を入力..."
+                  placeholder="Enter height..."
                   className="body-index-input"
                   onWheelCapture={handleWheel}
                 />
               </div>
               <div className="body-index-form-group">
-                <label>体重</label>
+                <label className="body-index-label">Weight</label>
                 <input
                   type="number"
                   value={weight}
                   onChange={e => setWeight(e.target.value)}
-                  placeholder="体重を入力"
+                  placeholder="Enter weight"
                   className="body-index-input"
                   onWheelCapture={handleWheel}
                 />
               </div>
               <div className="body-index-form-group">
-                <label>計算結果</label>
+                <label className="body-index-label">Calculation Result</label>
                 <input
                   type="text"
                   value={bmi}
                   readOnly
-                  placeholder="結果"
+                  placeholder="Result"
                   className="body-index-input"
                 />
               </div>
@@ -116,16 +114,14 @@ const BodyIndex = () => {
                   onClick={handleCalculate}
                   disabled={!height || !weight}
                 >
-                  計算
+                  Calculate
                 </button>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Food list section */}
         <div className="food-list-section">
-          <h2 className="body-index-section-title">おすすめの料理一覧</h2>
+          <h2 className="body-index-section-title">Recommended Dishes List</h2>
           <div className="recommended-food-list">
             {foodList.map((food, idx) => (
               <div className="food-item" key={idx}>
@@ -133,15 +129,13 @@ const BodyIndex = () => {
                 <div className="food-content">
                   <h3 className="food-title">{food.name}</h3>
                   <p className="food-description">{food.description}</p>
-                  <button className="detail-btn" onClick={() => openModal(food)}>詳細</button>
+                  <button className="detail-btn" onClick={() => openModal(food)}>Details</button>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-
-      {/* Modal hiển thị chi tiết món ăn */}
       {modalOpen && selectedFood && (
         <div className="food-modal-overlay" onClick={closeModal}>
           <div className="food-modal-outer">
@@ -152,8 +146,8 @@ const BodyIndex = () => {
                 onMouseUp={e => {
                   if (dragStartX !== null) {
                     const diff = e.clientX - dragStartX;
-                    if (diff > 50 && activeImg > 0) setActiveImg(activeImg - 1); // Kéo phải
-                    if (diff < -50 && activeImg < selectedFood.images.length - 1) setActiveImg(activeImg + 1); // Kéo trái
+                    if (diff > 50 && activeImg > 0) setActiveImg(activeImg - 1);
+                    if (diff < -50 && activeImg < selectedFood.images.length - 1) setActiveImg(activeImg + 1);
                     setDragStartX(null);
                   }
                 }}
