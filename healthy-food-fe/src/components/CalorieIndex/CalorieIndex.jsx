@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './CalorieIndex.css';
 
 const CalorieIndex = () => {
   const [age, setAge] = useState('20');
-  const [gender, setGender] = useState('女'); // Female as default
+  const [gender, setGender] = useState('Female'); // Female as default
   const [height, setHeight] = useState('170');
   const [weight, setWeight] = useState('60');
   const [activityLevel, setActivityLevel] = useState('');
-  const [bmr, setBmr] = useState(0);
   const [tdee, setTdee] = useState(0);
   const [showResults, setShowResults] = useState(false);
 
   const calculateBMR = () => {
     // Harris-Benedict formula
-    if (gender === '男') { // Male
+    if (gender === 'Male') { // Male
       return 66 + (13.7 * parseFloat(weight)) + (5 * parseFloat(height)) - (6.8 * parseFloat(age));
     } else { // Female
       return 655 + (9.6 * parseFloat(weight)) + (1.8 * parseFloat(height)) - (4.7 * parseFloat(age));
@@ -24,16 +23,16 @@ const CalorieIndex = () => {
     let activityMultiplier = 1.2; // Default: Sedentary
     
     switch(activityLevel) {
-      case 'あまりしない・ほとんどしない':
+      case 'Sedentary: Little or no exercise':
         activityMultiplier = 1.375;
         break;
-      case 'ちょっとする 1~3回/週':
+      case 'Lightly active: 1-3 times/week':
         activityMultiplier = 1.55;
         break;
-      case 'そこそこする 4~5回/週':
+      case 'Moderately active: 4-5 times/week':
         activityMultiplier = 1.725;
         break;
-      case 'とてもする 6~7回/週、それ以上':
+      case 'Very active: 6-7 times/week or more':
         activityMultiplier = 1.9;
         break;
       default:
@@ -46,21 +45,20 @@ const CalorieIndex = () => {
   const handleCalculate = (e) => {
     e.preventDefault();
     
-    // Kiểm tra xem đã chọn activity level chưa
+    // Check if activity level has been selected
     if (!activityLevel || activityLevel === '') {
-      alert('Vui lòng chọn mức vận động (運動量)');
+      alert('Please select activity level');
       return;
     }
     
     const calculatedBMR = calculateBMR();
-    setBmr(calculatedBMR);
     setTdee(calculateTDEE(calculatedBMR));
     setShowResults(true);
   };
 
   const handleReset = () => {
     setAge('20');
-    setGender('女');
+    setGender('Female');
     setHeight('170');
     setWeight('60');
     setActivityLevel('');
@@ -69,152 +67,159 @@ const CalorieIndex = () => {
 
   return (
     <div className="calorie-calculator-container">
-      <h1 className="calculator-title">Lượng calo cơ thể cần trong ngày</h1>
-      <div className="calculator-form-2col">
-        {/* Cột trái */}
-        <div className="form-left-col">
-          <div className="form-row">
-            <label htmlFor="age">年齢</label>
-            <div className="input-wrapper">
-              <input 
-                type="number" 
-                id="age" 
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="form-row-gender">
-            <label htmlFor="gender" style={{marginRight: '16px', minWidth: '40px', marginBottom: 0}}>性別</label>
-            <div className="gender-options">
-              <label className="radio-label">
+      <h1 className="calculator-title">Daily Calorie Needs Calculator</h1>
+      
+      <div className="calculator-card">
+        <form className="calculator-form">
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="age">Age</label>
+              <div className="input-wrapper">
                 <input 
-                  type="checkbox" 
-                  name="gender" 
-                  checked={gender === '女'}
-                  onChange={() => setGender('女')}
+                  type="number" 
+                  id="age" 
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  min="1"
+                  max="120"
                 />
-                女
-              </label>
-              <label className="radio-label">
-                <input 
-                  type="checkbox" 
-                  name="gender" 
-                  checked={gender === '男'}
-                  onChange={() => setGender('男')}
-                />
-                男
-              </label>
+                <span className="unit">years</span>
+              </div>
             </div>
-          </div>
-          <div className="form-row-2col">
-            <div className="form-col">
-              <label htmlFor="height">Chiều cao (身長)</label>
+            
+            <div className="form-group">
+              <label htmlFor="height">Height</label>
               <div className="input-wrapper">
                 <input 
                   type="number" 
                   id="height" 
                   value={height}
                   onChange={(e) => setHeight(e.target.value)}
+                  min="50"
+                  max="250"
                 />
                 <span className="unit">cm</span>
               </div>
             </div>
-            <div className="form-col">
-              <label htmlFor="activity">運動量</label>
-              <div className="select-placeholder-wrapper">
-                <select 
-                  id="activity"
-                  value={activityLevel === "" ? "__placeholder__" : activityLevel}
-                  onChange={(e) => setActivityLevel(e.target.value)}
-                  className="activity-select activity-select-large"
-                >
-                  <option value="__placeholder__" disabled hidden />
-                  <option value="あまりしない・ほとんどしない">あまりしない: ほとんどしない</option>
-                  <option value="ちょっとする 1~3回/週">ちょっとする: 1~3回/週</option>
-                  <option value="そこそこする 4~5回/週">そこそこする: 4~5回/週</option>
-                  <option value="とてもする 6~7回/週、それ以上">とてもする: 6~7回/週, それ以上</option>
-                </select>
-                {activityLevel === "" && (
-                  <span className="select-placeholder-fake">ほとんどしない</span>
-                )}
+            
+            <div className="form-group">
+              <label htmlFor="weight">Weight</label>
+              <div className="input-wrapper">
+                <input 
+                  type="number" 
+                  id="weight" 
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                  min="20"
+                  max="500"
+                />
+                <span className="unit">kg</span>
+              </div>
+            </div>
+            
+            <div className="form-group">
+              <label>Gender</label>
+              <div className="gender-options">
+                <label className="radio-label">
+                  <input 
+                    type="radio" 
+                    name="gender" 
+                    checked={gender === 'Female'}
+                    onChange={() => setGender('Female')}
+                  />
+                  <span className="radio-text">Female</span>
+                </label>
+                <label className="radio-label">
+                  <input 
+                    type="radio" 
+                    name="gender" 
+                    checked={gender === 'Male'}
+                    onChange={() => setGender('Male')}
+                  />
+                  <span className="radio-text">Male</span>
+                </label>
               </div>
             </div>
           </div>
-          <div className="form-row">
-            <label htmlFor="weight">Cân nặng (体重)</label>
-            <div className="input-wrapper">
-              <input 
-                type="number" 
-                id="weight" 
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-              />
-              <span className="unit">kg</span>
+          
+          <div className="form-group activity-group">
+            <label htmlFor="activity">Activity Level</label>
+            <div className="select-wrapper">
+              <select 
+                id="activity"
+                value={activityLevel}
+                onChange={(e) => setActivityLevel(e.target.value)}
+                className="activity-select"
+              >
+                <option value="" disabled>Select activity level</option>
+                <option value="Sedentary: Little or no exercise">Sedentary: Little or no exercise</option>
+                <option value="Lightly active: 1-3 times/week">Lightly active: 1-3 times/week</option>
+                <option value="Moderately active: 4-5 times/week">Moderately active: 4-5 times/week</option>
+                <option value="Very active: 6-7 times/week or more">Very active: 6-7 times/week or more</option>
+              </select>
             </div>
           </div>
+          
           <div className="button-group">
-            <button type="button" onClick={handleCalculate} className="calculate-btn">計算</button>
-            <button type="button" onClick={handleReset} className="reset-btn">リセット</button>
+            <button type="button" onClick={handleCalculate} className="calculate-btn">Calculate</button>
+            <button type="button" onClick={handleReset} className="reset-btn">Reset</button>
           </div>
+          
           <div className="calculator-note">
-            <p>Tính toán tham khảo công thức: https://www.calculator.net/bmr-calculator.html</p>
+            <p>Cố Lên !</p>
           </div>
-        </div>
-        {/* Cột phải */}
-        <div className="form-right-col">
-          {/* Nếu có danh sách mức vận động, render ở đây */}
-        </div>
+        </form>
       </div>
-      {/* Bọc results-section trong container để căn giữa */}
-      <div className="container">
-        {showResults && (
-          <div className="results-section">
+      
+      {showResults && (
+        <div className="results-container">
+          <div className="results-card">
             <div className="total-calories">
-              <h2>結果: {Math.round(tdee)} Calories/日 (TDEE = Calorie x BMR)</h2>
-              <p>必要なカロリー: ~{Math.round(tdee)} Calories/ngày (100%) = 維持量</p>
+              <h2>Your Daily Calorie Needs</h2>
+              <div className="calorie-value">{Math.round(tdee)} calories</div>
+              <p>To maintain your current weight</p>
             </div>
-            <div className="results-inner-box">
-              <div className="weight-scenarios">
-                <div className="scenario-row">
-                  <div className="scenario-box">
-                    <h3>体重を少し(0.25kg)減らすなら...</h3>
-                    <p>0.25kg/tuần</p>
-                    <p>{Math.round(tdee * 0.85)} Calories/ngày (85%)</p>
+            
+            <div className="weight-scenarios">
+              <h3 className="scenarios-title">Weight Management Goals</h3>
+              
+              <div className="scenario-grid">
+                <div className="scenario-column weight-loss">
+                  <h4>Weight Loss</h4>
+                  <div className="scenario-item">
+                    <div className="scenario-label">Mild (0.25kg/week)</div>
+                    <div className="scenario-value">{Math.round(tdee * 0.85)} calories</div>
                   </div>
-                  <div className="scenario-box">
-                    <h3>体重をそこそこ(0.5kg)減らすなら...</h3>
-                    <p>0.5kg/tuần</p>
-                    <p>{Math.round(tdee * 0.7)} Calories/ngày (70%)</p>
+                  <div className="scenario-item">
+                    <div className="scenario-label">Moderate (0.5kg/week)</div>
+                    <div className="scenario-value">{Math.round(tdee * 0.7)} calories</div>
                   </div>
-                  <div className="scenario-box">
-                    <h3>体重をとても(1kg)減らすなら...</h3>
-                    <p>1kg/tuần</p>
-                    <p>{Math.round(tdee * 0.41)} Calories/ngày (41%)</p>
+                  <div className="scenario-item">
+                    <div className="scenario-label">Aggressive (1kg/week)</div>
+                    <div className="scenario-value">{Math.round(tdee * 0.41)} calories</div>
                   </div>
                 </div>
-                <div className="scenario-row">
-                  <div className="scenario-box">
-                    <h3>体重を少し(0.25kg)増やすなら...</h3>
-                    <p>0.25kg/tuần</p>
-                    <p>{Math.round(tdee * 1.15)} Calories/ngày (115%)</p>
+                
+                <div className="scenario-column weight-gain">
+                  <h4>Weight Gain</h4>
+                  <div className="scenario-item">
+                    <div className="scenario-label">Mild (0.25kg/week)</div>
+                    <div className="scenario-value">{Math.round(tdee * 1.15)} calories</div>
                   </div>
-                  <div className="scenario-box">
-                    <h3>体重をそこそこ(0.5kg)増やすなら...</h3>
-                    <p>0.5kg/tuần</p>
-                    <p>{Math.round(tdee * 1.30)} Calories/ngày (130%)</p>
+                  <div className="scenario-item">
+                    <div className="scenario-label">Moderate (0.5kg/week)</div>
+                    <div className="scenario-value">{Math.round(tdee * 1.30)} calories</div>
                   </div>
-                  <div className="scenario-box">
-                    <h3>体重をとても(1kg)増やすなら...</h3>
-                    <p>1kg/tuần</p>
-                    <p>{Math.round(tdee * 1.59)} Calories/ngày (159%)</p>
+                  <div className="scenario-item">
+                    <div className="scenario-label">Aggressive (1kg/week)</div>
+                    <div className="scenario-value">{Math.round(tdee * 1.59)} calories</div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

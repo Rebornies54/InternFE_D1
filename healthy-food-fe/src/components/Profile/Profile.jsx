@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import './Profile.css';
 import ProfileInfo from './ProfileInfo/ProfileInfo';
 import AddressInfo from './AddressInfo/AddressInfo';
@@ -7,28 +8,58 @@ import ChangePassword from './ChangePassword/ChangePassword';
 const menuList = [
   {
     key: 'profile',
-    label: 'プロフィール',
+    label: 'Profile',
   },
   {
     key: 'address',
-    label: 'アドレス',
+    label: 'Address',
   },
   {
     key: 'password',
-    label: 'パスワードを変更',
+    label: 'Change Password',
   },
 ];
 
 const Profile = () => {
+  const { user } = useAuth();
   const [tab, setTab] = useState('profile');
   const [profileData, setProfileData] = useState({
-    name: 'aaaaa',
+    name: '',
     email: '',
     phone: '',
     gender: '',
     birthday: '',
     avatar: null,
   });
+
+  // Update profileData when user data changes
+  useEffect(() => {
+    if (user) {
+      // Parse birthday from database format (YYYY-MM-DD) to separate parts
+      let birthdayDay = '';
+      let birthdayMonth = '';
+      let birthdayYear = '';
+      
+      if (user.birthday) {
+        const birthdayDate = new Date(user.birthday);
+        birthdayDay = birthdayDate.getDate().toString();
+        birthdayMonth = (birthdayDate.getMonth() + 1).toString();
+        birthdayYear = birthdayDate.getFullYear().toString();
+      }
+
+      setProfileData({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        gender: user.gender || '',
+        birthday: user.birthday || '',
+        birthdayDay,
+        birthdayMonth,
+        birthdayYear,
+        avatar: user.avatar_url || null,
+      });
+    }
+  }, [user]);
 
   return (
     <div className="profile2-container">
@@ -45,12 +76,12 @@ const Profile = () => {
           )}
           <div className="profile-sidebar-avatar-info">
             <div className="profile-sidebar-name">{profileData.name}</div>
-            <span className="profile-sidebar-edit">プロフィールを編集</span>
+            <span className="profile-sidebar-edit">Edit Profile</span>
           </div>
         </div>
         <div className="profile-sidebar-divider"></div>
         <div className="profile-sidebar-menu">
-          <div className="profile-sidebar-menu-title">マイプロフィール</div>
+          <div className="profile-sidebar-menu-title">My Profile</div>
           <div className="profile-sidebar-menu-list">
             {menuList.map(item => (
               <div
@@ -65,7 +96,7 @@ const Profile = () => {
         </div>
       </aside>
       <div className="profile2-content">
-        <div className="profile2-content-title">プロフィール</div>
+        <div className="profile2-content-title">Profile</div>
         <div className="profile2-content-divider"></div>
         {tab === 'profile' && <ProfileInfo profileData={profileData} setProfileData={setProfileData} />}
         {tab === 'address' && <AddressInfo />}

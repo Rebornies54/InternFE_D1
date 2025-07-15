@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo/healthy-food-logo.png';
-import { User, ChevronDown, ChevronRight } from 'lucide-react';
+import { User, ChevronDown, ChevronRight, LogOut } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import './home.css';
 
 // Import các component mới
@@ -12,10 +13,10 @@ import CalorieCalculation from '../../components/CalorieCalculation';
 import Dashboard from '../../components/Dashboard';
 import Profile from '../../components/Profile';
 
-// Static data
+// Navigation tabs configuration
 const navTabs = [
   { label: 'Blog', path: '/home/blog', key: 'blog' },
-  { label: 'Body index', path: '/home/body-index', key: 'body' },
+  { label: 'Body Index', path: '/home/body-index', key: 'body' },
   { label: 'Calorie Index', path: '/home/calorie-index', key: 'calorie' },
   { label: 'Calorie Calculation', path: '/home/calorie-calculation', key: 'calculation' },
   { label: 'Dashboard', path: '/home/dashboard', key: 'dashboard' },
@@ -48,7 +49,31 @@ const NavLink = ({ to, children, className }) => {
 
 // Components
 const Header = () => {
-  const location = useLocation();
+  const { user, logout } = useAuth();
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  
+  const handleLogout = () => {
+    logout();
+    // Redirect sẽ được xử lý bởi ProtectedRoute
+  };
+
+  const toggleUserDropdown = () => {
+    setShowUserDropdown(!showUserDropdown);
+  };
+
+  // Đóng dropdown khi click ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.home-user-group')) {
+        setShowUserDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   
   return (
     <header className="home-header">
@@ -69,10 +94,32 @@ const Header = () => {
           ))}
         </nav>
         <div className="home-user-group">
-          <Link to="/home/profile" className="user-link">
+          <div className="user-link" onClick={toggleUserDropdown}>
             <User size={24} className="user-icon" />
-            <span>user</span>
-          </Link>
+            <span className="user-name">{user?.name || 'User'}</span>
+            <ChevronDown size={16} className={`dropdown-arrow ${showUserDropdown ? 'rotated' : ''}`} />
+          </div>
+          
+          {showUserDropdown && (
+            <div className="user-dropdown">
+              <div className="user-dropdown-header">
+                <div className="user-dropdown-greeting">
+                  Hello, <span className="user-dropdown-name">{user?.name || 'User'}</span>!
+                </div>
+              </div>
+              <div className="user-dropdown-divider"></div>
+              <div className="user-dropdown-menu">
+                <Link to="/home/profile" className="user-dropdown-item">
+                  <User size={16} />
+                  <span>Profile</span>
+                </Link>
+                <button className="user-dropdown-item logout-btn" onClick={handleLogout}>
+                  <LogOut size={16} />
+                  <span>Log out</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
@@ -160,7 +207,7 @@ const BlogLayout = ({ children }) => {
     setExpandedMenus(prev => ({ ...prev, [menu]: !prev[menu] }));
   };
   
-  // Guardar el estado expandido en localStorage para mantenerlo entre navegaciones
+  // Load expanded menu state from localStorage
   useEffect(() => {
     try {
       const savedMenuState = localStorage.getItem('blogExpandedMenus');
@@ -172,6 +219,7 @@ const BlogLayout = ({ children }) => {
     }
   }, []);
   
+  // Save expanded menu state to localStorage
   useEffect(() => {
     try {
       localStorage.setItem('blogExpandedMenus', JSON.stringify(expandedMenus));

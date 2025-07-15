@@ -298,3 +298,141 @@ body, html {
     max-width: 341px;
   }
 }
+
+/** Success Modal Styles **/
+.success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(28, 26, 28, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.success-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.success-modal-content {
+  text-align: center;
+}
+
+.success-modal-title {
+  color: var(--primary-color);
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 24px;
+  margin: 0 0 16px 0;
+}
+
+.success-modal-message {
+  color: var(--primary-color);
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.success-modal-question {
+  color: var(--primary-color);
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 14px;
+  margin: 0 0 24px 0;
+  line-height: 1.4;
+}
+
+.login-link-text {
+  color: var(--accent-color);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.login-link-text:hover {
+  color: #d14a8a;
+}
+
+.success-modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.success-modal-btn {
+  padding: 12px 24px;
+  border-radius: 2px;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  min-height: 44px;
+}
+
+.success-modal-btn-primary {
+  background: var(--accent-color);
+  color: white;
+}
+
+.success-modal-btn-primary:hover {
+  background: #d14a8a;
+  transform: translateY(-1px);
+}
+
+.success-modal-btn-secondary {
+  background: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+}
+
+.success-modal-btn-secondary:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* Responsive for modal */
+@media (max-width: 480px) {
+  .success-modal {
+    margin: 20px;
+    padding: 24px;
+  }
+  
+  .success-modal-title {
+    font-size: 20px;
+  }
+  
+  .success-modal-message {
+    font-size: 14px;
+  }
+  
+  .success-modal-question {
+    font-size: 13px;
+  }
+}
