@@ -215,7 +215,6 @@ input[type="checkbox"] {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-fill-color: transparent;
 }
 .total-calories p {
   width: 456px;
