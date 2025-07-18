@@ -1,8 +1,8 @@
-const { pool } = require('./connection');
+const { pool } = require('../../connection');
 const path = require('path');
 
 // Load .env from the correct path
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
 
 const cleanDatabase = async () => {
   try {

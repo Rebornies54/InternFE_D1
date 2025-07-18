@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS food_items (
     fat DECIMAL(8,2) DEFAULT 0,
     carbs DECIMAL(8,2) DEFAULT 0,
     fiber DECIMAL(8,2) DEFAULT 0,
+    image_url VARCHAR(500) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES food_categories(id) ON DELETE CASCADE
 );
@@ -48,6 +49,20 @@ CREATE TABLE IF NOT EXISTS user_food_logs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (food_item_id) REFERENCES food_items(id) ON DELETE CASCADE
+);
+
+-- User BMI data table
+CREATE TABLE IF NOT EXISTS user_bmi_data (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    height DECIMAL(5,2) NOT NULL, -- in cm
+    weight DECIMAL(5,2) NOT NULL, -- in kg
+    bmi DECIMAL(4,2) NOT NULL,
+    bmi_category ENUM('underweight', 'normal', 'overweight', 'obese') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_bmi (user_id)
 );
 
 -- Insert default food categories
@@ -132,3 +147,38 @@ INSERT INTO food_items (category_id, name, unit, calories, protein, fat, carbs) 
 (6, 'Hamburger (fast food)', '100g', 295, 17.0, 12.0, 30.0),
 (6, 'French Fries', '100g', 312, 3.4, 15.0, 41.0),
 (6, 'Soda (cola)', '100g', 42, 0.0, 0.0, 11.0);
+
+-- Blog posts table
+CREATE TABLE IF NOT EXISTS blog_posts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    content LONGTEXT NOT NULL,
+    image_url VARCHAR(500),
+    category VARCHAR(100) NOT NULL,
+    likes_count INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Blog post likes table
+CREATE TABLE IF NOT EXISTS blog_post_likes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    post_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES blog_posts(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_post_like (user_id, post_id)
+);
+
+-- Insert sample blog posts
+INSERT INTO blog_posts (user_id, title, description, content, category, likes_count) VALUES
+(1, 'Khoai tây - Nguồn vitamin C dồi dào', 'Khoai tây chứa hàm lượng vitamin C cao...', 'Khoai tây thường bị đánh giá thấp về giá trị dinh dưỡng, nhưng thực tế chúng chứa nhiều vitamin và khoáng chất quan trọng. Một củ khoai tây cỡ trung bình cung cấp khoảng 27mg vitamin C, chiếm 30% nhu cầu hàng ngày của cơ thể. Ngoài ra, khoai tây còn chứa kali, vitamin B6 và chất xơ. Cách chế biến khoai tây cũng ảnh hưởng đến hàm lượng dinh dưỡng - nướng hoặc luộc sẽ giữ được nhiều vitamin hơn so với chiên.', 'thực phẩm', 15),
+(1, 'Rau củ - Thực phẩm ít calo, nhiều dưỡng chất', 'Rau củ là lựa chọn tuyệt vời...', 'Rau củ là nền tảng của mọi chế độ ăn lành mạnh. Chúng cung cấp ít calo nhưng lại giàu vitamin, khoáng chất và chất xơ. Mỗi loại rau củ có những lợi ích riêng: cà rốt giàu beta-carotene tốt cho mắt, bông cải xanh chứa sulforaphane có tác dụng chống ung thư, cải bó xôi giàu sắt và canxi. Để tối ưu hóa dinh dưỡng, nên ăn đa dạng các loại rau củ với nhiều màu sắc khác nhau.', 'thực phẩm', 23),
+(1, 'Nấm - Protein thực vật chất lượng cao', 'Giàu protein và ít calo...', 'Nấm không chỉ là một nguyên liệu ngon miệng mà còn là nguồn protein thực vật chất lượng cao. Chúng chứa tất cả 9 axit amin thiết yếu mà cơ thể cần. Nấm cũng giàu vitamin D, selenium và các chất chống oxy hóa. Một số loại nấm như shiitake còn có tác dụng tăng cường hệ miễn dịch. Nấm có thể thay thế thịt trong nhiều món ăn, giúp giảm lượng calo và chất béo bão hòa.', 'thực phẩm', 8),
+(1, 'Cách xây dựng thực đơn cân bằng', 'Một thực đơn cân bằng giúp cung cấp đầy đủ dưỡng chất...', 'Thực đơn cân bằng lý tưởng nên bao gồm 50% rau củ và trái cây, 25% protein (thịt, cá, đậu), và 25% ngũ cốc nguyên hạt. Bữa sáng nên có protein và chất xơ để duy trì năng lượng. Bữa trưa cần đầy đủ các nhóm chất. Bữa tối nên nhẹ nhàng với nhiều rau củ. Uống đủ nước và hạn chế đồ ngọt, thức ăn nhanh. Lập kế hoạch bữa ăn trước để tránh ăn uống thiếu cân bằng.', 'thực đơn', 31),
+(1, 'Bí quyết ăn uống cân bằng khi bận rộn', 'Duy trì chế độ ăn lành mạnh ngay cả khi lịch trình bận rộn...', 'Cuộc sống bận rộn không phải là lý do để từ bỏ ăn uống lành mạnh. Chuẩn bị bữa ăn vào cuối tuần, sử dụng nồi nấu chậm, và dự trữ thực phẩm đông lạnh là những cách hiệu quả. Luôn mang theo đồ ăn nhẹ lành mạnh như hạt, trái cây. Chọn nhà hàng có menu lành mạnh khi ăn ngoài. Sử dụng ứng dụng theo dõi dinh dưỡng để đảm bảo cân bằng. Nhớ rằng một bữa ăn không lành mạnh không làm hỏng cả chế độ ăn.', 'bí quyết', 19),
+(1, 'Thủy phân cơ thể - Tầm quan trọng của nước', 'Uống đủ nước không chỉ giúp duy trì sức khỏe...', 'Nước đóng vai trò thiết yếu trong mọi chức năng của cơ thể: vận chuyển chất dinh dưỡng, điều hòa nhiệt độ, thải độc tố. Người trưởng thành nên uống 2-3 lít nước mỗi ngày, tùy thuộc vào hoạt động thể chất và khí hậu. Dấu hiệu thiếu nước bao gồm khát, nước tiểu sẫm màu, mệt mỏi. Ngoài nước lọc, có thể bổ sung nước từ trái cây, rau củ và các loại trà thảo mộc.', 'bí quyết', 12);

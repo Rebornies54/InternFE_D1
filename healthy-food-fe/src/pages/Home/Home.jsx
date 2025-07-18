@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo/healthy-food-logo.png';
-import { User, ChevronDown, ChevronRight, LogOut } from 'lucide-react';
+import { User, ChevronDown, ChevronRight, LogOut, Search, Clock, Calendar, Star, Utensils } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useBlogContext } from '../../context/BlogContext';
 import './home.css';
 
 // Import các component mới
@@ -126,77 +127,185 @@ const Header = () => {
   );
 };
 
-const Sidebar = ({ expandedMenus, toggleMenu }) => (
-  <aside className="home-sidebar">
-    <div className="home-sidebar-section">
-      <h3 className="home-sidebar-title">Menu</h3>
-      <div className="home-sidebar-menu">
-        <div className="home-sidebar-menu-item" onClick={() => toggleMenu('alacarte')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-          {expandedMenus.alacarte ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span>À la carte Menu</span>
-        </div>
-        {expandedMenus.alacarte && (
-          <div style={{ marginLeft: 24 }}>
-            <div className="home-sidebar-menu-item">
-              <span style={{ fontSize: 14, color: '#666' }}>By Item</span>
-            </div>
-          </div>
-        )}
-        <div className="home-sidebar-menu-item" onClick={() => toggleMenu('seasonal')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-          {expandedMenus.seasonal ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span>Seasonal Menu</span>
-        </div>
-        {expandedMenus.seasonal && (
-          <div style={{ marginLeft: 24 }}>
-            <div className="home-sidebar-menu-item">
-              <span style={{ fontSize: 14, color: '#666' }}>By Dish</span>
-            </div>
-          </div>
-        )}
-        <div className="home-sidebar-menu-item" onClick={() => toggleMenu('daily')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-          {expandedMenus.daily ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span>Menu by Time</span>
-        </div>
-        {expandedMenus.daily && (
-          <div style={{ marginLeft: 24 }}>
-            <div style={{ fontSize: 14, color: '#1ca7ec' }}>Morning</div>
-            <div style={{ fontSize: 14, color: '#666' }}>Afternoon</div>
-            <div style={{ fontSize: 13, color: '#bbb' }}>......</div>
-          </div>
-        )}
-        <div className="home-sidebar-menu-item" onClick={() => toggleMenu('weekday')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-          {expandedMenus.weekday ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span>Menu by Day</span>
-        </div>
-        {expandedMenus.weekday && (
-          <div style={{ marginLeft: 24 }}>
-            <div style={{ fontSize: 14, color: '#666' }}>Monday</div>
-            <div style={{ fontSize: 14, color: '#666' }}>Tuesday</div>
-            <div style={{ fontSize: 14, color: '#666' }}>Wednesday</div>
-            <div style={{ fontSize: 14, color: '#666' }}>Thursday</div>
-            <div style={{ fontSize: 14, color: '#666' }}>Friday</div>
-            <div style={{ fontSize: 14, color: '#666' }}>Saturday</div>
-            <div style={{ fontSize: 14, color: '#666' }}>Sunday</div>
-          </div>
-        )}
-        <div className="home-sidebar-menu-item" onClick={() => toggleMenu('popular')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-          {expandedMenus.popular ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span>Popular Menu</span>
-        </div>
-        {expandedMenus.popular && (
-          <div style={{ marginLeft: 24, fontSize: 14, color: '#666' }}>
-            <div>Title</div>
-          </div>
-        )}
+const Sidebar = ({ expandedMenus, toggleMenu }) => {
+  const { foodItems, foodCategories, openFoodModal } = useBlogContext();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Filter food items based on search
+  const filteredFoodItems = foodItems.filter(food => 
+    food.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    food.category_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Get food items by category
+  const getFoodsByCategory = (categoryId) => {
+    return foodItems.filter(food => food.category_id == categoryId);
+  };
+
+  // Get popular foods (top 5 by calories)
+  const getPopularFoods = () => {
+    return foodItems
+      .sort((a, b) => b.calories - a.calories)
+      .slice(0, 5);
+  };
+
+  // Get seasonal foods (random selection)
+  const getSeasonalFoods = () => {
+    const seasonalCategories = [2, 3]; // Vegetables & Fruits
+    return foodItems
+      .filter(food => seasonalCategories.includes(food.category_id))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+  };
+
+  // Get time-based menu
+  const getTimeBasedMenu = (time) => {
+    const timeMenus = {
+      morning: ['Oatmeal (cooked)', 'Whole Milk', 'Bananas (raw)', 'Apples (raw)'],
+      afternoon: ['Chicken (raw)', 'Brown Rice (cooked)', 'Broccoli (raw)', 'Carrots (raw)'],
+      evening: ['Salmon (raw)', 'Quinoa (cooked)', 'Spinach (raw)', 'Tomatoes (raw)']
+    };
+    
+    return foodItems.filter(food => 
+      timeMenus[time]?.includes(food.name)
+    );
+  };
+
+  // Get weekday menu
+  const getWeekdayMenu = (day) => {
+    const dayMenus = {
+      monday: ['Chicken (raw)', 'White Rice (cooked)', 'Broccoli (raw)'],
+      tuesday: ['Pork (raw)', 'Pasta (cooked)', 'Carrots (raw)'],
+      wednesday: ['Beef (raw)', 'Quinoa (cooked)', 'Spinach (raw)'],
+      thursday: ['Salmon (raw)', 'Brown Rice (cooked)', 'Bell Peppers (raw)'],
+      friday: ['Turkey (raw)', 'Barley (cooked)', 'Cucumber (raw)'],
+      saturday: ['Egg (chicken)', 'Oatmeal (cooked)', 'Tomatoes (raw)'],
+      sunday: ['Tuna (raw)', 'Buckwheat (cooked)', 'Onions (raw)']
+    };
+    
+    return foodItems.filter(food => 
+      dayMenus[day]?.includes(food.name)
+    );
+  };
+
+  const handleFoodClick = (food) => {
+    openFoodModal(food);
+  };
+
+  const renderFoodItem = (food) => (
+    <div 
+      key={food.id} 
+      className="sidebar-food-item"
+      onClick={() => handleFoodClick(food)}
+    >
+      <div className="sidebar-food-icon">🍽️</div>
+      <div className="sidebar-food-info">
+        <div className="sidebar-food-name">{food.name}</div>
+        <div className="sidebar-food-calories">{food.calories} cal</div>
       </div>
     </div>
-  </aside>
-);
+  );
+
+  return (
+    <aside className="home-sidebar">
+      <div className="home-sidebar-section">
+        <h3 className="home-sidebar-title">Menu</h3>
+        
+        {/* Search Bar */}
+        <div className="sidebar-search">
+          <Search size={16} className="search-icon" />
+          <input
+            type="text"
+            placeholder="Tìm kiếm thực phẩm..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="sidebar-search-input"
+          />
+        </div>
+
+        <div className="home-sidebar-menu">
+          {/* À la carte Menu */}
+          <div className="home-sidebar-menu-item" onClick={() => toggleMenu('alacarte')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+            {expandedMenus.alacarte ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            <Utensils size={16} />
+            <span>À la carte Menu</span>
+          </div>
+          {expandedMenus.alacarte && (
+            <div className="sidebar-submenu">
+              <div className="sidebar-submenu-title">By Item</div>
+              {filteredFoodItems.slice(0, 5).map(renderFoodItem)}
+            </div>
+          )}
+
+          {/* Seasonal Menu */}
+          <div className="home-sidebar-menu-item" onClick={() => toggleMenu('seasonal')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+            {expandedMenus.seasonal ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            <Calendar size={16} />
+            <span>Seasonal Menu</span>
+          </div>
+          {expandedMenus.seasonal && (
+            <div className="sidebar-submenu">
+              <div className="sidebar-submenu-title">By Dish</div>
+              {getSeasonalFoods().map(renderFoodItem)}
+            </div>
+          )}
+
+          {/* Menu by Time */}
+          <div className="home-sidebar-menu-item" onClick={() => toggleMenu('daily')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+            {expandedMenus.daily ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            <Clock size={16} />
+            <span>Menu by Time</span>
+          </div>
+          {expandedMenus.daily && (
+            <div className="sidebar-submenu">
+              <div className="sidebar-submenu-title">Morning</div>
+              {getTimeBasedMenu('morning').map(renderFoodItem)}
+              <div className="sidebar-submenu-title">Afternoon</div>
+              {getTimeBasedMenu('afternoon').map(renderFoodItem)}
+              <div className="sidebar-submenu-title">Evening</div>
+              {getTimeBasedMenu('evening').map(renderFoodItem)}
+            </div>
+          )}
+
+          {/* Menu by Day */}
+          <div className="home-sidebar-menu-item" onClick={() => toggleMenu('weekday')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+            {expandedMenus.weekday ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            <Calendar size={16} />
+            <span>Menu by Day</span>
+          </div>
+          {expandedMenus.weekday && (
+            <div className="sidebar-submenu">
+              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
+                <div key={day}>
+                  <div className="sidebar-submenu-title">{day.charAt(0).toUpperCase() + day.slice(1)}</div>
+                  {getWeekdayMenu(day).map(renderFoodItem)}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Popular Menu */}
+          <div className="home-sidebar-menu-item" onClick={() => toggleMenu('popular')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+            {expandedMenus.popular ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            <Star size={16} />
+            <span>Popular Menu</span>
+          </div>
+          {expandedMenus.popular && (
+            <div className="sidebar-submenu">
+              <div className="sidebar-submenu-title">Top Calories</div>
+              {getPopularFoods().map(renderFoodItem)}
+            </div>
+          )}
+        </div>
+      </div>
+    </aside>
+  );
+};
 
 // BlogLayout: Header + Sidebar + Main
 const BlogLayout = ({ children }) => {
   const [expandedMenus, setExpandedMenus] = useState({
-    seasonal: true,
+    seasonal: false,
     daily: false,
     weekday: false,
     popular: false,

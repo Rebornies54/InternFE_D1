@@ -59,6 +59,12 @@ export const authAPI = {
       'Content-Type': 'multipart/form-data',
     },
   }),
+  
+  // Get user's BMI data
+  getBMIData: () => api.get('/auth/bmi'),
+  
+  // Save/Update user's BMI data
+  saveBMIData: (bmiData) => api.post('/auth/bmi', bmiData),
 };
 
 // Food API
@@ -95,6 +101,41 @@ export const foodAPI = {
   // Get monthly statistics
   getMonthlyStatistics: (year, month) => api.get('/food/statistics/monthly', { 
     params: { year, month } 
+  }),
+};
+
+// Blog API
+export const blogAPI = {
+  // Get all posts
+  getAllPosts: () => api.get('/blog/posts'),
+  
+  // Get post by ID
+  getPostById: (id) => api.get(`/blog/posts/${id}`),
+  
+  // Create new post
+  createPost: (postData) => api.post('/blog/posts', postData),
+  
+  // Update post
+  updatePost: (id, postData) => api.put(`/blog/posts/${id}`, postData),
+  
+  // Delete post
+  deletePost: (id) => api.delete(`/blog/posts/${id}`),
+  
+  // Like/Unlike post
+  toggleLike: (id) => api.post(`/blog/posts/${id}/like`),
+  
+  // Check if user liked post
+  checkLiked: (id) => api.get(`/blog/posts/${id}/liked`),
+  
+  // Get posts by category
+  getPostsByCategory: (category) => api.get(`/blog/posts/category/${category}`),
+  
+  // Search posts
+  searchPosts: (query) => api.get(`/blog/posts/search/${query}`),
+
+  // Upload blog image
+  uploadImage: (formData) => api.post('/blog/upload-image', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
   }),
 };
 

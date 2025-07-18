@@ -266,6 +266,37 @@ body {
   color: #333;
 }
 
+/* Sidebar Search */
+.sidebar-search {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  z-index: 1;
+}
+
+.sidebar-search-input {
+  width: 100%;
+  padding: 8px 8px 8px 32px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 12px;
+  background: #f8f8f8;
+  transition: border-color 0.2s ease;
+}
+
+.sidebar-search-input:focus {
+  outline: none;
+  border-color: #BF9528;
+  background: white;
+}
+
 .home-sidebar-menu {
   display: flex;
   flex-direction: column;
@@ -275,15 +306,92 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
+  padding: 8px 0;
   cursor: pointer;
   font-size: 14px;
   color: #333;
   transition: color 0.2s ease;
+  border-radius: 4px;
+  padding: 6px 8px;
 }
 
 .home-sidebar-menu-item:hover {
   color: #BF9528;
+  background: #f8f8f8;
+}
+
+.home-sidebar-menu-item svg {
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.home-sidebar-menu-item:hover svg {
+  color: #BF9528;
+}
+
+/* Sidebar Submenu */
+.sidebar-submenu {
+  margin-left: 24px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding-left: 8px;
+  border-left: 2px solid #f0f0f0;
+}
+
+.sidebar-submenu-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 8px;
+  margin-top: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-submenu-title:first-child {
+  margin-top: 0;
+}
+
+/* Sidebar Food Items */
+.sidebar-food-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-food-item:hover {
+  background: #f8f8f8;
+}
+
+.sidebar-food-icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-food-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-food-name {
+  font-size: 12px;
+  color: #333;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.sidebar-food-calories {
+  font-size: 10px;
+  color: #666;
 }
 
 /* ========== Main Content ========== */
@@ -442,6 +550,22 @@ body {
   
   .home-card-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .sidebar-submenu {
+    margin-left: 16px;
+  }
+  
+  .sidebar-food-item {
+    padding: 4px 6px;
+  }
+  
+  .sidebar-food-name {
+    font-size: 11px;
+  }
+  
+  .sidebar-food-calories {
+    font-size: 9px;
   }
 }
 
