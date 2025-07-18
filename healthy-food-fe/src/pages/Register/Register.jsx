@@ -241,7 +241,7 @@ const Register = () => {
         <div className="success-modal-overlay">
           <div className="success-modal">
             <div className="success-modal-content">
-              <h3 className="success-modal-title">🎉 Congratulations!</h3>
+              <h3 className="success-modal-title">Congratulations!</h3>
               <p className="success-modal-message">
                 You have successfully registered!
               </p>

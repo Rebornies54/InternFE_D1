@@ -1,6 +1,5 @@
 const { body, validationResult } = require('express-validator');
 
-// Validation rules for register
 const registerValidation = [
   body('name')
     .trim()
@@ -50,7 +49,6 @@ const registerValidation = [
     .withMessage('Address must be less than 500 characters')
 ];
 
-// Validation rules for login
 const loginValidation = [
   body('email')
     .isEmail()
@@ -62,7 +60,6 @@ const loginValidation = [
     .withMessage('Password is required')
 ];
 
-// Middleware to check validation results
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

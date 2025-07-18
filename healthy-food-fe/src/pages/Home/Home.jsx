@@ -198,7 +198,7 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
       className="sidebar-food-item"
       onClick={() => handleFoodClick(food)}
     >
-      <div className="sidebar-food-icon">🍽️</div>
+      <div className="sidebar-food-icon"></div>
       <div className="sidebar-food-info">
         <div className="sidebar-food-name">{food.name}</div>
         <div className="sidebar-food-calories">{food.calories} cal</div>

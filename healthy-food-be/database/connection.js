@@ -2,7 +2,6 @@ const mysql = require('mysql2/promise');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
-// Database connection configuration
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
@@ -14,24 +13,64 @@ const dbConfig = {
   queueLimit: 0
 };
 
-// Create connection pool
 const pool = mysql.createPool(dbConfig);
 
-// Test connection
 const testConnection = async () => {
   try {
     const connection = await pool.getConnection();
-    console.log('✅ Database connection successful');
+    await connection.ping();
     connection.release();
+    console.log('Database connection successful');
     return true;
   } catch (error) {
-    console.error('❌ Database connection failed:', error.message);
+    console.error('Database connection failed:', error.message);
     return false;
   }
 };
 
-// Export pool and test function
+const executeQuery = async (query, params = []) => {
+  try {
+    const [rows] = await pool.execute(query, params);
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const executeTransaction = async (queries) => {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+    
+    for (const { query, params = [] } of queries) {
+      await connection.execute(query, params);
+    }
+    
+    await connection.commit();
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
+const healthCheck = async () => {
+  try {
+    const connection = await pool.getConnection();
+    await connection.ping();
+    connection.release();
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 module.exports = {
   pool,
-  testConnection
+  testConnection,
+  executeQuery,
+  executeTransaction,
+  healthCheck,
+  dbConfig
 }; 

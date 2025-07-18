@@ -13,26 +13,22 @@ const blogRoutes = require('./src/routes/blog');
 
 const app = express();
 
-// Test database connection
 testConnection();
 
-// Security middleware với cấu hình cho phép ảnh cross-origin
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
   crossOriginEmbedderPolicy: false,
   crossOriginOpenerPolicy: false
 }));
 
-// CORS configuration
 app.use(cors({
   origin: process.env.CORS_ORIGIN,
   credentials: true
 }));
 
-// Rate limiting - Tăng giới hạn cho development
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 900000, // 15 phút
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100000, // Tăng lên 100k requests
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 900000,
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100000,
   message: {
     success: false,
     message: 'Too many requests from this IP, please try again later.'
@@ -42,19 +38,15 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Logging middleware
 app.use(morgan('combined'));
 
-// Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/food', foodRoutes);
 app.use('/api/blog', blogRoutes);
 
-// Thêm header CORS cho file tĩnh uploads
 app.use('/uploads', (req, res, next) => {
   res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || 'http://localhost:5173');
   res.header('Access-Control-Allow-Methods', 'GET,OPTIONS');
@@ -64,10 +56,9 @@ app.use('/uploads', (req, res, next) => {
   res.header('Cross-Origin-Opener-Policy', 'unsafe-none');
   next();
 });
-// Static file serving for uploads
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
@@ -76,7 +67,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
@@ -84,7 +74,6 @@ app.use('*', (req, res) => {
   });
 });
 
-// Error handling middleware
 app.use((error, req, res, next) => {
   console.error('Error:', error);
   
@@ -97,9 +86,9 @@ app.use((error, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 Environment: ${process.env.NODE_ENV}`);
-  console.log(`🌐 CORS Origin: ${process.env.CORS_ORIGIN}`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
 });
 
 module.exports = app; 
