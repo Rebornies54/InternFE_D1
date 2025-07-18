@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { foodAPI } from '../../services/api';
+import { useFoodContext } from '../../context/FoodContext';
 import './CalorieCalculation.css';
 
 const CalorieCalculation = () => {
@@ -28,6 +29,15 @@ const CalorieCalculation = () => {
   const [editCalories, setEditCalories] = useState(0);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
+
+  // Use FoodContext for pending foods
+  const { 
+    pendingFoods = [], 
+    removeFromPendingFoods, 
+    updatePendingFoodQuantity,
+    clearPendingFoods,
+    getPendingTotalCalories 
+  } = useFoodContext();
 
   // Load food categories on component mount
   useEffect(() => {
@@ -336,11 +346,65 @@ const CalorieCalculation = () => {
 
   // Table options mapping
   const getTableOptions = () => {
+    if (!foodCategories || foodCategories.length === 0) {
+      return [];
+    }
     return foodCategories.map(category => ({
       value: category.id,
       label: `Calorie Calculation Table for ${category.name}`
     }));
   };
+
+  // Add pending foods to Daily Food Tracking
+  const addPendingFoodsToTracking = async () => {
+    if (pendingFoods.length === 0) return;
+
+    try {
+      setLoading(true);
+      let successCount = 0;
+
+      for (const food of pendingFoods) {
+        const calories = Math.round(food.calories * food.quantity / 100);
+        const logData = {
+          food_item_id: food.id,
+          quantity: food.quantity,
+          calories: calories,
+          log_date: selectedDate
+        };
+
+        try {
+          const response = await foodAPI.addFoodLog(logData);
+          if (response.data.success) {
+            successCount++;
+          }
+        } catch (error) {
+          console.error(`Error adding ${food.name}:`, error);
+        }
+      }
+
+      if (successCount > 0) {
+        setMessage(`Đã thêm ${successCount} sản phẩm vào Daily Food Tracking`);
+        setMessageType('success');
+        
+        // Reload data
+        await Promise.all([
+          loadUserFoodLogs(),
+          loadDailyStatistics()
+        ]);
+        
+        // Clear pending foods
+        clearPendingFoods();
+      }
+    } catch (error) {
+      console.error('Error adding pending foods:', error);
+      setMessage('Lỗi khi thêm sản phẩm vào Daily Food Tracking');
+      setMessageType('error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
 
   return (
     <div className="calorie-calculation-container">
@@ -453,6 +517,70 @@ const CalorieCalculation = () => {
       {/* Food tracking section */}
       <div className="food-tracking-section">
         <h2 className="section-title">Daily Food Tracking</h2>
+        
+        {/* Pending Foods Section */}
+        {pendingFoods.length > 0 && (
+          <div className="pending-foods-section">
+            <div className="pending-foods-header">
+              <h3>Pending Foods from BodyIndex</h3>
+              <div className="pending-foods-summary">
+                <span>{pendingFoods.length} items</span>
+                <span>{getPendingTotalCalories().toFixed(1)} total calories</span>
+              </div>
+            </div>
+            
+            <div className="pending-foods-list">
+              {pendingFoods.map((food) => (
+                <div key={food.id} className="pending-food-item">
+                  <div className="pending-food-info">
+                    <h4>{food.name}</h4>
+                    <p>{food.calories} cal per {food.unit}</p>
+                  </div>
+                  <div className="pending-food-quantity">
+                    <button 
+                      className="quantity-btn"
+                      onClick={() => updatePendingFoodQuantity(food.id, food.quantity - 1)}
+                    >
+                      -
+                    </button>
+                    <span className="quantity-display">{food.quantity}g</span>
+                    <button 
+                      className="quantity-btn"
+                      onClick={() => updatePendingFoodQuantity(food.id, food.quantity + 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="pending-food-calories">
+                    {(food.calories * food.quantity / 100).toFixed(1)} cal
+                  </div>
+                  <button 
+                    className="remove-food-btn"
+                    onClick={() => removeFromPendingFoods(food.id)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+            <div className="pending-foods-actions">
+              <button 
+                className="add-all-btn"
+                onClick={addPendingFoodsToTracking}
+                disabled={loading}
+              >
+                Add All to Daily Tracking
+              </button>
+              <button 
+                className="clear-all-btn"
+                onClick={clearPendingFoods}
+              >
+                Clear All
+              </button>
+            </div>
+          </div>
+        )}
         
         <div className="date-selector">
           <label>Select Date:</label>

@@ -1,14 +1,13 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { pool } = require('../database/connection');
+const { pool } = require('../config/connection');
 
 class AuthService {
   // Register new user
   static async register(userData) {
     try {
       const { name, email, password, phone, gender, birthday, province, district, address } = userData;
-      
-      // Check if user already exists
+
       const [existingUsers] = await pool.execute(
         'SELECT id FROM users WHERE email = ?',
         [email]

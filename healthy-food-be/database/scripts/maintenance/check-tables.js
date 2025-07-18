@@ -1,4 +1,4 @@
-const { pool } = require('./connection');
+const { pool } = require('../../connection');
 require('dotenv').config();
 
 const checkTables = async () => {

@@ -6,17 +6,22 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 require('dotenv').config();
 
-const { testConnection } = require('./database/connection');
-const authRoutes = require('./routes/auth');
-const foodRoutes = require('./routes/food');
+const { testConnection } = require('./src/config/connection');
+const authRoutes = require('./src/routes/auth');
+const foodRoutes = require('./src/routes/food');
+const blogRoutes = require('./src/routes/blog');
 
 const app = express();
 
 // Test database connection
 testConnection();
 
-// Security middleware
-app.use(helmet());
+// Security middleware với cấu hình cho phép ảnh cross-origin
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: false
+}));
 
 // CORS configuration
 app.use(cors({
@@ -47,12 +52,16 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/food', foodRoutes);
+app.use('/api/blog', blogRoutes);
 
 // Thêm header CORS cho file tĩnh uploads
 app.use('/uploads', (req, res, next) => {
   res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || 'http://localhost:5173');
   res.header('Access-Control-Allow-Methods', 'GET,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.header('Cross-Origin-Embedder-Policy', 'unsafe-none');
+  res.header('Cross-Origin-Opener-Policy', 'unsafe-none');
   next();
 });
 // Static file serving for uploads
