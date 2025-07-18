@@ -4,6 +4,8 @@ import logo from '../../assets/logo/healthy-food-logo.png';
 import { User, ChevronDown, ChevronRight, LogOut, Search, Clock, Calendar, Star, Utensils } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useBlogContext } from '../../context/BlogContext';
+import { useNavigationScroll } from '../../hooks/useNavigationScroll';
+import { usePageScroll } from '../../hooks/usePageScroll';
 import './home.css';
 
 // Import các component mới
@@ -26,13 +28,11 @@ const navTabs = [
 // Custom NavLink component for better control
 const NavLink = ({ to, children, className }) => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigateWithScroll = useNavigationScroll();
   
   const handleClick = (e) => {
     e.preventDefault();
-    
-    // Luôn navigate để đảm bảo ScrollToTop được trigger
-    navigate(to);
+    navigateWithScroll(to);
   };
   
   const isActive = location.pathname === to;
@@ -110,7 +110,13 @@ const Header = () => {
               </div>
               <div className="user-dropdown-divider"></div>
               <div className="user-dropdown-menu">
-                <Link to="/home/profile" className="user-dropdown-item">
+                <Link 
+                  to="/home/profile" 
+                  className="user-dropdown-item"
+                  onClick={() => {
+                    window.scrollTo(0, 0);
+                  }}
+                >
                   <User size={16} />
                   <span>Profile</span>
                 </Link>
@@ -365,41 +371,59 @@ const PageLayout = ({ children }) => (
 );
 
 // Page components sử dụng layout phù hợp
-const BlogPage = () => (
-  <BlogLayout>
-    <Blog />
-  </BlogLayout>
-);
+const BlogPage = () => {
+  usePageScroll();
+  return (
+    <BlogLayout>
+      <Blog />
+    </BlogLayout>
+  );
+};
 
-const BodyIndexPage = () => (
-  <PageLayout>
-    <BodyIndex />
-  </PageLayout>
-);
+const BodyIndexPage = () => {
+  usePageScroll();
+  return (
+    <PageLayout>
+      <BodyIndex />
+    </PageLayout>
+  );
+};
 
-const CalorieIndexPage = () => (
-  <PageLayout>
-    <CalorieIndex />
-  </PageLayout>
-);
+const CalorieIndexPage = () => {
+  usePageScroll();
+  return (
+    <PageLayout>
+      <CalorieIndex />
+    </PageLayout>
+  );
+};
 
-const CalorieCalculationPage = () => (
-  <PageLayout>
-    <CalorieCalculation />
-  </PageLayout>
-);
+const CalorieCalculationPage = () => {
+  usePageScroll();
+  return (
+    <PageLayout>
+      <CalorieCalculation />
+    </PageLayout>
+  );
+};
 
-const DashboardPage = () => (
-  <PageLayout>
-    <Dashboard />
-  </PageLayout>
-);
+const DashboardPage = () => {
+  usePageScroll();
+  return (
+    <PageLayout>
+      <Dashboard />
+    </PageLayout>
+  );
+};
 
-const ProfilePage = () => (
-  <PageLayout>
-    <Profile />
-  </PageLayout>
-);
+const ProfilePage = () => {
+  usePageScroll();
+  return (
+    <PageLayout>
+      <Profile />
+    </PageLayout>
+  );
+};
 
 const Home = () => {
   return <Outlet />;

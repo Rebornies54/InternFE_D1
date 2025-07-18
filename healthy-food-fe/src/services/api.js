@@ -44,6 +44,8 @@ export const authAPI = {
   
   changePassword: (passwordData) => api.put('/auth/change-password', passwordData),
   
+  forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
+  
   uploadAvatar: (formData) => api.post('/auth/profile/avatar', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -99,6 +101,8 @@ export const blogAPI = {
   getPostsByCategory: (category) => api.get(`/blog/posts/category/${category}`),
   
   searchPosts: (query) => api.get(`/blog/posts/search/${query}`),
+  
+  getMyBlogs: () => api.get('/blog/my-blogs'),
 
   uploadImage: (formData) => api.post('/blog/upload-image', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },

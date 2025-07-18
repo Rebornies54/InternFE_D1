@@ -105,9 +105,7 @@ body {
   white-space: nowrap;
 }
 
-.home-nav-link.blog {
-  color: #BF9528;
-}
+
 
 .home-nav-link.active,
 .home-nav-link:hover {

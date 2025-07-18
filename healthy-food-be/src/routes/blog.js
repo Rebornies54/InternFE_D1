@@ -56,6 +56,8 @@ router.get('/posts', async (req, res) => {
   }
 });
 
+
+
 router.get('/posts/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -138,6 +140,14 @@ router.put('/posts/:id', auth, async (req, res) => {
     const { title, description, content, image_url, category } = req.body;
     const userId = req.user.userId;
     
+    // Validate required fields
+    if (!title || !content || !category) {
+      return res.status(400).json({
+        success: false,
+        message: 'Tiêu đề, nội dung và danh mục là bắt buộc'
+      });
+    }
+    
     const [posts] = await pool.execute(
       'SELECT user_id FROM blog_posts WHERE id = ?',
       [id]
@@ -157,13 +167,17 @@ router.put('/posts/:id', auth, async (req, res) => {
       });
     }
     
+    // Convert undefined to null for optional fields
+    const safeDescription = description || null;
+    const safeImageUrl = image_url || null;
+    
     const query = `
       UPDATE blog_posts 
       SET title = ?, description = ?, content = ?, image_url = ?, category = ?
       WHERE id = ?
     `;
     
-    await pool.execute(query, [title, description, content, image_url, category, id]);
+    await pool.execute(query, [title, safeDescription, content, safeImageUrl, category, id]);
     
     res.json({
       success: true,
@@ -378,6 +392,48 @@ router.get('/posts/search/:query', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Lỗi khi tìm kiếm bài viết'
+    });
+  }
+});
+
+router.get('/my-blogs', auth, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    console.log('Fetching blogs for user ID:', userId);
+    
+    const query = `
+      SELECT 
+        bp.*,
+        u.name as author_name,
+        u.avatar_url as author_avatar,
+        COUNT(bpl.id) as likes_count
+      FROM blog_posts bp
+      LEFT JOIN users u ON bp.user_id = u.id
+      LEFT JOIN blog_post_likes bpl ON bp.id = bpl.post_id
+      WHERE bp.user_id = ?
+      GROUP BY bp.id
+      ORDER BY bp.created_at DESC
+    `;
+    
+    const [posts] = await pool.execute(query, [userId]);
+    console.log(`Found ${posts.length} posts for user ${userId}`);
+    
+    if (posts.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy bài viết'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: posts
+    });
+  } catch (error) {
+    console.error('Error fetching user blogs:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi tải bài viết của bạn'
     });
   }
 });

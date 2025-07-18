@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCalorieContext } from '../../context/CalorieContext';
+import CheckboxOption from './CheckboxOption';
 import './CalorieIndex.css';
 
 const CalorieIndex = () => {
@@ -148,24 +149,22 @@ const CalorieIndex = () => {
             <div className="form-group">
               <label>Gender</label>
               <div className="gender-options">
-                <label className="radio-label">
-                  <input 
-                    type="radio" 
-                    name="gender" 
-                    checked={calorieData.gender === 'Female'}
-                    onChange={() => updateCalorieData({ gender: 'Female' })}
-                  />
-                  <span className="radio-text">Female</span>
-                </label>
-                <label className="radio-label">
-                  <input 
-                    type="radio" 
-                    name="gender" 
-                    checked={calorieData.gender === 'Male'}
-                    onChange={() => updateCalorieData({ gender: 'Male' })}
-                  />
-                  <span className="radio-text">Male</span>
-                </label>
+                <CheckboxOption
+                  id="gender-female"
+                  name="gender"
+                  value="Female"
+                  checked={calorieData.gender === 'Female'}
+                  onChange={() => updateCalorieData({ gender: 'Female' })}
+                  label="Female"
+                />
+                <CheckboxOption
+                  id="gender-male"
+                  name="gender"
+                  value="Male"
+                  checked={calorieData.gender === 'Male'}
+                  onChange={() => updateCalorieData({ gender: 'Male' })}
+                  label="Male"
+                />
               </div>
             </div>
           </div>
@@ -174,33 +173,33 @@ const CalorieIndex = () => {
           <div className="form-group formula-group">
             <label>BMR Formula</label>
             <div className="formula-options">
-              <label className="radio-label">
-                <input 
-                  type="radio" 
-                  name="formula" 
-                  checked={calorieData.formula === 'mifflin'}
-                  onChange={() => updateCalorieData({ formula: 'mifflin' })}
-                />
-                <span className="radio-text">Mifflin-St Jeor</span>
-              </label>
-              <label className="radio-label">
-                <input 
-                  type="radio" 
-                  name="formula" 
-                  checked={calorieData.formula === 'harris'}
-                  onChange={() => updateCalorieData({ formula: 'harris' })}
-                />
-                <span className="radio-text">Harris-Benedict</span>
-              </label>
-              <label className="radio-label">
-                <input 
-                  type="radio" 
-                  name="formula" 
-                  checked={calorieData.formula === 'katch'}
-                  onChange={() => updateCalorieData({ formula: 'katch' })}
-                />
-                <span className="radio-text">Katch-McArdle</span>
-              </label>
+              <CheckboxOption
+                id="formula-mifflin"
+                name="formula"
+                value="mifflin"
+                checked={calorieData.formula === 'mifflin'}
+                onChange={() => updateCalorieData({ formula: 'mifflin' })}
+                label="Mifflin-St Jeor"
+                description="Most accurate for most people"
+              />
+              <CheckboxOption
+                id="formula-harris"
+                name="formula"
+                value="harris"
+                checked={calorieData.formula === 'harris'}
+                onChange={() => updateCalorieData({ formula: 'harris' })}
+                label="Harris-Benedict"
+                description="Traditional formula, slightly less accurate"
+              />
+              <CheckboxOption
+                id="formula-katch"
+                name="formula"
+                value="katch"
+                checked={calorieData.formula === 'katch'}
+                onChange={() => updateCalorieData({ formula: 'katch' })}
+                label="Katch-McArdle"
+                description="Requires body fat percentage"
+              />
             </div>
           </div>
           

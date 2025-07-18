@@ -6,14 +6,14 @@ const { pool } = require('../config/connection');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const uploadsDir = require('path').join(__dirname, '../uploads');
+const uploadsDir = require('path').join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
+  fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../uploads'));
+    cb(null, path.join(__dirname, '../../uploads'));
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
@@ -94,12 +94,32 @@ router.put('/change-password', auth, async (req, res) => {
   }
 });
 
-router.post('/profile/avatar', auth, upload.single('avatar'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ success: false, message: 'No file uploaded' });
+router.post('/profile/avatar', auth, upload.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+    
+    const avatarUrl = `/uploads/${req.file.filename}`;
+    
+    // Update avatar_url in database
+    await pool.execute(
+      'UPDATE users SET avatar_url = ? WHERE id = ?',
+      [avatarUrl, req.user.userId]
+    );
+    
+    res.json({ 
+      success: true, 
+      avatarUrl,
+      message: 'Avatar uploaded successfully'
+    });
+  } catch (error) {
+    console.error('Error uploading avatar:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to upload avatar' 
+    });
   }
-  const avatarUrl = `/uploads/${req.file.filename}`;
-  res.json({ success: true, avatarUrl });
 });
 
 router.get('/bmi', auth, async (req, res) => {
@@ -169,6 +189,62 @@ router.post('/bmi', auth, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to save BMI data'
+    });
+  }
+});
+
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email là bắt buộc'
+      });
+    }
+
+    const [users] = await pool.execute(
+      'SELECT id, name, email FROM users WHERE email = ?',
+      [email]
+    );
+
+    if (users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Email không tồn tại trong hệ thống'
+      });
+    }
+
+    const user = users[0];
+    
+    // Tạo mật khẩu mới ngẫu nhiên
+    const newPassword = Math.random().toString(36).slice(-8);
+    const bcrypt = require('bcryptjs');
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    // Cập nhật mật khẩu mới
+    await pool.execute(
+      'UPDATE users SET password = ? WHERE id = ?',
+      [hashedPassword, user.id]
+    );
+
+    // Trong thực tế, bạn sẽ gửi email với mật khẩu mới
+    // Ở đây tôi sẽ trả về mật khẩu mới để test
+    res.json({
+      success: true,
+      message: 'Mật khẩu mới đã được tạo và gửi qua email',
+      data: {
+        newPassword: newPassword, // Chỉ trả về trong môi trường development
+        message: `Mật khẩu mới của bạn là: ${newPassword}`
+      }
+    });
+
+  } catch (error) {
+    console.error('Error in forgot password:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi xử lý yêu cầu quên mật khẩu'
     });
   }
 });

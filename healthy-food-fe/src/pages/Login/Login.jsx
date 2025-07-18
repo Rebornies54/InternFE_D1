@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import './login.css';
 
 const LoginSchema = Yup.object().shape({
@@ -13,6 +14,7 @@ const LoginSchema = Yup.object().shape({
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const scrollToTop = useScrollToTop();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -21,6 +23,7 @@ const Login = () => {
     setIsSubmitting(true);
     const result = await login(values);
     if (result.success) {
+      scrollToTop();
       navigate('/home');
     } else {
       // Show modal with specific error message
@@ -78,6 +81,13 @@ const Login = () => {
             </Form>
           )}
         </Formik>
+        
+        <div className="forgot-password-link">
+          <Link to="/forgot-password" className="forgot-password-text">
+            Forgot Password?
+          </Link>
+        </div>
+        
         <div className="login-footer">
           <span>Don't have an account?</span>
           <Link to="/register" className="login-link">Register now</Link>

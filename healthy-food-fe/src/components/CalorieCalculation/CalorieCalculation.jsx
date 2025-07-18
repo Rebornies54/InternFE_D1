@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { foodAPI } from '../../services/api';
 import { useFoodContext } from '../../context/FoodContext';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import './CalorieCalculation.css';
 
 const CalorieCalculation = () => {
@@ -29,6 +30,7 @@ const CalorieCalculation = () => {
   const [editCalories, setEditCalories] = useState(0);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
+  const scrollToTop = useScrollToTop();
 
   // Use FoodContext for pending foods
   const { 
@@ -346,13 +348,17 @@ const CalorieCalculation = () => {
 
   // Table options mapping
   const getTableOptions = () => {
-    if (!foodCategories || foodCategories.length === 0) {
-      return [];
-    }
-    return foodCategories.map(category => ({
-      value: category.id,
-      label: `Calorie Calculation Table for ${category.name}`
-    }));
+    const seen = new Set();
+    return foodCategories
+      .map(cat => ({
+        value: cat.id,
+        label: cat.name
+      }))
+      .filter(option => {
+        if (seen.has(option.label)) return false;
+        seen.add(option.label);
+        return true;
+      });
   };
 
   // Add pending foods to Daily Food Tracking
@@ -418,7 +424,6 @@ const CalorieCalculation = () => {
       {/* Food database section */}
       <div className="food-database-table-wrapper">
         <div className="food-database-section">
-          {/* Food database section content */}
           <div className="table-select-form-group">
             <label className="table-select-label">Select calculation table</label>
             <select 
@@ -434,30 +439,33 @@ const CalorieCalculation = () => {
               ))}
             </select>
           </div>
-          <table className="food-database-table">
-            <thead>
-              <tr>
-                <th>Food Type</th>
-                <th>Unit</th>
-                <th>Calories</th>
-                <th>Protein (g)</th>
-                <th>Fat (g)</th>
-                <th>Carbs (g)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {foodItems.map(food => (
-                <tr key={food.id}>
-                  <td>{food.name}</td>
-                  <td>{food.unit}</td>
-                  <td>{food.calories}</td>
-                  <td>{food.protein}</td>
-                  <td>{food.fat}</td>
-                  <td>{food.carbs}</td>
+          
+          {/* Compact food table with essential info only */}
+          <div className="food-table-container">
+            <table className="food-database-table">
+              <thead>
+                <tr>
+                  <th>Food Type</th>
+                  <th>Calories (per 100g)</th>
+                  <th>Unit</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {foodItems.slice(0, 10).map(food => (
+                  <tr key={food.id}>
+                    <td>{food.name}</td>
+                    <td>{food.calories} cal</td>
+                    <td>{food.unit}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {foodItems.length > 10 && (
+              <div className="food-table-note">
+                <p>Showing first 10 items. Use the dropdown above to select specific foods.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       
@@ -539,11 +547,26 @@ const CalorieCalculation = () => {
                   <div className="pending-food-quantity">
                     <button 
                       className="quantity-btn"
-                      onClick={() => updatePendingFoodQuantity(food.id, food.quantity - 1)}
+                      onClick={() => updatePendingFoodQuantity(food.id, Math.max(1, food.quantity - 1))}
+                      disabled={food.quantity <= 1}
                     >
                       -
                     </button>
-                    <span className="quantity-display">{food.quantity}g</span>
+                    <input
+                      type="number"
+                      min="1"
+                      value={food.quantity}
+                      onChange={(e) => {
+                        const newQuantity = parseInt(e.target.value) || 1;
+                        updatePendingFoodQuantity(food.id, Math.max(1, newQuantity));
+                      }}
+                      onBlur={(e) => {
+                        const newQuantity = parseInt(e.target.value) || 1;
+                        updatePendingFoodQuantity(food.id, Math.max(1, newQuantity));
+                      }}
+                      className="quantity-input"
+                    />
+                    <span className="quantity-unit">g</span>
                     <button 
                       className="quantity-btn"
                       onClick={() => updatePendingFoodQuantity(food.id, food.quantity + 1)}
@@ -690,7 +713,10 @@ const CalorieCalculation = () => {
         {totalPages > 1 && (
           <div className="pagination">
             <button 
-              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              onClick={() => {
+                setCurrentPage(prev => Math.max(1, prev - 1));
+                scrollToTop();
+              }}
               disabled={currentPage === 1}
               className="pagination-btn"
             >
@@ -700,7 +726,10 @@ const CalorieCalculation = () => {
               Page {currentPage} of {totalPages}
             </span>
             <button 
-              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              onClick={() => {
+                setCurrentPage(prev => Math.min(totalPages, prev + 1));
+                scrollToTop();
+              }}
               disabled={currentPage === totalPages}
               className="pagination-btn"
             >
