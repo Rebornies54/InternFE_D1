@@ -1,59 +1,102 @@
 const { pool } = require('../../connection');
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
 
 const addSampleBlogs = async () => {
   try {
-    console.log('📝 Adding sample blog posts...');
+    console.log('Adding sample blog posts...');
     
     const sampleBlogs = [
       {
         user_id: 1,
-        title: 'Khoai tây - Nguồn vitamin C dồi dào',
-        description: 'Khoai tây chứa hàm lượng vitamin C cao...',
-        content: 'Khoai tây thường bị đánh giá thấp về giá trị dinh dưỡng, nhưng thực tế chúng chứa nhiều vitamin và khoáng chất quan trọng. Một củ khoai tây cỡ trung bình cung cấp khoảng 27mg vitamin C, chiếm 30% nhu cầu hàng ngày của cơ thể. Ngoài ra, khoai tây còn chứa kali, vitamin B6 và chất xơ. Cách chế biến khoai tây cũng ảnh hưởng đến hàm lượng dinh dưỡng - nướng hoặc luộc sẽ giữ được nhiều vitamin hơn so với chiên.',
-        category: 'thực phẩm',
-        likes_count: 15
+        title: 'Lợi ích của việc ăn rau xanh mỗi ngày',
+        description: 'Rau xanh là nguồn dinh dưỡng quan trọng cho sức khỏe',
+        content: `Rau xanh là một phần không thể thiếu trong chế độ ăn uống lành mạnh. Chúng chứa nhiều vitamin, khoáng chất và chất xơ cần thiết cho cơ thể.
+
+Các loại rau xanh như cải bó xôi, cải xoăn, rau chân vịt chứa nhiều vitamin K, A, C và folate. Chúng cũng là nguồn cung cấp chất chống oxy hóa tự nhiên.
+
+Ăn rau xanh thường xuyên có thể giúp:
+- Tăng cường hệ miễn dịch
+- Cải thiện sức khỏe tim mạch
+- Hỗ trợ tiêu hóa
+- Giảm nguy cơ mắc bệnh mãn tính
+
+Hãy thêm rau xanh vào bữa ăn hàng ngày để có một cơ thể khỏe mạnh!`,
+        category: 'Dinh dưỡng'
       },
       {
         user_id: 1,
-        title: 'Rau củ - Thực phẩm ít calo, nhiều dưỡng chất',
-        description: 'Rau củ là lựa chọn tuyệt vời...',
-        content: 'Rau củ là nền tảng của mọi chế độ ăn lành mạnh. Chúng cung cấp ít calo nhưng lại giàu vitamin, khoáng chất và chất xơ. Mỗi loại rau củ có những lợi ích riêng: cà rốt giàu beta-carotene tốt cho mắt, bông cải xanh chứa sulforaphane có tác dụng chống ung thư, cải bó xôi giàu sắt và canxi. Để tối ưu hóa dinh dưỡng, nên ăn đa dạng các loại rau củ với nhiều màu sắc khác nhau.',
-        category: 'thực phẩm',
-        likes_count: 23
+        title: 'Hướng dẫn tính toán calo cho người mới bắt đầu',
+        description: 'Cách tính toán calo cơ bản cho người tập gym',
+        content: `Tính toán calo là bước đầu tiên quan trọng trong hành trình fitness. Hiểu được nhu cầu calo của cơ thể sẽ giúp bạn xây dựng chế độ ăn phù hợp.
+
+Công thức tính BMR (Basal Metabolic Rate):
+- Nam: BMR = 88.362 + (13.397 × cân nặng kg) + (4.799 × chiều cao cm) - (5.677 × tuổi)
+- Nữ: BMR = 447.593 + (9.247 × cân nặng kg) + (3.098 × chiều cao cm) - (4.330 × tuổi)
+
+Sau khi có BMR, nhân với hệ số hoạt động:
+- Ít vận động: BMR × 1.2
+- Vận động nhẹ: BMR × 1.375
+- Vận động vừa: BMR × 1.55
+- Vận động nhiều: BMR × 1.725
+- Vận động rất nhiều: BMR × 1.9
+
+Để giảm cân: Ăn ít hơn 500 calo so với nhu cầu
+Để tăng cân: Ăn nhiều hơn 500 calo so với nhu cầu`,
+        category: 'Fitness'
       },
       {
         user_id: 1,
-        title: 'Nấm - Protein thực vật chất lượng cao',
-        description: 'Giàu protein và ít calo...',
-        content: 'Nấm không chỉ là một nguyên liệu ngon miệng mà còn là nguồn protein thực vật chất lượng cao. Chúng chứa tất cả 9 axit amin thiết yếu mà cơ thể cần. Nấm cũng giàu vitamin D, selenium và các chất chống oxy hóa. Một số loại nấm như shiitake còn có tác dụng tăng cường hệ miễn dịch. Nấm có thể thay thế thịt trong nhiều món ăn, giúp giảm lượng calo và chất béo bão hòa.',
-        category: 'thực phẩm',
-        likes_count: 8
-      },
-      {
-        user_id: 1,
-        title: 'Cách xây dựng thực đơn cân bằng',
-        description: 'Một thực đơn cân bằng giúp cung cấp đầy đủ dưỡng chất...',
-        content: 'Thực đơn cân bằng lý tưởng nên bao gồm 50% rau củ và trái cây, 25% protein (thịt, cá, đậu), và 25% ngũ cốc nguyên hạt. Bữa sáng nên có protein và chất xơ để duy trì năng lượng. Bữa trưa cần đầy đủ các nhóm chất. Bữa tối nên nhẹ nhàng với nhiều rau củ. Uống đủ nước và hạn chế đồ ngọt, thức ăn nhanh. Lập kế hoạch bữa ăn trước để tránh ăn uống thiếu cân bằng.',
-        category: 'thực đơn',
-        likes_count: 31
-      },
-      {
-        user_id: 1,
-        title: 'Bí quyết ăn uống cân bằng khi bận rộn',
-        description: 'Duy trì chế độ ăn lành mạnh ngay cả khi lịch trình bận rộn...',
-        content: 'Cuộc sống bận rộn không phải là lý do để từ bỏ ăn uống lành mạnh. Chuẩn bị bữa ăn vào cuối tuần, sử dụng nồi nấu chậm, và dự trữ thực phẩm đông lạnh là những cách hiệu quả. Luôn mang theo đồ ăn nhẹ lành mạnh như hạt, trái cây. Chọn nhà hàng có menu lành mạnh khi ăn ngoài. Sử dụng ứng dụng theo dõi dinh dưỡng để đảm bảo cân bằng. Nhớ rằng một bữa ăn không lành mạnh không làm hỏng cả chế độ ăn.',
-        category: 'bí quyết',
-        likes_count: 19
-      },
-      {
-        user_id: 1,
-        title: 'Thủy phân cơ thể - Tầm quan trọng của nước',
-        description: 'Uống đủ nước không chỉ giúp duy trì sức khỏe...',
-        content: 'Nước đóng vai trò thiết yếu trong mọi chức năng của cơ thể: vận chuyển chất dinh dưỡng, điều hòa nhiệt độ, thải độc tố. Người trưởng thành nên uống 2-3 lít nước mỗi ngày, tùy thuộc vào hoạt động thể chất và khí hậu. Dấu hiệu thiếu nước bao gồm khát, nước tiểu sẫm màu, mệt mỏi. Ngoài nước lọc, có thể bổ sung nước từ trái cây, rau củ và các loại trà thảo mộc.',
-        category: 'bí quyết',
-        likes_count: 12
+        title: 'Top 10 thực phẩm giàu protein cho người tập gym',
+        description: 'Danh sách các thực phẩm giàu protein tốt cho cơ bắp',
+        content: `Protein là dưỡng chất quan trọng cho việc xây dựng và phục hồi cơ bắp. Dưới đây là 10 thực phẩm giàu protein hàng đầu:
+
+1. Thịt gà (31g protein/100g)
+   - Dễ tiêu hóa, ít chất béo
+   - Phù hợp cho mọi chế độ ăn
+
+2. Cá hồi (20g protein/100g)
+   - Giàu omega-3
+   - Tốt cho tim mạch
+
+3. Trứng (13g protein/quả)
+   - Protein hoàn chỉnh
+   - Giá thành rẻ
+
+4. Thịt bò nạc (26g protein/100g)
+   - Giàu sắt và vitamin B12
+   - Tốt cho người thiếu máu
+
+5. Đậu nành (36g protein/100g)
+   - Protein thực vật
+   - Phù hợp cho người ăn chay
+
+6. Sữa chua Hy Lạp (10g protein/100g)
+   - Giàu probiotic
+   - Tốt cho tiêu hóa
+
+7. Hạnh nhân (21g protein/100g)
+   - Giàu chất béo tốt
+   - Tiện lợi để ăn vặt
+
+8. Quinoa (14g protein/100g)
+   - Protein hoàn chỉnh
+   - Không chứa gluten
+
+9. Cá ngừ (30g protein/100g)
+   - Ít chất béo
+   - Giàu vitamin D
+
+10. Đậu lăng (9g protein/100g)
+    - Giàu chất xơ
+    - Giá thành rẻ
+
+Hãy kết hợp các thực phẩm này vào chế độ ăn để đạt hiệu quả tối ưu!`,
+        category: 'Dinh dưỡng'
       }
     ];
+    
+    console.log(`Adding ${sampleBlogs.length} sample blog posts...`);
     
     let successCount = 0;
     let skipCount = 0;
@@ -61,39 +104,36 @@ const addSampleBlogs = async () => {
     for (const blog of sampleBlogs) {
       try {
         await pool.execute(
-          'INSERT INTO blog_posts (user_id, title, description, content, category, likes_count) VALUES (?, ?, ?, ?, ?, ?)',
-          [blog.user_id, blog.title, blog.description, blog.content, blog.category, blog.likes_count]
+          'INSERT INTO blog_posts (user_id, title, description, content, category) VALUES (?, ?, ?, ?, ?)',
+          [blog.user_id, blog.title, blog.description, blog.content, blog.category]
         );
-        console.log(`✅ Added blog: ${blog.title}`);
+        console.log(`Added blog: ${blog.title}`);
         successCount++;
       } catch (error) {
         if (error.code === 'ER_DUP_ENTRY') {
-          console.log(`⚠️  Skipped (already exists): ${blog.title}`);
+          console.log(`Skipped (already exists): ${blog.title}`);
           skipCount++;
         } else {
-          console.error(`❌ Error adding blog ${blog.title}:`, error.message);
+          console.error(`Error adding blog ${blog.title}:`, error.message);
         }
       }
     }
     
-    console.log('\n📊 Summary:');
+    const [totalCount] = await pool.execute('SELECT COUNT(*) as count FROM blog_posts');
+    console.log('\nSummary:');
     console.log(`   - Successfully added: ${successCount} blogs`);
     console.log(`   - Skipped (duplicates): ${skipCount} blogs`);
-    
-    // Show final count
-    const [totalCount] = await pool.execute('SELECT COUNT(*) as count FROM blog_posts');
     console.log(`   - Total blog posts in database: ${totalCount[0].count}`);
     
-    console.log('\n🎉 Sample blogs addition completed!');
+    console.log('\nSample blogs addition completed!');
     
   } catch (error) {
-    console.error('❌ Error adding sample blogs:', error.message);
+    console.error('Error adding sample blogs:', error.message);
   } finally {
     await pool.end();
   }
 };
 
-// Run if this file is executed directly
 if (require.main === module) {
   addSampleBlogs();
 }

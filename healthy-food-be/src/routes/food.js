@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { pool } = require('../config/database');
+const { pool } = require('../config/connection');
 const auth = require('../middleware/auth');
 
-// Get all food categories
 router.get('/categories', async (req, res) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM food_categories ORDER BY id');
@@ -20,7 +19,6 @@ router.get('/categories', async (req, res) => {
   }
 });
 
-// Get food items by category
 router.get('/items/:categoryId', async (req, res) => {
   try {
     const { categoryId } = req.params;
@@ -41,7 +39,6 @@ router.get('/items/:categoryId', async (req, res) => {
   }
 });
 
-// Get all food items
 router.get('/items', async (req, res) => {
   try {
     const [rows] = await pool.execute(`
@@ -63,7 +60,6 @@ router.get('/items', async (req, res) => {
   }
 });
 
-// Add food log entry (requires authentication)
 router.post('/log', auth, async (req, res) => {
   try {
     console.log('Adding food log for user:', req.user);
@@ -72,14 +68,12 @@ router.post('/log', auth, async (req, res) => {
 
     console.log('Food log data:', { food_item_id, quantity, calories, log_date, user_id });
 
-    // Check if user already has this food item logged for the same date
     const [existingLogs] = await pool.execute(
       'SELECT * FROM user_food_logs WHERE user_id = ? AND food_item_id = ? AND log_date = ?',
       [user_id, food_item_id, log_date]
     );
 
     if (existingLogs.length > 0) {
-      // Update existing log by adding quantities
       const existingLog = existingLogs[0];
       const newQuantity = existingLog.quantity + quantity;
       const newCalories = existingLog.calories + calories;
@@ -100,7 +94,6 @@ router.post('/log', auth, async (req, res) => {
         }
       });
     } else {
-      // Insert new log
       const [result] = await pool.execute(
         'INSERT INTO user_food_logs (user_id, food_item_id, quantity, calories, log_date) VALUES (?, ?, ?, ?, ?)',
         [user_id, food_item_id, quantity, calories, log_date]
@@ -124,7 +117,6 @@ router.post('/log', auth, async (req, res) => {
   }
 });
 
-// Update food log entry (requires authentication)
 router.put('/log/:id', auth, async (req, res) => {
   try {
     console.log('Updating food log for user:', req.user);
@@ -132,7 +124,6 @@ router.put('/log/:id', auth, async (req, res) => {
     const { quantity, calories } = req.body;
     const user_id = req.user.userId;
 
-    // Check if the log belongs to the user
     const [existingLog] = await pool.execute(
       'SELECT * FROM user_food_logs WHERE id = ? AND user_id = ?',
       [id, user_id]
@@ -145,7 +136,6 @@ router.put('/log/:id', auth, async (req, res) => {
       });
     }
 
-    // Update the log
     await pool.execute(
       'UPDATE user_food_logs SET quantity = ?, calories = ? WHERE id = ?',
       [quantity, calories, id]
@@ -165,14 +155,12 @@ router.put('/log/:id', auth, async (req, res) => {
   }
 });
 
-// Delete food log entry (requires authentication)
 router.delete('/log/:id', auth, async (req, res) => {
   try {
     console.log('Deleting food log for user:', req.user);
     const { id } = req.params;
     const user_id = req.user.userId;
 
-    // Check if the log belongs to the user
     const [existingLog] = await pool.execute(
       'SELECT * FROM user_food_logs WHERE id = ? AND user_id = ?',
       [id, user_id]
@@ -185,7 +173,6 @@ router.delete('/log/:id', auth, async (req, res) => {
       });
     }
 
-    // Delete the log
     await pool.execute(
       'DELETE FROM user_food_logs WHERE id = ?',
       [id]
@@ -204,7 +191,6 @@ router.delete('/log/:id', auth, async (req, res) => {
   }
 });
 
-// Get user's food logs (requires authentication)
 router.get('/log', auth, async (req, res) => {
   try {
     console.log('Getting food logs for user:', req.user);
@@ -248,7 +234,6 @@ router.get('/log', auth, async (req, res) => {
   }
 });
 
-// Get daily food statistics (requires authentication)
 router.get('/statistics/daily', auth, async (req, res) => {
   try {
     console.log('Getting daily statistics for user:', req.user);
@@ -258,7 +243,6 @@ router.get('/statistics/daily', auth, async (req, res) => {
 
     console.log('Daily stats params:', { user_id, targetDate });
 
-    // Get daily summary
     const [dailySummary] = await pool.execute(`
       SELECT 
         SUM(ufl.calories) as total_calories,
@@ -268,7 +252,6 @@ router.get('/statistics/daily', auth, async (req, res) => {
       WHERE ufl.user_id = ? AND ufl.log_date = ?
     `, [user_id, targetDate]);
 
-    // Get statistics by category
     const [categoryStats] = await pool.execute(`
       SELECT 
         fc.name as category_name,
@@ -284,7 +267,6 @@ router.get('/statistics/daily', auth, async (req, res) => {
       ORDER BY total_calories DESC
     `, [user_id, targetDate]);
 
-    // Get top foods consumed
     const [topFoods] = await pool.execute(`
       SELECT 
         fi.name as food_name,
@@ -319,7 +301,6 @@ router.get('/statistics/daily', auth, async (req, res) => {
   }
 });
 
-// Get weekly food statistics (requires authentication)
 router.get('/statistics/weekly', auth, async (req, res) => {
   try {
     const user_id = req.user.userId;
@@ -330,7 +311,6 @@ router.get('/statistics/weekly', auth, async (req, res) => {
       startDate = start_date;
       endDate = end_date;
     } else {
-      // Default to current week
       const today = new Date();
       const startOfWeek = new Date(today);
       startOfWeek.setDate(today.getDate() - today.getDay());
@@ -341,7 +321,6 @@ router.get('/statistics/weekly', auth, async (req, res) => {
       endDate = endOfWeek.toISOString().split('T')[0];
     }
 
-    // Get weekly summary
     const [weeklySummary] = await pool.execute(`
       SELECT 
         SUM(ufl.calories) as total_calories,
@@ -352,7 +331,6 @@ router.get('/statistics/weekly', auth, async (req, res) => {
       WHERE ufl.user_id = ? AND ufl.log_date BETWEEN ? AND ?
     `, [user_id, startDate, endDate]);
 
-    // Get daily breakdown
     const [dailyBreakdown] = await pool.execute(`
       SELECT 
         ufl.log_date,
@@ -365,7 +343,6 @@ router.get('/statistics/weekly', auth, async (req, res) => {
       ORDER BY ufl.log_date
     `, [user_id, startDate, endDate]);
 
-    // Get category breakdown for the week
     const [categoryBreakdown] = await pool.execute(`
       SELECT 
         fc.name as category_name,
@@ -398,7 +375,6 @@ router.get('/statistics/weekly', auth, async (req, res) => {
   }
 });
 
-// Get monthly food statistics (requires authentication)
 router.get('/statistics/monthly', auth, async (req, res) => {
   try {
     const user_id = req.user.userId;
@@ -407,7 +383,6 @@ router.get('/statistics/monthly', auth, async (req, res) => {
     let targetYear = year || new Date().getFullYear();
     let targetMonth = month || new Date().getMonth() + 1;
 
-    // Get monthly summary
     const [monthlySummary] = await pool.execute(`
       SELECT 
         SUM(ufl.calories) as total_calories,
@@ -418,7 +393,6 @@ router.get('/statistics/monthly', auth, async (req, res) => {
       WHERE ufl.user_id = ? AND YEAR(ufl.log_date) = ? AND MONTH(ufl.log_date) = ?
     `, [user_id, targetYear, targetMonth]);
 
-    // Get weekly breakdown for the month
     const [weeklyBreakdown] = await pool.execute(`
       SELECT 
         WEEK(ufl.log_date) as week_number,
@@ -431,7 +405,6 @@ router.get('/statistics/monthly', auth, async (req, res) => {
       ORDER BY week_number
     `, [user_id, targetYear, targetMonth]);
 
-    // Get category breakdown for the month
     const [categoryBreakdown] = await pool.execute(`
       SELECT 
         fc.name as category_name,

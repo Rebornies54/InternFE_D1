@@ -39,7 +39,7 @@ const FoodItem = ({ food, onClick }) => (
       {food.image_url ? (
         <img src={food.image_url} alt={food.name} />
       ) : (
-        <span>🍽️</span>
+        <span></span>
       )}
     </div>
     <div className="food-item-content">
@@ -108,7 +108,7 @@ const FoodModal = ({ food, variations, onClose }) => {
               </p>
             </div>
             <div className="food-intro-image">
-              <span>🥔</span>
+              <span></span>
             </div>
           </div>
           

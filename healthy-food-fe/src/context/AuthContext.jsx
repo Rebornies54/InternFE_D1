@@ -16,7 +16,6 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Check token when component mounts
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
@@ -35,7 +34,6 @@ const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  // Login
   const login = async (credentials) => {
     try {
       setError(null);
@@ -46,7 +44,6 @@ const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(user));
       setUser(user);
       
-      // Add small delay to ensure token is set before any subsequent API calls
       await new Promise(resolve => setTimeout(resolve, 100));
       
       return { success: true };
@@ -68,7 +65,6 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // Register
   const register = async (userData) => {
     try {
       setError(null);
@@ -87,7 +83,6 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -95,7 +90,6 @@ const AuthProvider = ({ children }) => {
     setError(null);
   };
 
-  // Update profile
   const updateProfile = async (userData) => {
     try {
       setError(null);
@@ -113,7 +107,6 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // Change password
   const changePassword = async (passwordData) => {
     try {
       setError(null);

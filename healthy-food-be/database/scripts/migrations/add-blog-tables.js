@@ -2,9 +2,8 @@ const { pool } = require('../../connection');
 
 async function addBlogTables() {
   try {
-    console.log('🚀 Adding blog tables...');
+    console.log('Adding blog tables...');
 
-    // Create blog_posts table
     await pool.execute(`
       CREATE TABLE IF NOT EXISTS blog_posts (
         id INT PRIMARY KEY AUTO_INCREMENT,
@@ -20,9 +19,8 @@ async function addBlogTables() {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
-    console.log('✅ Created blog_posts table');
+    console.log('Created blog_posts table');
 
-    // Create blog_post_likes table
     await pool.execute(`
       CREATE TABLE IF NOT EXISTS blog_post_likes (
         id INT PRIMARY KEY AUTO_INCREMENT,
@@ -34,17 +32,16 @@ async function addBlogTables() {
         UNIQUE KEY unique_user_post_like (user_id, post_id)
       )
     `);
-    console.log('✅ Created blog_post_likes table');
+    console.log('Created blog_post_likes table');
 
-    console.log('🎉 Blog tables setup completed successfully!');
+    console.log('Blog tables setup completed successfully!');
   } catch (error) {
-    console.error('❌ Error setting up blog tables:', error);
+    console.error('Error setting up blog tables:', error);
   } finally {
     await pool.end();
   }
 }
 
-// Run if this file is executed directly
 if (require.main === module) {
   addBlogTables();
 }

@@ -89,7 +89,7 @@ const Login = () => {
         <div className="error-modal-overlay">
           <div className="error-modal">
             <div className="error-modal-content">
-              <h3 className="error-modal-title">❌ Login Error</h3>
+              <h3 className="error-modal-title">Login Error</h3>
               <p className="error-modal-message">
                 {errorMessage}
               </p>

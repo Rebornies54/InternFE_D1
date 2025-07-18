@@ -4,9 +4,8 @@ const { pool } = require('../config/connection');
 const auth = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
-const jwt = require('jsonwebtoken'); // Added for public route
+const jwt = require('jsonwebtoken');
 
-// Multer config for blog image upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(__dirname, '../uploads'));
@@ -19,7 +18,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Test route to check authentication
 router.get('/test-auth', auth, (req, res) => {
   res.json({
     success: true,
@@ -28,7 +26,6 @@ router.get('/test-auth', auth, (req, res) => {
   });
 });
 
-// Get all blog posts with likes count and user info (temporarily remove auth for testing)
 router.get('/posts', async (req, res) => {
   try {
     const query = `
@@ -59,7 +56,6 @@ router.get('/posts', async (req, res) => {
   }
 });
 
-// Get blog post by ID with likes count and user info
 router.get('/posts/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -99,7 +95,6 @@ router.get('/posts/:id', async (req, res) => {
   }
 });
 
-// Create new blog post
 router.post('/posts', auth, async (req, res) => {
   try {
     const { title, description, content, image_url, category } = req.body;
@@ -112,7 +107,6 @@ router.post('/posts', auth, async (req, res) => {
       });
     }
     
-    // Đảm bảo không có undefined
     const safeDescription = typeof description === 'undefined' ? null : description;
     const safeImageUrl = typeof image_url === 'undefined' ? null : image_url;
     const query = `
@@ -138,14 +132,12 @@ router.post('/posts', auth, async (req, res) => {
   }
 });
 
-// Update blog post
 router.put('/posts/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description, content, image_url, category } = req.body;
     const userId = req.user.userId;
     
-    // Check if post exists and belongs to user
     const [posts] = await pool.execute(
       'SELECT user_id FROM blog_posts WHERE id = ?',
       [id]
@@ -186,13 +178,11 @@ router.put('/posts/:id', auth, async (req, res) => {
   }
 });
 
-// Delete blog post
 router.delete('/posts/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.userId;
     
-    // Check if post exists and belongs to user
     const [posts] = await pool.execute(
       'SELECT user_id FROM blog_posts WHERE id = ?',
       [id]
@@ -227,13 +217,11 @@ router.delete('/posts/:id', auth, async (req, res) => {
   }
 });
 
-// Like/Unlike blog post
 router.post('/posts/:id/like', auth, async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.userId;
     
-    // Check if post exists
     const [posts] = await pool.execute(
       'SELECT id FROM blog_posts WHERE id = ?',
       [id]
@@ -246,14 +234,12 @@ router.post('/posts/:id/like', auth, async (req, res) => {
       });
     }
     
-    // Check if user already liked the post
     const [likes] = await pool.execute(
       'SELECT id FROM blog_post_likes WHERE user_id = ? AND post_id = ?',
       [userId, id]
     );
     
     if (likes.length > 0) {
-      // Unlike
       await pool.execute(
         'DELETE FROM blog_post_likes WHERE user_id = ? AND post_id = ?',
         [userId, id]
@@ -265,7 +251,6 @@ router.post('/posts/:id/like', auth, async (req, res) => {
         liked: false
       });
     } else {
-      // Like
       await pool.execute(
         'INSERT INTO blog_post_likes (user_id, post_id) VALUES (?, ?)',
         [userId, id]
@@ -286,12 +271,10 @@ router.post('/posts/:id/like', auth, async (req, res) => {
   }
 });
 
-// Check if user liked a post (public route - returns false if not authenticated)
 router.get('/posts/:id/liked', async (req, res) => {
   try {
     const { id } = req.params;
     
-    // Check if user is authenticated by looking for Authorization header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.json({
@@ -301,7 +284,6 @@ router.get('/posts/:id/liked', async (req, res) => {
       });
     }
     
-    // Try to verify token
     try {
       const token = authHeader.substring(7);
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -318,7 +300,6 @@ router.get('/posts/:id/liked', async (req, res) => {
         authenticated: true
       });
     } catch (tokenError) {
-      // Invalid token, return not liked
       res.json({
         success: true,
         liked: false,
@@ -334,7 +315,6 @@ router.get('/posts/:id/liked', async (req, res) => {
   }
 });
 
-// Get posts by category
 router.get('/posts/category/:category', async (req, res) => {
   try {
     const { category } = req.params;
@@ -368,7 +348,6 @@ router.get('/posts/category/:category', async (req, res) => {
   }
 });
 
-// Search posts
 router.get('/posts/search/:query', async (req, res) => {
   try {
     const { query } = req.params;
@@ -403,7 +382,6 @@ router.get('/posts/search/:query', async (req, res) => {
   }
 });
 
-// Upload blog image
 router.post('/upload-image', auth, upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: 'No file uploaded' });
