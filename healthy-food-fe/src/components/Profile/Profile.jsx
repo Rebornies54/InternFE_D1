@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import './Profile.css';
 import ProfileInfo from './ProfileInfo/ProfileInfo';
 import AddressInfo from './AddressInfo/AddressInfo';
 import ChangePassword from './ChangePassword/ChangePassword';
+import MyBlogs from './MyBlogs/MyBlogs';
 
 const menuList = [
   {
@@ -18,11 +20,22 @@ const menuList = [
     key: 'password',
     label: 'Change Password',
   },
+  {
+    key: 'my-blogs',
+    label: 'My Blogs',
+  },
 ];
 
 const Profile = () => {
   const { user } = useAuth();
   const [tab, setTab] = useState('profile');
+  const scrollToTop = useScrollToTop();
+
+  // Handle tab change with scroll to top
+  const handleTabChange = (newTab) => {
+    setTab(newTab);
+    scrollToTop();
+  };
   const [profileData, setProfileData] = useState({
     name: '',
     email: '',
@@ -87,7 +100,7 @@ const Profile = () => {
               <div
                 key={item.key}
                 className={`profile-sidebar-menu-item${tab === item.key ? ' active' : ''}`}
-                onClick={() => setTab(item.key)}
+                onClick={() => handleTabChange(item.key)}
               >
                 <span className="profile-sidebar-menu-label">{item.label}</span>
               </div>
@@ -101,6 +114,7 @@ const Profile = () => {
         {tab === 'profile' && <ProfileInfo profileData={profileData} setProfileData={setProfileData} />}
         {tab === 'address' && <AddressInfo />}
         {tab === 'password' && <ChangePassword />}
+        {tab === 'my-blogs' && <MyBlogs />}
       </div>
     </div>
   );

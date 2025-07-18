@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useBlogContext } from '../../context/BlogContext';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import { Heart } from 'lucide-react';
 import './Blog.css';
 import CreateBlog from './CreateBlog';
@@ -296,10 +297,22 @@ const Blog = () => {
   const itemsPerPage = 8; // 8-10 items per page
 
   const [showCreate, setShowCreate] = useState(false);
+  const scrollToTop = useScrollToTop();
+
+  // Handle tab change with scroll to top
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+    scrollToTop();
+  };
+
+  const handleShowCreate = () => {
+    setShowCreate(true);
+    scrollToTop();
+  };
 
   const handlePostClick = (post) => {
     setSelectedPost(post);
-    window.scrollTo(0, 0);
+    scrollToTop();
   };
 
   const handleBackClick = () => {
@@ -322,7 +335,7 @@ const Blog = () => {
 
   const handleFoodPageChange = (page) => {
     setCurrentFoodPage(page);
-    window.scrollTo(0, 0); // Scroll to top when page changes
+    scrollToTop(); // Scroll to top when page changes
   };
 
   // Filter food items based on category and search
@@ -353,13 +366,13 @@ const Blog = () => {
           <div className="blog-tabs">
             <button 
               className={`tab-button ${activeTab === 'blog' ? 'active' : ''}`}
-              onClick={() => setActiveTab('blog')}
+              onClick={() => handleTabChange('blog')}
             >
               Blog
             </button>
             <button 
               className={`tab-button ${activeTab === 'menu' ? 'active' : ''}`}
-              onClick={() => setActiveTab('menu')}
+              onClick={() => handleTabChange('menu')}
             >
               Menu List
             </button>
@@ -368,7 +381,7 @@ const Blog = () => {
           {activeTab === 'blog' ? (
             <>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-                <button className="create-blog-btn" onClick={() => setShowCreate(true)}>
+                <button className="create-blog-btn" onClick={handleShowCreate}>
                   + Viết Blog
                 </button>
               </div>

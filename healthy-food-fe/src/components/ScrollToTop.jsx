@@ -6,39 +6,52 @@ export default function ScrollToTop() {
   const prevPathRef = useRef(pathname);
 
   useEffect(() => {
-    // Only scroll when pathname actually changes
-    if (prevPathRef.current !== pathname) {
-      const performScroll = () => {
-        try {
-          // If there's a hash in URL, scroll to that element
-          if (hash) {
-            const element = document.getElementById(hash.substring(1));
-            if (element) {
-              element.scrollIntoView({ behavior: 'smooth' });
-              return;
-            }
+    // Scroll to top whenever pathname changes
+    const performScroll = () => {
+      try {
+        // If there's a hash in URL, scroll to that element
+        if (hash) {
+          const element = document.getElementById(hash.substring(1));
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+            return;
           }
-          
-          // If no hash, scroll to top
-          window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'smooth'
-          });
-        } catch {
-          // Fallback for browsers that don't support smooth scroll
-          window.scrollTo(0, 0);
         }
-      };
+        
+        // If no hash, scroll to top
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+      } catch (error) {
+        // Fallback for browsers that don't support smooth scroll
+        window.scrollTo(0, 0);
+      }
+    };
 
-      // Ensure DOM is fully rendered before scrolling
-      const timer = setTimeout(() => {
-        requestAnimationFrame(performScroll);
+    // Check if pathname actually changed
+    if (prevPathRef.current !== pathname) {
+      // Use multiple approaches to ensure scroll happens
+      const timer1 = setTimeout(() => {
+        performScroll();
+      }, 50);
+
+      const timer2 = setTimeout(() => {
+        performScroll();
       }, 150);
+
+      const timer3 = setTimeout(() => {
+        requestAnimationFrame(performScroll);
+      }, 100);
 
       prevPathRef.current = pathname;
       
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+        clearTimeout(timer3);
+      };
     }
   }, [pathname, hash]);
 

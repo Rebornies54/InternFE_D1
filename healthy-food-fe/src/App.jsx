@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import Home from './pages/Home/Home';
 import ScrollToTop from './components/ScrollToTop';
+import ScrollToTopTest from './components/ScrollToTopTest';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
@@ -20,9 +22,11 @@ function App() {
             <BlogProvider>
               <BrowserRouter>
               <ScrollToTop />
+              <ScrollToTopTest />
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/home" element={
                   <ProtectedRoute>
                     <Home />

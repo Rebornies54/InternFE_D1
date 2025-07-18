@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { blogAPI } from '../../services/api';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import './Blog.css';
 
 const BLOG_CATEGORIES = [
@@ -19,6 +20,12 @@ const CreateBlog = ({ onClose, onCreated }) => {
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const scrollToTop = useScrollToTop();
+
+  // Scroll to top when modal opens
+  useEffect(() => {
+    scrollToTop();
+  }, [scrollToTop]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

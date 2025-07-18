@@ -10,6 +10,7 @@ const { testConnection } = require('./src/config/connection');
 const authRoutes = require('./src/routes/auth');
 const foodRoutes = require('./src/routes/food');
 const blogRoutes = require('./src/routes/blog');
+const { scheduleAutoDelete } = require('./src/services/autoDeleteService');
 
 const app = express();
 
@@ -89,6 +90,10 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV}`);
   console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
+  
+  // Khởi động auto-delete service
+  scheduleAutoDelete();
+  console.log('Auto-delete service started (runs daily at 2:00 AM)');
 });
 
 module.exports = app; 

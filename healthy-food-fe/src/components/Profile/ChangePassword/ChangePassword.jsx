@@ -70,6 +70,7 @@ const ChangePassword = () => {
               placeholder="Current password"
               value={formData.oldPassword}
               onChange={(e) => handleInputChange('oldPassword', e.target.value)}
+              autoComplete="current-password"
               required
             />
           </div>
@@ -81,6 +82,7 @@ const ChangePassword = () => {
               placeholder="New password"
               value={formData.newPassword}
               onChange={(e) => handleInputChange('newPassword', e.target.value)}
+              autoComplete="new-password"
               required
             />
           </div>
@@ -92,6 +94,7 @@ const ChangePassword = () => {
               placeholder="Confirm new password"
               value={formData.confirmPassword}
               onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+              autoComplete="new-password"
               required
             />
           </div>

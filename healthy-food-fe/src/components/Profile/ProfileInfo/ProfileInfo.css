@@ -12,7 +12,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 4px;
+  margin-left: 50px;
 }
 
 .profile-info-avatar-label {
@@ -23,10 +24,9 @@
   line-height: 22px;
   margin-bottom: 8px;
   width: 100%;
-  text-align: left;
+  text-align: center;
   opacity: 1;
   transform: rotate(0deg);
-  margin-left: 210px;
 }
 
 .profile-info-avatar-label .required {
@@ -37,17 +37,38 @@
 .profile-info-avatar-img {
   width: 140px;
   height: 140px;
-  border-radius: 100px;
+  border-radius: 50%;
   object-fit: cover;
   background: #eaeaea;
   display: block;
+  margin: 0 auto;
 }
+
 .profile-info-avatar-empty {
-  width: 136px;
-  height: 136px;
-  border-radius: 100px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
   background: #eaeaea;
-  margin-left: 250px;
+  margin: 0 auto;
+  display: block;
+  position: relative;
+}
+
+.profile-info-avatar-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #999;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
 }
 
 .profile-info-avatar-upload {
@@ -57,14 +78,16 @@
   border: 1px solid #138CE3;
   border-radius: 6px;
   background: #fff;
-  padding: 4px 16px;
+  padding: 8px 16px;
   cursor: pointer;
-  margin-top: 8px;
+  margin-top: 12px;
   transition: background 0.2s, color 0.2s;
   text-align: center;
-  display: inline-block;
-  margin-left: 250px;
-  white-space: nowrap; 
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  white-space: nowrap;
+  width: fit-content;
 }
 .profile-info-avatar-upload:hover {
   background: #eaf6fd;
@@ -127,6 +150,29 @@
 .profile-info-input:focus, .profile-info-select:focus {
   border: 1px solid #138CE3;
   outline: none;
+}
+
+.profile-info-input:disabled, 
+.profile-info-select:disabled,
+.profile-info-birthday-select:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #e0e0e0;
+}
+
+.profile-info-avatar-upload:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #e0e0e0;
+}
+
+.profile-info-avatar-upload.uploading {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border-color: #1976d2;
+  cursor: wait;
 }
 .profile-info-input::placeholder {
   color: #BFBFBF;

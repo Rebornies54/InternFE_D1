@@ -99,7 +99,7 @@ const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(updatedUser));
       setUser(updatedUser);
       
-      return { success: true };
+      return { success: true, user: updatedUser };
     } catch (error) {
       const message = error.response?.data?.message || 'Update failed';
       setError(message);

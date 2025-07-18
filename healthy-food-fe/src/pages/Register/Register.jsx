@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import './register.css';
 
 // Validation schema
@@ -55,6 +56,7 @@ const FormField = ({ label, name, type = "text", as, placeholder, required, chil
 const Register = () => {
   const navigate = useNavigate();
   const { register, error } = useAuth();
+  const scrollToTop = useScrollToTop();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -82,11 +84,13 @@ const Register = () => {
 
   const handleLoginNow = () => {
     setShowSuccessModal(false);
+    scrollToTop();
     navigate('/login');
   };
 
   const handleContinueToHome = () => {
     setShowSuccessModal(false);
+    scrollToTop();
     navigate('/home');
   };
 

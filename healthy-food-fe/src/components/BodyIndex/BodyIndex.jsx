@@ -255,6 +255,21 @@ const BodyIndex = () => {
     return colors[categoryId] || '#f8f9fa';
   };
 
+  // Table options mapping
+  const getTableOptions = () => {
+    const seen = new Set();
+    return categories
+      .map(cat => ({
+        value: cat.id,
+        label: cat.name
+      }))
+      .filter(option => {
+        if (seen.has(option.label)) return false;
+        seen.add(option.label);
+        return true;
+      });
+  };
+
   return (
     <div className="body-index-container">
       <h1 className="body-index-title">Calorie Index (BMI) Calculation</h1>
@@ -437,7 +452,21 @@ const BodyIndex = () => {
                   >
                     -
                   </button>
-                  <span className="quantity-display">{food.quantity}</span>
+                  <input
+                    type="number"
+                    min="1"
+                    value={food.quantity}
+                    onChange={(e) => {
+                      const newQuantity = parseInt(e.target.value) || 1;
+                      updateFoodQuantity(food.id, Math.max(1, newQuantity));
+                    }}
+                    onBlur={(e) => {
+                      const newQuantity = parseInt(e.target.value) || 1;
+                      updateFoodQuantity(food.id, Math.max(1, newQuantity));
+                    }}
+                    className="quantity-input"
+                  />
+                  <span className="quantity-unit">g</span>
                   <button 
                     className="quantity-btn"
                     onClick={() => updateFoodQuantity(food.id, food.quantity + 1)}
