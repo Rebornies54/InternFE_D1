@@ -174,6 +174,35 @@ CREATE TABLE IF NOT EXISTS blog_post_likes (
     UNIQUE KEY unique_user_post_like (user_id, post_id)
 );
 
+-- Blog comments table
+CREATE TABLE IF NOT EXISTS blog_comments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    parent_id INT NULL,
+    content TEXT NOT NULL,
+    likes_count INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES blog_posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES blog_comments(id) ON DELETE CASCADE,
+    INDEX idx_post_id (post_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_parent_id (parent_id)
+);
+
+-- Blog comment likes table
+CREATE TABLE IF NOT EXISTS blog_comment_likes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    comment_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES blog_comments(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_comment_like (user_id, comment_id)
+);
+
 -- Insert sample blog posts
 INSERT INTO blog_posts (user_id, title, description, content, category, likes_count) VALUES
 (1, 'Khoai tây - Nguồn vitamin C dồi dào', 'Khoai tây chứa hàm lượng vitamin C cao...', 'Khoai tây thường bị đánh giá thấp về giá trị dinh dưỡng, nhưng thực tế chúng chứa nhiều vitamin và khoáng chất quan trọng. Một củ khoai tây cỡ trung bình cung cấp khoảng 27mg vitamin C, chiếm 30% nhu cầu hàng ngày của cơ thể. Ngoài ra, khoai tây còn chứa kali, vitamin B6 và chất xơ. Cách chế biến khoai tây cũng ảnh hưởng đến hàm lượng dinh dưỡng - nướng hoặc luộc sẽ giữ được nhiều vitamin hơn so với chiên.', 'thực phẩm', 15),

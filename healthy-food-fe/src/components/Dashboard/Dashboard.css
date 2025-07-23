@@ -90,6 +90,7 @@
   align-items: center;
   gap: 12px;
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .dashboard-select {
@@ -101,6 +102,7 @@
   color: #333;
   outline: none;
   transition: border 0.2s;
+  min-width: 120px;
 }
 
 .dashboard-select:focus {
@@ -136,6 +138,71 @@
   margin: 0 auto;
 }
 
+/* Responsive Design */
+@media (min-width: 1024px) {
+  .dashboard-analytics-container {
+    padding: 32px 24px 40px 24px;
+  }
+  
+  .dashboard-date-filter-row {
+    gap: 24px;
+  }
+  
+  .dashboard-datepicker-block {
+    min-width: 320px;
+    padding: 20px;
+  }
+  
+  .dashboard-radar-block {
+    padding: 20px 0 16px 0;
+  }
+  
+  .dashboard-chart-title {
+    font-size: 18px;
+  }
+  
+  .dashboard-chart-desc {
+    font-size: 14px;
+  }
+  
+  .dashboard-section {
+    padding: 20px 16px 16px 16px;
+  }
+  
+  .dashboard-filter-row {
+    gap: 16px;
+  }
+  
+  .dashboard-select {
+    font-size: 15px;
+    padding: 8px 12px;
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-analytics-container {
+    padding: 20px 12px 28px 12px;
+  }
+  
+  .dashboard-date-filter-row {
+    gap: 16px;
+  }
+  
+  .dashboard-datepicker-block {
+    min-width: 260px;
+    padding: 14px;
+  }
+  
+  .dashboard-radar-block {
+    padding: 14px 0 10px 0;
+  }
+  
+  .dashboard-section {
+    padding: 14px 10px 10px 10px;
+  }
+}
+
 @media (max-width: 900px) {
   .dashboard-date-filter-row {
     flex-direction: column;
@@ -143,26 +210,191 @@
     align-items: stretch;
   }
   
+  .dashboard-datepicker-block {
+    min-width: unset;
+    width: 100%;
+  }
+  
   .dashboard-radar-block {
     padding: 14px 0 8px 0;
+  }
+  
+  .dashboard-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .dashboard-select {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-analytics-container {
+    padding: 16px 8px 24px 8px;
+  }
+  
+  .dashboard-date-filter-row {
+    gap: 16px;
+  }
+  
+  .dashboard-datepicker-block {
+    padding: 12px;
+  }
+  
+  .dashboard-radar-block {
+    padding: 12px 0 6px 0;
+  }
+  
+  .dashboard-chart-title {
+    font-size: 15px;
+  }
+  
+  .dashboard-chart-desc {
+    font-size: 12px;
+  }
+  
+  .dashboard-section {
+    padding: 12px 8px 8px 8px;
+    margin-top: 16px;
+  }
+  
+  .dashboard-filter-row {
+    gap: 6px;
+  }
+  
+  .dashboard-select {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+  
+  .dashboard-loading {
+    height: 150px;
+    font-size: 14px;
+  }
+  
+  .dashboard-error {
+    font-size: 13px;
+    padding: 8px 12px;
   }
 }
 
 @media (max-width: 600px) {
   .dashboard-analytics-container {
-    padding: 16px 8px 20px 8px;
+    padding: 12px 4px 20px 4px;
   }
   
-  .dashboard-section {
-    padding: 12px 8px 8px 8px;
+  .dashboard-date-filter-row {
+    gap: 12px;
   }
   
   .dashboard-datepicker-block {
-    min-width: unset;
-    padding: 12px;
+    padding: 10px;
+  }
+  
+  .dashboard-label {
+    font-size: 13px;
+  }
+  
+  .dashboard-datepicker {
+    font-size: 14px;
+    padding: 6px 8px;
+  }
+  
+  .dashboard-radar-block {
+    padding: 10px 0 4px 0;
   }
   
   .dashboard-chart-title {
-    font-size: 15px;
+    font-size: 14px;
+  }
+  
+  .dashboard-chart-desc {
+    font-size: 11px;
+  }
+  
+  .dashboard-section {
+    padding: 10px 6px 6px 6px;
+    margin-top: 12px;
+  }
+  
+  .dashboard-filter-row {
+    gap: 4px;
+  }
+  
+  .dashboard-select {
+    font-size: 12px;
+    padding: 5px 6px;
+  }
+  
+  .dashboard-loading {
+    height: 120px;
+    font-size: 13px;
+  }
+  
+  .dashboard-error {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-analytics-container {
+    padding: 8px 2px 16px 2px;
+  }
+  
+  .dashboard-date-filter-row {
+    gap: 8px;
+  }
+  
+  .dashboard-datepicker-block {
+    padding: 8px;
+  }
+  
+  .dashboard-label {
+    font-size: 12px;
+  }
+  
+  .dashboard-datepicker {
+    font-size: 13px;
+    padding: 5px 6px;
+  }
+  
+  .dashboard-radar-block {
+    padding: 8px 0 2px 0;
+  }
+  
+  .dashboard-chart-title {
+    font-size: 13px;
+  }
+  
+  .dashboard-chart-desc {
+    font-size: 10px;
+  }
+  
+  .dashboard-section {
+    padding: 8px 4px 4px 4px;
+    margin-top: 8px;
+  }
+  
+  .dashboard-filter-row {
+    gap: 3px;
+  }
+  
+  .dashboard-select {
+    font-size: 11px;
+    padding: 4px 5px;
+  }
+  
+  .dashboard-loading {
+    height: 100px;
+    font-size: 12px;
+  }
+  
+  .dashboard-error {
+    font-size: 11px;
+    padding: 5px 8px;
   }
 }

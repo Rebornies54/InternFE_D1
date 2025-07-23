@@ -50,7 +50,7 @@ const addMoreFoods = async () => {
       [3, 'Dragon Fruit (raw)', '100g', 60, 1.1, 0.4, 13.0],
       [4, 'Rice Noodles (cooked)', '100g', 109, 2.0, 0.2, 25.0],
       [5, 'Soy Milk', '100g', 33, 3.3, 1.8, 2.0],
-      [6, 'Banh Mi (Vietnamese sandwich)', '100g', 280, 8.0, 12.0, 35.0]
+      [6, 'Banh Mi', '100g', 280, 8.0, 12.0, 35.0]
     ];
     
     console.log(`Adding ${additionalFoods.length} new food items...`);

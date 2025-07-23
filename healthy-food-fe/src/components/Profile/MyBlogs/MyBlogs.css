@@ -1,5 +1,7 @@
 .my-blogs-container {
   padding: 20px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .my-blogs-header {
@@ -49,10 +51,12 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .blog-info {
   flex: 1;
+  min-width: 250px;
 }
 
 .blog-info h3 {
@@ -70,15 +74,17 @@
 
 .blog-meta {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   font-size: 12px;
   color: #888;
+  flex-wrap: wrap;
 }
 
 .blog-meta span {
   background: #f5f5f5;
   padding: 4px 8px;
   border-radius: 4px;
+  white-space: nowrap;
 }
 
 .blog-actions {
@@ -181,4 +187,43 @@
   display: flex;
   gap: 10px;
   margin-top: 20px;
-} 
+}
+
+@media (max-width: 768px) {
+  .my-blogs-header h2 {
+    font-size: 20px;
+  }
+  
+  .blog-meta {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .blog-actions {
+    margin-top: 15px;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .my-blogs-container {
+    padding: 15px;
+  }
+  
+  .my-blog-item {
+    padding: 15px;
+  }
+  
+  .btn-edit, 
+  .btn-delete, 
+  .btn-save, 
+  .btn-cancel {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .blog-info h3 {
+    font-size: 16px;
+  }
+}

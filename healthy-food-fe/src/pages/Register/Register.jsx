@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useScrollToTop } from '../../hooks/useScrollToTop';
+import { useScrollToTop, useForm, useModal } from '../../hooks';
 import './register.css';
 
 // Validation schema
@@ -57,8 +57,8 @@ const Register = () => {
   const navigate = useNavigate();
   const { register, error } = useAuth();
   const scrollToTop = useScrollToTop();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const { isSubmitting, withSubmitting } = useForm();
+  const { isOpen: showSuccessModal, openModal, closeModal } = useModal();
 
   const initialValues = {
     name: '',
@@ -73,23 +73,22 @@ const Register = () => {
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    setIsSubmitting(true);
-    const result = await register(values);
-    if (result.success) {
-      setShowSuccessModal(true);
-    }
-    setSubmitting(false);
-    setIsSubmitting(false);
+    await withSubmitting(async () => {
+      const result = await register(values);
+      if (result.success) {
+        openModal();
+      }
+    });
   };
 
   const handleLoginNow = () => {
-    setShowSuccessModal(false);
+    closeModal();
     scrollToTop();
     navigate('/login');
   };
 
   const handleContinueToHome = () => {
-    setShowSuccessModal(false);
+    closeModal();
     scrollToTop();
     navigate('/home');
   };

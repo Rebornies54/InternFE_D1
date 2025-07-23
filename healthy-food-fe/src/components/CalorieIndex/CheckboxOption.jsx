@@ -38,4 +38,4 @@ const CheckboxOption = ({
   );
 };
 
-export default CheckboxOption; 
+export default CheckboxOption;

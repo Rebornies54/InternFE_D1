@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../../services/api';
-import { useScrollToTop } from '../../hooks/useScrollToTop';
+import { useScrollToTop, useForm, useModal, useError } from '../../hooks';
 import './ForgotPassword.css';
 
 const ForgotPasswordSchema = Yup.object().shape({
@@ -13,40 +13,38 @@ const ForgotPasswordSchema = Yup.object().shape({
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const scrollToTop = useScrollToTop();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const { isSubmitting, withSubmitting } = useForm();
+  const { isOpen: showSuccessModal, openModal, closeModal } = useModal();
   const [successMessage, setSuccessMessage] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [error, setError] = useState('');
+  const { error, setError, clearError } = useError();
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    setIsSubmitting(true);
-    setError('');
-    
-    try {
-      const response = await authAPI.forgotPassword(values.email);
+    await withSubmitting(async () => {
+      clearError();
       
-      if (response.data.success) {
-        setSuccessMessage(response.data.message);
-        setNewPassword(response.data.data.newPassword);
-        setShowSuccessModal(true);
+      try {
+        const response = await authAPI.forgotPassword(values.email);
+        
+        if (response.data.success) {
+          setSuccessMessage(response.data.message);
+          setNewPassword(response.data.data.newPassword);
+          openModal();
+        }
+      } catch (error) {
+        setError(error.response?.data?.message || 'Có lỗi xảy ra');
       }
-    } catch (error) {
-      setError(error.response?.data?.message || 'Có lỗi xảy ra');
-    } finally {
-      setSubmitting(false);
-      setIsSubmitting(false);
-    }
+    });
   };
 
   const handleBackToLogin = () => {
-    setShowSuccessModal(false);
+    closeModal();
     scrollToTop();
     navigate('/login');
   };
 
   const handleContinueToHome = () => {
-    setShowSuccessModal(false);
+    closeModal();
     scrollToTop();
     navigate('/home');
   };

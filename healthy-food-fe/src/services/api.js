@@ -107,6 +107,32 @@ export const blogAPI = {
   uploadImage: (formData) => api.post('/blog/upload-image', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
+
+  syncLikesCount: () => api.post('/blog/sync-likes-count'),
+
+  // Comment APIs
+  getComments: (postId, page = 1, limit = 10, sortBy = 'newest') => 
+    api.get(`/blog/posts/${postId}/comments`, { params: { page, limit, sort: sortBy } }),
+  
+  createComment: (postId, commentData) => 
+    api.post(`/blog/posts/${postId}/comments`, commentData),
+  
+  updateComment: (commentId, commentData) => 
+    api.put(`/blog/comments/${commentId}`, commentData),
+  
+  deleteComment: (commentId) => 
+    api.delete(`/blog/comments/${commentId}`),
+  
+  getReplies: (commentId, page = 1, limit = 5) => 
+    api.get(`/blog/comments/${commentId}/replies`, { params: { page, limit } }),
+  
+  toggleCommentLike: (commentId) => 
+    api.post(`/blog/comments/${commentId}/like`),
+  
+  checkCommentLiked: (commentId) => 
+    api.get(`/blog/comments/${commentId}/liked`),
+  
+  syncCommentLikesCount: () => api.post('/blog/sync-comment-likes-count'),
 };
 
 export default api; 

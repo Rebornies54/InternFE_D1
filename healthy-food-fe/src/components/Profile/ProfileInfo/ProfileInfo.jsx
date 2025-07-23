@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
+import { useLoading, useError } from '../../../hooks';
 import './ProfileInfo.css';
 import { authAPI } from '../../../services/api';
 
@@ -12,8 +13,9 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
     ...profileData,
     avatar: profileData.avatar_url || profileData.avatar 
   });
-  const [isSaving, setIsSaving] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const { loading: isSaving, withLoading: withSaving } = useLoading();
+  const { loading: isUploading, withLoading: withUploading } = useLoading();
+  const { error, setError, clearError } = useError();
 
   // Sync tempData when profileData changes
   useEffect(() => {
@@ -26,28 +28,26 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
   const handleAvatarChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      try {
-        setIsUploading(true);
+      await withUploading(async () => {
+        clearError();
+        
         // Check file size (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
-          alert('File size must be less than 5MB');
+          setError('File size must be less than 5MB');
           return;
         }
         
         // Check file type
         if (!file.type.startsWith('image/')) {
-          alert('Please select an image file');
+          setError('Please select an image file');
           return;
         }
-
-        console.log('Uploading file:', file.name, file.size, file.type);
 
         // Create FormData for file upload
         const formData = new FormData();
         formData.append('avatar', file);
         
         const res = await authAPI.uploadAvatar(formData);
-        console.log('Upload response:', res.data);
         
         if (res.data && res.data.success && res.data.avatarUrl) {
           let avatarUrl = res.data.avatarUrl;
@@ -55,8 +55,6 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           if (avatarUrl && avatarUrl.startsWith('/')) {
             avatarUrl = API_BASE_URL + avatarUrl;
           }
-          
-          console.log('Final avatar URL:', avatarUrl);
           
           // Update both tempData and profileData
           setTempData(prev => ({ ...prev, avatar: avatarUrl }));
@@ -66,8 +64,8 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         } else {
           throw new Error('Invalid response from server');
         }
-      } catch (error) {
-        console.error('Upload avatar error:', error);
+      }).catch(error => {
+        // Upload avatar error
         let errorMessage = 'Upload image failed! Please try again.';
         
         if (error.response?.data?.message) {
@@ -76,10 +74,8 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           errorMessage = error.message;
         }
         
-        alert(errorMessage);
-      } finally {
-        setIsUploading(false);
-      }
+        setError(errorMessage);
+      });
     }
   };
 
@@ -99,45 +95,45 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
       return;
     }
 
-    try {
-      setIsSaving(true);
-      let birthday = null;
-      if (tempData.birthdayDay && tempData.birthdayMonth && tempData.birthdayYear) {
-        const year = parseInt(tempData.birthdayYear);
-        const month = parseInt(tempData.birthdayMonth) - 1;
-        const day = parseInt(tempData.birthdayDay);
-        birthday = new Date(year, month, day).toISOString().split('T')[0];
+    await withSaving(async () => {
+      try {
+        let birthday = null;
+        if (tempData.birthdayDay && tempData.birthdayMonth && tempData.birthdayYear) {
+          const year = parseInt(tempData.birthdayYear);
+          const month = parseInt(tempData.birthdayMonth) - 1;
+          const day = parseInt(tempData.birthdayDay);
+          birthday = new Date(year, month, day).toISOString().split('T')[0];
+        }
+        const updateData = {
+          name: tempData.name.trim(),
+          phone: tempData.phone.trim(),
+          gender: tempData.gender,
+          birthday: birthday,
+          avatar_url: tempData.avatar,
+        };
+        const result = await updateProfile(updateData);
+        if (result.success) {
+          // Update local state with the result from updateProfile
+          setProfileData(result.user);
+          setIsEditing(false);
+          alert('Profile updated successfully!');
+        } else {
+          throw new Error(result.message || 'Failed to update profile');
+        }
+      } catch (error) {
+        // Error updating profile
+        let errorMessage = 'Failed to update profile. Please try again.';
+        
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        alert(errorMessage);
+        throw error; // Re-throw để withSaving có thể xử lý
       }
-      const updateData = {
-        name: tempData.name.trim(),
-        phone: tempData.phone.trim(),
-        gender: tempData.gender,
-        birthday: birthday,
-        avatar_url: tempData.avatar,
-      };
-      const result = await updateProfile(updateData);
-      if (result.success) {
-        // Update local state with the result from updateProfile
-        setProfileData(result.user);
-        setIsEditing(false);
-        alert('Profile updated successfully!');
-      } else {
-        throw new Error(result.message || 'Failed to update profile');
-      }
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      let errorMessage = 'Failed to update profile. Please try again.';
-      
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      
-      alert(errorMessage);
-    } finally {
-      setIsSaving(false);
-    }
+    });
   };
 
   // Handle cancel editing
@@ -173,7 +169,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
             alt="Avatar"
             className="profile-info-avatar-img"
             onError={(e) => {
-              console.error('Image load error:', e.target.src);
+              // Image load error
               e.target.style.display = 'none';
               const emptyDiv = e.target.parentNode.querySelector('.profile-info-avatar-empty');
               if (emptyDiv) {
@@ -187,7 +183,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
               }
             }}
             onLoad={(e) => {
-              console.log('Image loaded successfully:', e.target.src);
+      
             }}
           />
         ) : null}
@@ -254,56 +250,70 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           <label className="profile-info-label">
             <span className="required">*</span>Gender
           </label>
-          <select
-            className="profile-info-select"
-            value={isEditing ? tempData.gender : profileData.gender}
-            onChange={e => setTempData(prev => ({ ...prev, gender: e.target.value }))}
-            disabled={!isEditing || isSaving}
-          >
-            <option value="">Select</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
+          <div className="profile-info-select-wrapper">
+            <select
+              className="profile-info-select"
+              value={isEditing ? tempData.gender : profileData.gender}
+              onChange={e => setTempData(prev => ({ ...prev, gender: e.target.value }))}
+              disabled={!isEditing || isSaving}
+            >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+            <div className="profile-info-select-arrow">▼</div>
+          </div>
         </div>
         <div className="profile-info-form-group">
           <label className="profile-info-label">
             <span className="required">*</span>Birthday
           </label>
-          <div className="profile-info-birthday-row">
-            <select
-              className="profile-info-birthday-select"
-              value={isEditing ? tempData.birthdayDay || '' : ''}
-              onChange={e => setTempData(prev => ({ ...prev, birthdayDay: e.target.value }))}
-              disabled={!isEditing || isSaving}
-            >
-              <option value="">Day</option>
-              {days.map(day => (
-                <option key={day} value={day}>{day}</option>
-              ))}
-            </select>
-            <select
-              className="profile-info-birthday-select"
-              value={isEditing ? tempData.birthdayMonth || '' : ''}
-              onChange={e => setTempData(prev => ({ ...prev, birthdayMonth: e.target.value }))}
-              disabled={!isEditing || isSaving}
-            >
-              <option value="">Month</option>
-              {months.map(month => (
-                <option key={month} value={month}>{month}</option>
-              ))}
-            </select>
-            <select
-              className="profile-info-birthday-select"
-              value={isEditing ? tempData.birthdayYear || '' : ''}
-              onChange={e => setTempData(prev => ({ ...prev, birthdayYear: e.target.value }))}
-              disabled={!isEditing || isSaving}
-            >
-              <option value="">Year</option>
-              {years.map(year => (
-                <option key={year} value={year}>{year}</option>
-              ))}
-            </select>
+          <div className="profile-info-birthday-container">
+            <div className="profile-info-birthday-row">
+              <div className="profile-info-select-wrapper">
+                <select
+                  className="profile-info-birthday-select"
+                  value={isEditing ? tempData.birthdayDay || '' : ''}
+                  onChange={e => setTempData(prev => ({ ...prev, birthdayDay: e.target.value }))}
+                  disabled={!isEditing || isSaving}
+                >
+                  <option value="">Day</option>
+                  {days.map(day => (
+                    <option key={day} value={day}>{day}</option>
+                  ))}
+                </select>
+                <div className="profile-info-select-arrow">▼</div>
+              </div>
+              <div className="profile-info-select-wrapper">
+                <select
+                  className="profile-info-birthday-select"
+                  value={isEditing ? tempData.birthdayMonth || '' : ''}
+                  onChange={e => setTempData(prev => ({ ...prev, birthdayMonth: e.target.value }))}
+                  disabled={!isEditing || isSaving}
+                >
+                  <option value="">Month</option>
+                  {months.map(month => (
+                    <option key={month} value={month}>{month}</option>
+                  ))}
+                </select>
+                <div className="profile-info-select-arrow">▼</div>
+              </div>
+              <div className="profile-info-select-wrapper">
+                <select
+                  className="profile-info-birthday-select"
+                  value={isEditing ? tempData.birthdayYear || '' : ''}
+                  onChange={e => setTempData(prev => ({ ...prev, birthdayYear: e.target.value }))}
+                  disabled={!isEditing || isSaving}
+                >
+                  <option value="">Year</option>
+                  {years.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+                <div className="profile-info-select-arrow">▼</div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="profile-info-actions">

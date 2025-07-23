@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { foodAPI, blogAPI } from '../services/api';
 
 // Khởi tạo context
@@ -81,6 +81,20 @@ export const BlogProvider = ({ children }) => {
   const [showFoodModal, setShowFoodModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Comment states
+  const [comments, setComments] = useState([]);
+  const [commentLikes, setCommentLikes] = useState(new Set());
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [replies, setReplies] = useState({});
+  const [repliesLoading, setRepliesLoading] = useState({});
+  const [commentPagination, setCommentPagination] = useState({
+    current_page: 1,
+    total_pages: 0,
+    total_comments: 0,
+    has_next: false,
+    has_prev: false
+  });
+
   // Fetch food items from database
   const fetchFoodItems = async () => {
     try {
@@ -90,7 +104,7 @@ export const BlogProvider = ({ children }) => {
         setFoodItems(response.data.data);
       }
     } catch (error) {
-      console.error('Error fetching food items:', error);
+      // Error fetching food items
     } finally {
       setLoading(false);
     }
@@ -104,7 +118,7 @@ export const BlogProvider = ({ children }) => {
         setFoodCategories(response.data.data);
       }
     } catch (error) {
-      console.error('Error fetching food categories:', error);
+      // Error fetching food categories
     }
   };
 
@@ -123,7 +137,7 @@ export const BlogProvider = ({ children }) => {
         setPosts(mappedPosts);
       }
     } catch (error) {
-      console.error('Error fetching blog posts:', error);
+      // Error fetching blog posts
     } finally {
       setPostsLoading(false);
     }
@@ -140,32 +154,64 @@ export const BlogProvider = ({ children }) => {
             likedPosts.add(post.id);
           }
         } catch (error) {
-          console.error(`Error checking like for post ${post.id}:`, error);
+          // Error checking like status
         }
       }
       setUserLikes(likedPosts);
     } catch (error) {
-      console.error('Error fetching user likes:', error);
+      // Error fetching user likes
     }
   };
 
   // Toggle like for a post
   const toggleLike = async (postId) => {
     try {
+      // Optimistic update - cập nhật UI ngay lập tức
+      const currentPost = posts.find(post => post.id === postId);
+      const isCurrentlyLiked = userLikes.has(postId);
+      
+      // Optimistic update cho posts
+      setPosts(prev => prev.map(post => {
+        if (post.id === postId) {
+          return {
+            ...post,
+            likes_count: isCurrentlyLiked ? 
+              Math.max(post.likes_count - 1, 0) : 
+              post.likes_count + 1
+          };
+        }
+        return post;
+      }));
+
+      // Optimistic update cho userLikes
+      setUserLikes(prev => {
+        const newLikes = new Set(prev);
+        if (isCurrentlyLiked) {
+          newLikes.delete(postId);
+        } else {
+          newLikes.add(postId);
+        }
+        return newLikes;
+      });
+
+      // Gọi API
       const response = await blogAPI.toggleLike(postId);
+      
       if (response.data.success) {
-        // Update posts with new like count
+        // Cập nhật lại với dữ liệu chính xác từ server
         setPosts(prev => prev.map(post => {
           if (post.id === postId) {
             return {
               ...post,
-              likes_count: response.data.liked ? post.likes_count + 1 : post.likes_count - 1
+              likes_count: response.data.liked ? 
+                (currentPost?.likes_count || 0) + 1 : 
+                Math.max((currentPost?.likes_count || 0) - 1, 0)
             };
           }
           return post;
         }));
 
-        // Update user likes
+        // Cập nhật userLikes với response từ server
         setUserLikes(prev => {
           const newLikes = new Set(prev);
           if (response.data.liked) {
@@ -175,11 +221,399 @@ export const BlogProvider = ({ children }) => {
           }
           return newLikes;
         });
+      } else {
+        // Nếu API thất bại, rollback optimistic update
+        setPosts(prev => prev.map(post => {
+          if (post.id === postId) {
+            return {
+              ...post,
+              likes_count: currentPost?.likes_count || 0
+            };
+          }
+          return post;
+        }));
+
+        setUserLikes(prev => {
+          const newLikes = new Set(prev);
+          if (isCurrentlyLiked) {
+            newLikes.add(postId);
+          } else {
+            newLikes.delete(postId);
+          }
+          return newLikes;
+        });
       }
     } catch (error) {
-      console.error('Error toggling like:', error);
+      // Error toggling like
+      
+      // Rollback optimistic update khi có lỗi
+      const currentPost = posts.find(post => post.id === postId);
+      const isCurrentlyLiked = userLikes.has(postId);
+      
+      setPosts(prev => prev.map(post => {
+        if (post.id === postId) {
+          return {
+            ...post,
+            likes_count: currentPost?.likes_count || 0
+          };
+        }
+        return post;
+      }));
+
+      setUserLikes(prev => {
+        const newLikes = new Set(prev);
+        if (isCurrentlyLiked) {
+          newLikes.add(postId);
+        } else {
+          newLikes.delete(postId);
+        }
+        return newLikes;
+      });
     }
   };
+
+  // Comment functions
+  const fetchComments = useCallback(async (postId, page = 1, sortBy = 'newest') => {
+    try {
+      setCommentsLoading(true);
+      const response = await blogAPI.getComments(postId, page, sortBy);
+      
+      if (response.data.success) {
+        if (page === 1) {
+          setComments(response.data.data.comments);
+        } else {
+          setComments(prev => [...prev, ...response.data.data.comments]);
+        }
+        setCommentPagination(response.data.data.pagination);
+        
+        // Khởi tạo commentLikes cho các comment mới - chỉ gọi một lần
+        if (page === 1) {
+          const likedComments = new Set();
+          const checkPromises = response.data.data.comments.map(async (comment) => {
+            try {
+              const likeResponse = await blogAPI.checkCommentLiked(comment.id);
+              if (likeResponse.data.success && likeResponse.data.liked) {
+                likedComments.add(comment.id);
+              }
+            } catch (error) {
+              // Error checking comment like status
+            }
+          });
+          
+          await Promise.all(checkPromises);
+          setCommentLikes(likedComments);
+        }
+      }
+    } catch (error) {
+      // Error fetching comments
+    } finally {
+      setCommentsLoading(false);
+    }
+  }, []);
+
+
+
+  const createComment = async (postId, commentData) => {
+    try {
+      const response = await blogAPI.createComment(postId, commentData);
+      
+      if (response.data.success) {
+        const newComment = response.data.data;
+        
+        // Optimistic update
+        setComments(prev => [newComment, ...prev]);
+        
+        // Update pagination
+        setCommentPagination(prev => ({
+          ...prev,
+          total_comments: prev.total_comments + 1,
+          total_pages: Math.ceil((prev.total_comments + 1) / 10)
+        }));
+        
+        return { success: true, comment: newComment };
+      }
+    } catch (error) {
+      // Error creating comment
+      return { success: false, message: error.response?.data?.message || 'Lỗi khi tạo comment' };
+    }
+  };
+
+  const updateComment = async (commentId, content) => {
+    try {
+      const response = await blogAPI.updateComment(commentId, { content });
+      
+      if (response.data.success) {
+        const updatedComment = response.data.data;
+        
+        // Optimistic update
+        setComments(prev => prev.map(comment => 
+          comment.id === commentId ? updatedComment : comment
+        ));
+        
+        // Update replies if exists
+        setReplies(prev => {
+          const newReplies = { ...prev };
+          Object.keys(newReplies).forEach(key => {
+            newReplies[key] = newReplies[key].map(reply => 
+              reply.id === commentId ? updatedComment : reply
+            );
+          });
+          return newReplies;
+        });
+        
+        return { success: true, comment: updatedComment };
+      }
+    } catch (error) {
+      // Error updating comment
+      return { success: false, message: error.response?.data?.message || 'Lỗi khi cập nhật comment' };
+    }
+  };
+
+  const deleteComment = async (commentId) => {
+    try {
+      const response = await blogAPI.deleteComment(commentId);
+      
+      if (response.data.success) {
+        // Optimistic update
+        setComments(prev => prev.filter(comment => comment.id !== commentId));
+        
+        // Remove from replies
+        setReplies(prev => {
+          const newReplies = { ...prev };
+          Object.keys(newReplies).forEach(key => {
+            newReplies[key] = newReplies[key].filter(reply => reply.id !== commentId);
+          });
+          return newReplies;
+        });
+        
+        // Update pagination
+        setCommentPagination(prev => ({
+          ...prev,
+          total_comments: Math.max(0, prev.total_comments - 1),
+          total_pages: Math.ceil(Math.max(0, prev.total_comments - 1) / 10)
+        }));
+        
+        return { success: true };
+      }
+    } catch (error) {
+      // Error deleting comment
+      return { success: false, message: error.response?.data?.message || 'Lỗi khi xóa comment' };
+    }
+  };
+
+  const fetchReplies = useCallback(async (commentId, page = 1) => {
+    try {
+      setRepliesLoading(prev => ({ ...prev, [commentId]: true }));
+      const response = await blogAPI.getReplies(commentId, page);
+      
+      if (response.data.success) {
+        if (page === 1) {
+          setReplies(prev => ({ ...prev, [commentId]: response.data.data.replies }));
+        } else {
+          setReplies(prev => ({
+            ...prev,
+            [commentId]: [...(prev[commentId] || []), ...response.data.data.replies]
+          }));
+        }
+        
+        // Khởi tạo commentLikes cho replies mới - chỉ gọi một lần
+        if (page === 1 && response.data.data.replies && response.data.data.replies.length > 0) {
+          const likedReplies = new Set();
+          const checkPromises = response.data.data.replies.map(async (reply) => {
+            try {
+              const likeResponse = await blogAPI.checkCommentLiked(reply.id);
+              if (likeResponse.data.success && likeResponse.data.liked) {
+                likedReplies.add(reply.id);
+              }
+            } catch (error) {
+              // Error checking reply like status
+            }
+          });
+          
+          await Promise.all(checkPromises);
+          setCommentLikes(prev => new Set([...prev, ...likedReplies]));
+        }
+      }
+    } catch (error) {
+      // Error fetching replies
+      // Không làm crash app khi có lỗi fetch replies
+    } finally {
+      setRepliesLoading(prev => ({ ...prev, [commentId]: false }));
+    }
+  }, []);
+
+  const toggleCommentLike = async (commentId) => {
+    try {
+      // Kiểm tra comment tồn tại
+      const currentComment = comments.find(comment => comment.id === commentId) ||
+                           Object.values(replies).flat().find(reply => reply.id === commentId);
+      
+      if (!currentComment) {
+        // Comment not found
+        return;
+      }
+
+      const isCurrentlyLiked = commentLikes.has(commentId);
+      
+      // Optimistic update cho comments
+      setComments(prev => prev.map(comment => {
+        if (comment.id === commentId) {
+          return {
+            ...comment,
+            likes_count: isCurrentlyLiked ? 
+              Math.max(comment.likes_count - 1, 0) : 
+              comment.likes_count + 1
+          };
+        }
+        return comment;
+      }));
+
+      // Optimistic update cho replies
+      setReplies(prev => {
+        const newReplies = { ...prev };
+        Object.keys(newReplies).forEach(key => {
+          newReplies[key] = newReplies[key].map(reply => {
+            if (reply.id === commentId) {
+              return {
+                ...reply,
+                likes_count: isCurrentlyLiked ? 
+                  Math.max(reply.likes_count - 1, 0) : 
+                  reply.likes_count + 1
+              };
+            }
+            return reply;
+          });
+        });
+        return newReplies;
+      });
+
+      // Optimistic update cho commentLikes
+      setCommentLikes(prev => {
+        const newLikes = new Set(prev);
+        if (isCurrentlyLiked) {
+          newLikes.delete(commentId);
+        } else {
+          newLikes.add(commentId);
+        }
+        return newLikes;
+      });
+
+      // Gọi API
+      const response = await blogAPI.toggleCommentLike(commentId);
+      
+      if (response.data.success) {
+        // Cập nhật lại với dữ liệu chính xác từ server
+        const newLikedState = response.data.liked;
+        
+        setComments(prev => prev.map(comment => {
+          if (comment.id === commentId) {
+            return {
+              ...comment,
+              likes_count: newLikedState ? 
+                (currentComment.likes_count || 0) + 1 : 
+                Math.max((currentComment.likes_count || 0) - 1, 0)
+            };
+          }
+          return comment;
+        }));
+
+        setReplies(prev => {
+          const newReplies = { ...prev };
+          Object.keys(newReplies).forEach(key => {
+            newReplies[key] = newReplies[key].map(reply => {
+              if (reply.id === commentId) {
+                return {
+                  ...reply,
+                  likes_count: newLikedState ? 
+                    (currentComment.likes_count || 0) + 1 : 
+                    Math.max((currentComment.likes_count || 0) - 1, 0)
+                };
+              }
+              return reply;
+            });
+          });
+          return newReplies;
+        });
+
+        // Cập nhật commentLikes với response từ server
+        setCommentLikes(prev => {
+          const newLikes = new Set(prev);
+          if (newLikedState) {
+            newLikes.add(commentId);
+          } else {
+            newLikes.delete(commentId);
+          }
+          return newLikes;
+        });
+      } else {
+        // Rollback optimistic update nếu API thất bại
+        rollbackCommentLikeUpdate(commentId, currentComment, isCurrentlyLiked);
+      }
+    } catch (error) {
+      // Error toggling comment like
+      
+      // Rollback optimistic update khi có lỗi
+      const currentComment = comments.find(comment => comment.id === commentId) ||
+                           Object.values(replies).flat().find(reply => reply.id === commentId);
+      const isCurrentlyLiked = commentLikes.has(commentId);
+      
+      if (currentComment) {
+        rollbackCommentLikeUpdate(commentId, currentComment, isCurrentlyLiked);
+      }
+    }
+  };
+
+  // Helper function để rollback comment like update
+  const rollbackCommentLikeUpdate = (commentId, originalComment, wasLiked) => {
+    setComments(prev => prev.map(comment => {
+      if (comment.id === commentId) {
+        return {
+          ...comment,
+          likes_count: originalComment.likes_count || 0
+        };
+      }
+      return comment;
+    }));
+
+    setReplies(prev => {
+      const newReplies = { ...prev };
+      Object.keys(newReplies).forEach(key => {
+        newReplies[key] = newReplies[key].map(reply => {
+          if (reply.id === commentId) {
+            return {
+              ...reply,
+              likes_count: originalComment.likes_count || 0
+            };
+          }
+          return reply;
+        });
+      });
+      return newReplies;
+    });
+
+    setCommentLikes(prev => {
+      const newLikes = new Set(prev);
+      if (wasLiked) {
+        newLikes.add(commentId);
+      } else {
+        newLikes.delete(commentId);
+      }
+      return newLikes;
+    });
+  };
+
+  const clearComments = useCallback(() => {
+    setComments([]);
+    setReplies({});
+    setCommentLikes(new Set());
+    setCommentPagination({
+      current_page: 1,
+      total_pages: 0,
+      total_comments: 0,
+      has_next: false,
+      has_prev: false
+    });
+  }, []);
 
   // Load data on component mount
   useEffect(() => {
@@ -359,35 +793,50 @@ export const BlogProvider = ({ children }) => {
     return variations;
   };
 
+  const value = {
+    posts,
+    categories,
+    selectedCategory,
+    searchQuery,
+    currentPost,
+    postsLoading,
+    userLikes,
+    foodItems,
+    foodCategories,
+    selectedFood,
+    showFoodModal,
+    loading,
+    filteredPosts,
+    setSelectedCategory,
+    setSearchQuery,
+    setCurrentPost,
+    toggleLike,
+    addPost,
+    updatePost,
+    deletePost,
+    getPostById,
+    openFoodModal,
+    closeFoodModal,
+    getFoodVariations,
+    fetchFoodItems,
+    comments,
+    commentsLoading,
+    replies,
+    repliesLoading,
+    commentPagination,
+    commentLikes,
+    fetchComments,
+    createComment,
+    updateComment,
+    deleteComment,
+    fetchReplies,
+    toggleCommentLike,
+    clearComments
+  };
+
   return (
     <BlogContext.Provider
-      value={{
-        posts,
-        filteredPosts,
-        categories,
-        selectedCategory,
-        searchQuery,
-        currentPost,
-        postsLoading,
-        userLikes,
-        foodItems,
-        foodCategories,
-        selectedFood,
-        showFoodModal,
-        loading,
-        setSelectedCategory,
-        setSearchQuery,
-        setCurrentPost,
-        addPost,
-        updatePost,
-        deletePost,
-        getPostById,
-        toggleLike,
-        openFoodModal,
-        closeFoodModal,
-        getFoodVariations,
-        fetchFoodItems
-      }}
+      value={value}
     >
       {children}
     </BlogContext.Provider>
