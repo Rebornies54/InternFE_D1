@@ -4,6 +4,7 @@ import { useScrollToTop } from '../../hooks/useScrollToTop';
 import { Heart } from 'lucide-react';
 import './Blog.css';
 import CreateBlog from './CreateBlog';
+import Comment from './Comment';
 
 const FoodCard = ({ post, onClick, onLike, isLiked, likeCount }) => (
   <div className="blog-card">
@@ -58,19 +59,22 @@ const FoodItem = ({ food, onClick }) => (
 const FoodCategoryFilter = ({ categories, selectedCategory, onCategoryChange }) => (
   <div className="food-category-filter">
     <label htmlFor="food-category" className="filter-label">Lọc theo danh mục:</label>
-    <select 
-      id="food-category"
-      value={selectedCategory}
-      onChange={(e) => onCategoryChange(e.target.value)}
-      className="food-category-select"
-    >
-      <option value="">Tất cả danh mục</option>
-      {categories.map(category => (
-        <option key={category.id} value={category.id}>
-          {category.name}
-        </option>
-      ))}
-    </select>
+    <div className="food-category-select-wrapper">
+      <select 
+        id="food-category"
+        value={selectedCategory}
+        onChange={(e) => onCategoryChange(e.target.value)}
+        className="food-category-select"
+      >
+        <option value="">Tất cả danh mục</option>
+        {categories.map(category => (
+          <option key={category.id} value={category.id}>
+            {category.name}
+          </option>
+        ))}
+      </select>
+      <div className="food-category-select-arrow">▼</div>
+    </div>
   </div>
 );
 
@@ -171,6 +175,9 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
         <p key={idx}>{paragraph}</p>
       ))}
     </div>
+    
+    {/* Comments Section */}
+    <Comment postId={post.id} />
   </div>
 );
 
@@ -381,8 +388,13 @@ const Blog = () => {
           {activeTab === 'blog' ? (
             <>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-                <button className="create-blog-btn" onClick={handleShowCreate}>
-                  + Viết Blog
+                <button 
+                  className="create-blog-btn" 
+                  onClick={handleShowCreate}
+                  title="Viết blog mới"
+                  aria-label="Tạo bài viết blog mới"
+                >
+                  Viết Blog
                 </button>
               </div>
               <h1 className="blog-title">Bí Quyết Ăn Uống Lành Mạnh</h1>

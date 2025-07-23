@@ -63,7 +63,7 @@ const BodyIndex = () => {
       setCategories(categoriesRes.data.data);
       setFoodItems(itemsRes.data.data);
     } catch (error) {
-      console.error('Error loading food data:', error);
+      // Error loading food data
     } finally {
       setLoading(false);
     }
@@ -83,7 +83,7 @@ const BodyIndex = () => {
         generateRecommendations(bmiData.bmi.toString());
       }
     } catch (error) {
-      console.error('Error loading BMI data:', error);
+      // Error loading BMI data
     } finally {
       setBmiLoading(false);
     }
@@ -115,9 +115,9 @@ const BodyIndex = () => {
           bmi: parseFloat(bmiValue),
           bmi_category: bmiCategory
         });
-        console.log('BMI data saved successfully');
+
       } catch (error) {
-        console.error('Error saving BMI data:', error);
+        // Error saving BMI data
       }
     }
   };

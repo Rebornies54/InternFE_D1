@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useScrollToTop } from '../../hooks/useScrollToTop';
+import { useScrollToTop, useForm, useModal } from '../../hooks';
 import './login.css';
 
 const LoginSchema = Yup.object().shape({
@@ -15,26 +15,26 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const scrollToTop = useScrollToTop();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
+  const { isSubmitting, withSubmitting } = useForm();
+  const { isOpen: showErrorModal, openModal, closeModal } = useModal();
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    setIsSubmitting(true);
-    const result = await login(values);
-    if (result.success) {
-      scrollToTop();
-      navigate('/home');
-    } else {
-      // Show modal with specific error message
-      setErrorMessage(result.message);
-      setShowErrorModal(true);
-    }
-    setSubmitting(false);
+    await withSubmitting(async () => {
+      const result = await login(values);
+      if (result.success) {
+        scrollToTop();
+        navigate('/home');
+      } else {
+        // Show modal with specific error message
+        setErrorMessage(result.message);
+        openModal();
+      }
+    });
   };
 
   const handleCloseErrorModal = () => {
-    setShowErrorModal(false);
+    closeModal();
     setErrorMessage('');
   };
 

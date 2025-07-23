@@ -28,7 +28,7 @@ const MyBlogs = () => {
         setBlogs(response.data.data);
       }
     } catch (error) {
-      console.error('Error fetching my blogs:', error);
+      // Error fetching my blogs
       setError('Lỗi khi tải bài viết của bạn');
     } finally {
       setLoading(false);
@@ -46,7 +46,7 @@ const MyBlogs = () => {
         setBlogs(blogs.filter(blog => blog.id !== blogId));
       }
     } catch (error) {
-      console.error('Error deleting blog:', error);
+      // Error deleting blog
       alert('Lỗi khi xóa bài viết');
     }
   };
@@ -79,7 +79,7 @@ const MyBlogs = () => {
         });
       }
     } catch (error) {
-      console.error('Error updating blog:', error);
+      // Error updating blog
       alert('Lỗi khi cập nhật bài viết');
     }
   };

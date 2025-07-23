@@ -32,6 +32,9 @@ const CalorieCalculation = () => {
   const [messageType, setMessageType] = useState('');
   const scrollToTop = useScrollToTop();
 
+  // Mobile menu state
+  const [activeMobileMenu, setActiveMobileMenu] = useState(null);
+
   // Use FoodContext for pending foods
   const { 
     pendingFoods = [], 
@@ -53,7 +56,7 @@ const CalorieCalculation = () => {
     }
   }, [selectedCategory]);
 
-  // Debounced function để tránh gọi API quá nhiều
+  // Debounced function to avoid too many API calls
   const debouncedLoadData = useCallback(
     (() => {
       let timeoutId;
@@ -70,7 +73,7 @@ const CalorieCalculation = () => {
     [selectedDate]
   );
 
-  // Load user's food logs and statistics với debouncing
+  // Load user's food logs and statistics with debouncing
   useEffect(() => {
     debouncedLoadData();
   }, [selectedDate, debouncedLoadData]);
@@ -95,6 +98,18 @@ const CalorieCalculation = () => {
     }
   }, [message]);
 
+  // Close mobile menu when clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (activeMobileMenu && !event.target.closest('.mobile-actions-container')) {
+        setActiveMobileMenu(null);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [activeMobileMenu]);
+
   const loadFoodCategories = async () => {
     try {
       setLoading(true);
@@ -106,7 +121,7 @@ const CalorieCalculation = () => {
         }
       }
     } catch (error) {
-      console.error('Error loading food categories:', error);
+      // Error loading food categories
     } finally {
       setLoading(false);
     }
@@ -123,7 +138,7 @@ const CalorieCalculation = () => {
         }
       }
     } catch (error) {
-      console.error('Error loading food items:', error);
+      // Error loading food items
     } finally {
       setLoading(false);
     }
@@ -136,7 +151,7 @@ const CalorieCalculation = () => {
         setDailyFoodLog(response.data.data);
       }
     } catch (error) {
-      console.error('Error loading food logs:', error);
+      // Error loading food logs
     }
   };
 
@@ -147,7 +162,7 @@ const CalorieCalculation = () => {
         setDailyStats(response.data.data);
       }
     } catch (error) {
-      console.error('Error loading daily statistics:', error);
+      // Error loading daily statistics
     }
   };
 
@@ -158,7 +173,7 @@ const CalorieCalculation = () => {
         // Weekly stats loaded successfully
       }
     } catch (error) {
-      console.error('Error loading weekly statistics:', error);
+      // Error loading weekly statistics
     }
   };
 
@@ -173,7 +188,7 @@ const CalorieCalculation = () => {
         // Monthly stats loaded successfully
       }
     } catch (error) {
-      console.error('Error loading monthly statistics:', error);
+      // Error loading monthly statistics
     }
   };
 
@@ -215,7 +230,7 @@ const CalorieCalculation = () => {
           setMessageType('success');
         }
         
-        // Batch reload - chỉ reload những gì cần thiết
+        // Batch reload - only reload what's necessary
         await Promise.all([
           loadUserFoodLogs(),
           loadDailyStatistics()
@@ -224,13 +239,13 @@ const CalorieCalculation = () => {
         // Reset form
         setQuantity(100);
         
-        // Khôi phục vị trí scroll sau khi reload
+        // Restore scroll position after reload
         setTimeout(() => {
           window.scrollTo(0, currentScrollPosition);
         }, 100);
       }
     } catch (error) {
-      console.error('Error adding food log:', error);
+      // Error adding food log
       setMessage('Lỗi khi thêm thực phẩm vào nhật ký');
       setMessageType('error');
     }
@@ -239,10 +254,11 @@ const CalorieCalculation = () => {
   // Handle editing food entry
   const editFoodEntry = (log) => {
     setEditingLog(log);
-    // Hiển thị quantity và calories hiện tại (đã được cộng dồn)
+    // Display current quantity and calories (already summed)
     setEditQuantity(Math.round(log.quantity));
     setEditCalories(Math.round(log.calories));
     setShowEditModal(true);
+    setActiveMobileMenu(null); // Close mobile menu if open
   };
 
   // Calculate calories for edit mode
@@ -271,17 +287,17 @@ const CalorieCalculation = () => {
         setShowEditModal(false);
         setEditingLog(null);
         
-        // Batch reload để cập nhật cả logs và statistics
+        // Batch reload to update both logs and statistics
         await Promise.all([
           loadUserFoodLogs(),
           loadDailyStatistics()
         ]);
         
-        // Reset về trang 1 nếu cần
+        // Reset to page 1 if needed
         setCurrentPage(1);
       }
     } catch (error) {
-      console.error('Error updating food log:', error);
+      // Error updating food log
       setMessage('Lỗi khi cập nhật thực phẩm');
       setMessageType('error');
     }
@@ -295,17 +311,18 @@ const CalorieCalculation = () => {
         setMessage('Đã xóa thực phẩm thành công');
         setMessageType('success');
         
-        // Batch reload để cập nhật cả logs và statistics
+        // Batch reload to update both logs and statistics
         await Promise.all([
           loadUserFoodLogs(),
           loadDailyStatistics()
         ]);
         
-        // Reset về trang 1 nếu cần
+        // Reset to page 1 if needed
         setCurrentPage(1);
       }
+      setActiveMobileMenu(null); // Close mobile menu if open
     } catch (error) {
-      console.error('Error deleting food log:', error);
+      // Error deleting food log
       setMessage('Lỗi khi xóa thực phẩm');
       setMessageType('error');
     }
@@ -346,6 +363,11 @@ const CalorieCalculation = () => {
     }
   };
 
+  // Toggle mobile actions menu
+  const toggleMobileMenu = (id) => {
+    setActiveMobileMenu(activeMobileMenu === id ? null : id);
+  };
+
   // Table options mapping
   const getTableOptions = () => {
     const seen = new Set();
@@ -384,7 +406,7 @@ const CalorieCalculation = () => {
             successCount++;
           }
         } catch (error) {
-          console.error(`Error adding ${food.name}:`, error);
+          // Error adding food to pending
         }
       }
 
@@ -402,7 +424,7 @@ const CalorieCalculation = () => {
         clearPendingFoods();
       }
     } catch (error) {
-      console.error('Error adding pending foods:', error);
+      // Error adding pending foods
       setMessage('Lỗi khi thêm sản phẩm vào Daily Food Tracking');
       setMessageType('error');
     } finally {
@@ -410,7 +432,11 @@ const CalorieCalculation = () => {
     }
   };
 
-
+  // Format date for display
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   return (
     <div className="calorie-calculation-container">
@@ -633,6 +659,7 @@ const CalorieCalculation = () => {
             </div>
             
             <div className="form-group">
+              <label>Quantity (g)</label>
               <div className="quantity-group">
                 <button onClick={decreaseQuantity} className="quantity-btn">-</button>
                 <input 
@@ -649,6 +676,7 @@ const CalorieCalculation = () => {
             </div>
             
             <div className="form-group">
+              <label>Calories</label>
               <input 
                 type="text" 
                 value={calculateCalories(selectedFood, quantity)}
@@ -670,44 +698,74 @@ const CalorieCalculation = () => {
           </div>
         </div>
         
-        <table className="food-log-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Date</th>
-              <th>Food</th>
-              <th>Quantity</th>
-              <th>Calories</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {getCurrentItems().map((entry, index) => (
-              <tr key={entry.id}>
-                <td style={{textAlign: 'center'}}>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                <td>{entry.log_date}</td>
-                <td>{entry.food_name}</td>
-                <td>{entry.quantity}g</td>
-                <td>{entry.calories}</td>
-                <td className="action-buttons" style={{justifyContent: 'center'}}>
-                  <button onClick={() => editFoodEntry(entry)} className="edit-btn">Edit</button>
-                  <button onClick={() => deleteFoodEntry(entry.id)} className="delete-btn">Delete</button>
-                </td>
+        {/* Table View for Larger Screens */}
+        <div className="food-log-table-container">
+          <table className="food-log-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Food</th>
+                <th>Quantity</th>
+                <th>Calories</th>
+                <th>Action</th>
               </tr>
-            ))}
-            {/* Add empty rows to fill the table */}
-            {Array.from({ length: Math.max(0, itemsPerPage - getCurrentItems().length) }, (_, i) => (
-              <tr key={`empty-${i}`} className="empty-row">
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {getCurrentItems().map((entry, index) => (
+                <tr key={entry.id}>
+                  <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                  <td>{entry.log_date}</td>
+                  <td>{entry.food_name}</td>
+                  <td>{entry.quantity}g</td>
+                  <td>{entry.calories}</td>
+                  <td className="action-buttons">
+                    <button onClick={() => editFoodEntry(entry)} className="edit-btn">Edit</button>
+                    <button onClick={() => deleteFoodEntry(entry.id)} className="delete-btn">Delete</button>
+                  </td>
+                </tr>
+              ))}
+              {/* Add empty rows to fill the table */}
+              {Array.from({ length: Math.max(0, itemsPerPage - getCurrentItems().length) }, (_, i) => (
+                <tr key={`empty-${i}`} className="empty-row">
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        
+        {/* Card View for Mobile */}
+        {getCurrentItems().map((entry, index) => (
+          <div key={entry.id} className="food-log-card">
+            <div className="food-log-card-header">
+              <div className="food-log-card-title">{entry.food_name}</div>
+              <div className="food-log-card-date">{formatDate(entry.log_date)}</div>
+            </div>
+            <div className="food-log-card-details">
+              <div className="food-log-card-detail">
+                <span className="food-log-card-detail-label">Quantity</span>
+                <span className="food-log-card-detail-value">{entry.quantity}g</span>
+              </div>
+              <div className="food-log-card-detail">
+                <span className="food-log-card-detail-label">Calories</span>
+                <span className="food-log-card-detail-value">{entry.calories} cal</span>
+              </div>
+              <div className="food-log-card-detail">
+                <span className="food-log-card-detail-label">Entry #{(currentPage - 1) * itemsPerPage + index + 1}</span>
+              </div>
+            </div>
+            <div className="food-log-card-actions">
+              <button onClick={() => editFoodEntry(entry)} className="edit-btn">Edit</button>
+              <button onClick={() => deleteFoodEntry(entry.id)} className="delete-btn">Delete</button>
+            </div>
+          </div>
+        ))}
         
         {/* Pagination */}
         {totalPages > 1 && (
@@ -792,7 +850,7 @@ const CalorieCalculation = () => {
         </div>
       )}
 
-      {/* Message Display */}
+      {/* Message Display (bottom) */}
       {message && (
         <div className={`message-display ${messageType}`}>
           {message}

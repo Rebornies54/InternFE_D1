@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo/healthy-food-logo.png';
-import { User, ChevronDown, ChevronRight, LogOut, Search, Clock, Calendar, Star, Utensils } from 'lucide-react';
+import { User, ChevronDown, ChevronRight, LogOut, Search, Clock, Calendar, Star, Utensils, Menu, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useBlogContext } from '../../context/BlogContext';
 import { useNavigationScroll } from '../../hooks/useNavigationScroll';
@@ -26,13 +26,14 @@ const navTabs = [
 ];
 
 // Custom NavLink component for better control
-const NavLink = ({ to, children, className }) => {
+const NavLink = ({ to, children, className, onClick }) => {
   const location = useLocation();
   const navigateWithScroll = useNavigationScroll();
   
   const handleClick = (e) => {
     e.preventDefault();
     navigateWithScroll(to);
+    if (onClick) onClick();
   };
   
   const isActive = location.pathname === to;
@@ -49,7 +50,7 @@ const NavLink = ({ to, children, className }) => {
 };
 
 // Components
-const Header = () => {
+const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   const { user, logout } = useAuth();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   
@@ -75,15 +76,32 @@ const Header = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Đóng mobile menu khi click ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.home-header') && isMobileMenuOpen) {
+        toggleMobileMenu();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileMenuOpen, toggleMobileMenu]);
   
   return (
     <header className="home-header">
       <div className="home-header-content">
+        {/* Logo Group */}
         <div className="home-logo-group">
           <img src={logo} alt="Healthy Food Logo" className="home-logo-img" />
           <span className="home-app-name">HEALTHY FOOD</span>
         </div>
-        <nav className="home-nav">
+        
+        {/* Desktop Navigation */}
+        <nav className="home-nav desktop-nav">
           {navTabs.map(tab => (
             <NavLink
               key={tab.key}
@@ -94,11 +112,23 @@ const Header = () => {
             </NavLink>
           ))}
         </nav>
+
+        {/* Mobile Menu Button */}
+        <button 
+          className="mobile-menu-btn"
+          onClick={toggleMobileMenu}
+          aria-label="Toggle mobile menu"
+          aria-expanded={isMobileMenuOpen}
+        >
+          {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+
+        {/* User Group */}
         <div className="home-user-group">
           <div className="user-link" onClick={toggleUserDropdown}>
-            <User size={24} className="user-icon" />
+            <User size={20} className="user-icon" />
             <span className="user-name">{user?.name || 'User'}</span>
-            <ChevronDown size={16} className={`dropdown-arrow ${showUserDropdown ? 'rotated' : ''}`} />
+            <ChevronDown size={14} className={`dropdown-arrow ${showUserDropdown ? 'rotated' : ''}`} />
           </div>
           
           {showUserDropdown && (
@@ -115,6 +145,7 @@ const Header = () => {
                   className="user-dropdown-item"
                   onClick={() => {
                     window.scrollTo(0, 0);
+                    setShowUserDropdown(false);
                   }}
                 >
                   <User size={16} />
@@ -128,6 +159,50 @@ const Header = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Mobile Navigation Overlay */}
+      <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'open' : ''}`}>
+        <nav className="home-nav mobile-nav">
+          <div className="mobile-nav-header">
+            <span className="mobile-nav-title">Menu</span>
+            <button 
+              className="mobile-nav-close"
+              onClick={toggleMobileMenu}
+              aria-label="Close mobile menu"
+            >
+              <X size={20} />
+            </button>
+          </div>
+          <div className="mobile-nav-content">
+            {navTabs.map(tab => (
+              <NavLink
+                key={tab.key}
+                to={tab.path}
+                className={`home-nav-link mobile-nav-link ${tab.key}`}
+                onClick={toggleMobileMenu}
+              >
+                {tab.label}
+              </NavLink>
+            ))}
+          </div>
+          <div className="mobile-nav-footer">
+            <div className="mobile-user-info">
+              <User size={16} />
+              <span>{user?.name || 'User'}</span>
+            </div>
+            <button 
+              className="mobile-logout-btn"
+              onClick={() => {
+                handleLogout();
+                toggleMobileMenu();
+              }}
+            >
+              <LogOut size={16} />
+              <span>Log out</span>
+            </button>
+          </div>
+        </nav>
       </div>
     </header>
   );
@@ -309,7 +384,7 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
 };
 
 // BlogLayout: Header + Sidebar + Main
-const BlogLayout = ({ children }) => {
+const BlogLayout = ({ children, isMobileMenuOpen, toggleMobileMenu }) => {
   const [expandedMenus, setExpandedMenus] = useState({
     seasonal: false,
     daily: false,
@@ -329,23 +404,23 @@ const BlogLayout = ({ children }) => {
       if (savedMenuState) {
         setExpandedMenus(JSON.parse(savedMenuState));
       }
-    } catch (e) {
-      console.error("Error loading menu state from localStorage", e);
-    }
+          } catch (e) {
+        // Silent fail for localStorage errors
+      }
   }, []);
   
   // Save expanded menu state to localStorage
   useEffect(() => {
     try {
       localStorage.setItem('blogExpandedMenus', JSON.stringify(expandedMenus));
-    } catch (e) {
-      console.error("Error saving menu state to localStorage", e);
-    }
+          } catch (e) {
+        // Silent fail for localStorage errors
+      }
   }, [expandedMenus]);
   
   return (
     <div className="home-container">
-      <Header />
+      <Header isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />
       <div className="home-layout">
         <Sidebar expandedMenus={expandedMenus} toggleMenu={toggleMenu} />
         <main className="home-main">
@@ -359,9 +434,9 @@ const BlogLayout = ({ children }) => {
 };
 
 // PageLayout: Header + Main (không Sidebar)
-const PageLayout = ({ children }) => (
+const PageLayout = ({ children, isMobileMenuOpen, toggleMobileMenu }) => (
   <div className="home-container">
-    <Header />
+    <Header isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />
     <main className="home-main">
       <div className="content-wrapper">
         {children}
@@ -371,69 +446,78 @@ const PageLayout = ({ children }) => (
 );
 
 // Page components sử dụng layout phù hợp
-const BlogPage = () => {
+const BlogPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   usePageScroll();
   return (
-    <BlogLayout>
+    <BlogLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <Blog />
     </BlogLayout>
   );
 };
 
-const BodyIndexPage = () => {
+const BodyIndexPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   usePageScroll();
   return (
-    <PageLayout>
+    <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <BodyIndex />
     </PageLayout>
   );
 };
 
-const CalorieIndexPage = () => {
+const CalorieIndexPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   usePageScroll();
   return (
-    <PageLayout>
+    <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <CalorieIndex />
     </PageLayout>
   );
 };
 
-const CalorieCalculationPage = () => {
+const CalorieCalculationPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   usePageScroll();
   return (
-    <PageLayout>
+    <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <CalorieCalculation />
     </PageLayout>
   );
 };
 
-const DashboardPage = () => {
+const DashboardPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   usePageScroll();
   return (
-    <PageLayout>
+    <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <Dashboard />
     </PageLayout>
   );
 };
 
-const ProfilePage = () => {
+const ProfilePage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   usePageScroll();
   return (
-    <PageLayout>
+    <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <Profile />
     </PageLayout>
   );
 };
 
 const Home = () => {
-  return <Outlet />;
-};
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-Home.BlogPage = BlogPage;
-Home.BodyIndexPage = BodyIndexPage;
-Home.CalorieIndexPage = CalorieIndexPage;
-Home.CalorieCalculationPage = CalorieCalculationPage;
-Home.DashboardPage = DashboardPage;
-Home.ProfilePage = ProfilePage;
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  return (
+    <Routes>
+      <Route path="/" element={<BlogPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+      <Route path="/blog" element={<BlogPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+      <Route path="/body-index" element={<BodyIndexPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+      <Route path="/calorie-index" element={<CalorieIndexPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+      <Route path="/calorie-calculation" element={<CalorieCalculationPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+      <Route path="/dashboard" element={<DashboardPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+      <Route path="/profile" element={<ProfilePage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+    </Routes>
+  );
+};
 
 export default Home;
