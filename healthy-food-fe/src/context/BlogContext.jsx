@@ -793,6 +793,23 @@ export const BlogProvider = ({ children }) => {
     return variations;
   };
 
+  // Tăng view count cho bài viết
+  const incrementViewCount = async (postId) => {
+    try {
+      await blogAPI.incrementViewCount(postId);
+      // Cập nhật local state nếu cần
+      setPosts(prevPosts => 
+        prevPosts.map(post => 
+          post.id === postId 
+            ? { ...post, views_count: (post.views_count || 0) + 1 }
+            : post
+        )
+      );
+    } catch (error) {
+      console.error('Error incrementing view count:', error);
+    }
+  };
+
   const value = {
     posts,
     categories,
@@ -831,7 +848,8 @@ export const BlogProvider = ({ children }) => {
     deleteComment,
     fetchReplies,
     toggleCommentLike,
-    clearComments
+    clearComments,
+    incrementViewCount
   };
 
   return (

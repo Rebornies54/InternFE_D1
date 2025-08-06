@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { foodAPI } from '../../services/api';
 import { useFoodContext } from '../../context/FoodContext';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
+import DatePicker from '../DatePicker';
 import './CalorieCalculation.css';
 
 const CalorieCalculation = () => {
@@ -633,10 +634,10 @@ const CalorieCalculation = () => {
         
         <div className="date-selector">
           <label>Select Date:</label>
-          <input 
-            type="date" 
+          <DatePicker
             value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
+            onChange={setSelectedDate}
+            placeholder="Select date"
             className="date-input"
           />
         </div>

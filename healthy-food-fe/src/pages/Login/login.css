@@ -102,6 +102,70 @@
   gap: 4px; 
 }
 
+/* Password Input Container */
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-input {
+  padding-right: 50px; /* Space for toggle button */
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #666;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle-btn:hover {
+  color: #23262F;
+}
+
+.password-toggle-btn:focus {
+  outline: none;
+  color: #D13D9E;
+}
+
+/* Login Options */
+.login-options {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.remember-password-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-family: Montserrat, sans-serif;
+  font-size: 14px;
+  color: #262626;
+  user-select: none;
+}
+
+.remember-password-checkbox {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  accent-color: #D13D9E;
+  cursor: pointer;
+}
+
+.remember-password-text {
+  font-weight: 400;
+  color: #262626;
+}
 
 .login-button {
   width: 100%;
@@ -181,6 +245,9 @@
   .login-input {
     width: 100%;
     min-width: 0;
+  }
+  .password-input {
+    padding-right: 50px;
   }
 }
 

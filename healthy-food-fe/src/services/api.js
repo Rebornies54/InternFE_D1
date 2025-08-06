@@ -110,6 +110,9 @@ export const blogAPI = {
 
   syncLikesCount: () => api.post('/blog/sync-likes-count'),
 
+  // View count API
+  incrementViewCount: (id) => api.post(`/blog/posts/${id}/view`),
+
   // Comment APIs
   getComments: (postId, page = 1, limit = 10, sortBy = 'newest') => 
     api.get(`/blog/posts/${postId}/comments`, { params: { page, limit, sort: sortBy } }),

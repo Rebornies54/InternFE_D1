@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
 import './Profile.css';
 import ProfileInfo from './ProfileInfo/ProfileInfo';
 import AddressInfo from './AddressInfo/AddressInfo';
 import ChangePassword from './ChangePassword/ChangePassword';
-import MyBlogs from './MyBlogs/MyBlogs';
+
+const MyBlogs = lazy(() => import('./MyBlogs/MyBlogs'));
 
 const menuList = [
   {
@@ -78,7 +79,7 @@ const Profile = () => {
     <div className="profile2-container">
       <aside className="profile-sidebar-custom">
         <div className="profile-sidebar-avatar-block">
-          {profileData.avatar ? (
+          {profileData.avatar && profileData.avatar.trim() !== '' ? (
             <img
               src={profileData.avatar}
               alt="avatar"
@@ -114,7 +115,11 @@ const Profile = () => {
         {tab === 'profile' && <ProfileInfo profileData={profileData} setProfileData={setProfileData} />}
         {tab === 'address' && <AddressInfo />}
         {tab === 'password' && <ChangePassword />}
-        {tab === 'my-blogs' && <MyBlogs />}
+        {tab === 'my-blogs' && (
+          <Suspense fallback={<div>Đang tải...</div>}>
+            <MyBlogs />
+          </Suspense>
+        )}
       </div>
     </div>
   );

@@ -36,19 +36,7 @@
 
 .dashboard-datepicker {
   width: 100%;
-  font-size: 15px;
-  padding: 8px 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: #fff;
-  color: #333;
-  outline: none;
   margin-bottom: 6px;
-  transition: border 0.2s;
-}
-
-.dashboard-datepicker:focus {
-  border: 1px solid #2196f3;
 }
 
 .dashboard-radar-block {

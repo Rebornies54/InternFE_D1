@@ -1,53 +1,59 @@
+import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login/Login';
-import Register from './pages/Register/Register';
-import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
-import Home from './pages/Home/Home';
-import ScrollToTop from './components/ScrollToTop';
-
-import ProtectedRoute from './components/ProtectedRoute';
-import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
+import { BlogProvider } from './context/BlogContext';
 import { FoodProvider } from './context/FoodContext';
 import { CalorieProvider } from './context/CalorieContext';
-import { BlogProvider } from './context/BlogContext';
-import './App.css'
+import ScrollToTop from './components/ScrollToTop';
+import './App.css';
+
+// Lazy load components
+const Login = React.lazy(() => import('./pages/Login/Login'));
+const Register = React.lazy(() => import('./pages/Register/Register'));
+const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword/ForgotPassword'));
+const Home = React.lazy(() => import('./pages/Home/Home'));
 
 function App() {
+  // Reset body height on app mount
+  React.useEffect(() => {
+    // Reset any forced height from previous debugging
+    document.body.style.height = '';
+    document.body.style.minHeight = '';
+    document.documentElement.style.height = '';
+    document.documentElement.style.minHeight = '';
+    
+    // Remove any force scroll elements
+    const forceElement = document.getElementById('force-scroll-element');
+    if (forceElement) {
+      forceElement.remove();
+    }
+    
+    // Reset any inline styles that might have been set
+    document.body.removeAttribute('style');
+    document.documentElement.removeAttribute('style');
+  }, []);
+
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <AuthProvider>
-          <FoodProvider>
-            <CalorieProvider>
-              <BlogProvider>
+    <AuthProvider>
+      <BlogProvider>
+        <FoodProvider>
+          <CalorieProvider>
+            <BrowserRouter>
+              <Suspense fallback={<div>Loading...</div>}>
                 <ScrollToTop />
                 <Routes>
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/home" element={
-                    <ProtectedRoute>
-                      <Home />
-                    </ProtectedRoute>
-                  }>
-                    <Route index element={<Navigate to="/home/blog" replace />} />
-                    <Route path="blog" element={<Home.BlogPage />} />
-                    <Route path="body-index" element={<Home.BodyIndexPage />} />
-                    <Route path="calorie-index" element={<Home.CalorieIndexPage />} />
-                    <Route path="calorie-calculation" element={<Home.CalorieCalculationPage />} />
-                    <Route path="dashboard" element={<Home.DashboardPage />} />
-                    <Route path="profile" element={<Home.ProfilePage />} />
-                  </Route>
-                  <Route path="/" element={<Navigate to="/login" replace />} />
-                  <Route path="*" element={<Navigate to="/login" replace />} />
+                  <Route path="/home/*" element={<Home />} />
+                  <Route path="/" element={<Navigate to="/home" replace />} />
                 </Routes>
-              </BlogProvider>
-            </CalorieProvider>
-          </FoodProvider>
-        </AuthProvider>
-      </BrowserRouter>
-    </ErrorBoundary>
+              </Suspense>
+            </BrowserRouter>
+          </CalorieProvider>
+        </FoodProvider>
+      </BlogProvider>
+    </AuthProvider>
   );
 }
 

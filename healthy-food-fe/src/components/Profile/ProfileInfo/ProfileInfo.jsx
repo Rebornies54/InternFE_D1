@@ -163,7 +163,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         <label className="profile-info-avatar-label">
           <span className="required">*</span>Profile Image
         </label>
-        {(tempData.avatar || (profileData.avatar_url && isValidAvatarUrl(profileData.avatar_url))) ? (
+        {(tempData.avatar || (profileData.avatar_url && profileData.avatar_url.trim() !== '' && isValidAvatarUrl(profileData.avatar_url))) ? (
           <img
             src={tempData.avatar || profileData.avatar_url}
             alt="Avatar"
@@ -187,7 +187,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
             }}
           />
         ) : null}
-        {!tempData.avatar && (!profileData.avatar_url || !isValidAvatarUrl(profileData.avatar_url)) && (
+        {!tempData.avatar && (!profileData.avatar_url || profileData.avatar_url.trim() === '' || !isValidAvatarUrl(profileData.avatar_url)) && (
           <div className="profile-info-avatar-empty">
             <div className="profile-info-avatar-placeholder">
               <span>No Image</span>

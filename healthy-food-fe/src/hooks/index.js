@@ -5,4 +5,11 @@ export { useModal } from './useModal';
 export { useDashboardData } from './useDashboardData';
 export { useNavigationScroll } from './useNavigationScroll';
 export { usePageScroll } from './usePageScroll';
-export { useScrollToTop } from './useScrollToTop'; 
+export { useScrollToTop } from './useScrollToTop';
+export { default as useRememberPassword } from './useRememberPassword';
+export { 
+  useAnimationVariants, 
+  useHoverAnimation, 
+  useLoadingAnimation, 
+  usePageTransition 
+} from './useAnimation'; 

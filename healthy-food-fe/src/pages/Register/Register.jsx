@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, Link } from 'react-router-dom';
@@ -8,14 +8,14 @@ import './register.css';
 
 // Validation schema
 const RegisterSchema = Yup.object().shape({
-  name: Yup.string().required('This field is required'),
+  name: Yup.string().required('Full name is required'),
   birthday: Yup.string(),
-  email: Yup.string().email('Invalid email address').required('This field is required'),
-  password: Yup.string().min(6, 'Please enter at least 6 characters').required('This field is required'),
-  phone: Yup.string().required('This field is required'),
+  email: Yup.string().email('Invalid email format').required('Email is required'),
+  password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+  phone: Yup.string().required('Phone number is required'),
   gender: Yup.string(),
-  province: Yup.string().required('This field is required'),
-  district: Yup.string().required('This field is required'),
+  province: Yup.string().required('Province is required'),
+  district: Yup.string().required('District is required'),
   address: Yup.string()
 });
 
@@ -48,8 +48,6 @@ const FormField = ({ label, name, type = "text", as, placeholder, required, chil
         placeholder={placeholder}
       />
     )}
-    
-    <ErrorMessage name={name} component="div" className="register-error" />
   </div>
 );
 
@@ -59,6 +57,8 @@ const Register = () => {
   const scrollToTop = useScrollToTop();
   const { isSubmitting, withSubmitting } = useForm();
   const { isOpen: showSuccessModal, openModal, closeModal } = useModal();
+  const { isOpen: showErrorModal, openModal: openErrorModal, closeModal: closeErrorModal } = useModal();
+  const [errorMessage, setErrorMessage] = useState('');
 
   const initialValues = {
     name: '',
@@ -72,11 +72,30 @@ const Register = () => {
     address: ''
   };
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     await withSubmitting(async () => {
+      // Check if all required fields are filled
+      const errors = {};
+      if (!values.name) errors.name = 'Full name is required';
+      if (!values.email) errors.email = 'Email is required';
+      if (!values.password) errors.password = 'Password is required';
+      if (!values.phone) errors.phone = 'Phone number is required';
+      if (!values.province) errors.province = 'Province is required';
+      if (!values.district) errors.district = 'District is required';
+      
+      if (Object.keys(errors).length > 0) {
+        setErrors(errors);
+        setErrorMessage('Please fill in all required information');
+        openErrorModal();
+        return;
+      }
+
       const result = await register(values);
       if (result.success) {
         openModal();
+      } else {
+        setErrorMessage(result.message || 'Registration failed');
+        openErrorModal();
       }
     });
   };
@@ -93,6 +112,11 @@ const Register = () => {
     navigate('/home');
   };
 
+  const handleCloseErrorModal = () => {
+    closeErrorModal();
+    setErrorMessage('');
+  };
+
   return (
     <div className="register-container">
       <div className="register-box">
@@ -100,23 +124,15 @@ const Register = () => {
           <p className="register-welcome">Welcome!</p>
           <h2 className="register-title">Account Registration</h2>
         </div>
-        {error && (
-          <div style={{ 
-            color: 'red', 
-            textAlign: 'center', 
-            marginBottom: '1rem',
-            fontSize: '0.9rem'
-          }}>
-            {error}
-          </div>
-        )}
         
         <Formik
           initialValues={initialValues}
           validationSchema={RegisterSchema}
           onSubmit={handleSubmit}
+          validateOnChange={false}
+          validateOnBlur={false}
         >
-          {() => (
+          {({ isSubmitting, errors, touched }) => (
             <Form className="register-form">
               <div className="register-form-wrapper">
                 {/* Full Name */}
@@ -126,6 +142,9 @@ const Register = () => {
                   required={true}
                   className="register-input-fullname"
                 />
+                {errors.name && touched.name && (
+                  <div className="register-error">{errors.name}</div>
+                )}
                 
                 {/* Birthday and Email */}
                 <div className="register-form-row">
@@ -147,6 +166,9 @@ const Register = () => {
                     groupClassName="register-form-group-email"
                   />
                 </div>
+                {errors.email && touched.email && (
+                  <div className="register-error">{errors.email}</div>
+                )}
                 
                 {/* Password and Phone */}
                 <div className="register-form-row">
@@ -169,6 +191,12 @@ const Register = () => {
                     groupClassName="register-form-group-phone"
                   />
                 </div>
+                {(errors.password && touched.password) && (
+                  <div className="register-error">{errors.password}</div>
+                )}
+                {(errors.phone && touched.phone) && (
+                  <div className="register-error">{errors.phone}</div>
+                )}
                 
                 {/* Gender */}
                 <FormField
@@ -196,6 +224,9 @@ const Register = () => {
                   <option value="osaka">Osaka</option>
                   <option value="kyoto">Kyoto</option>
                 </FormField>
+                {errors.province && touched.province && (
+                  <div className="register-error">{errors.province}</div>
+                )}
                 
                 {/* District */}
                 <FormField
@@ -212,6 +243,9 @@ const Register = () => {
                   <option value="Abuta">Abuta</option>
                   <option value="Sorachi">Sorachi</option>
                 </FormField>
+                {errors.district && touched.district && (
+                  <div className="register-error">{errors.district}</div>
+                )}
                 
                 {/* Address */}
                 <FormField
@@ -268,6 +302,28 @@ const Register = () => {
                   onClick={handleLoginNow}
                 >
                   Login now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="error-modal-overlay">
+          <div className="error-modal">
+            <div className="error-modal-content">
+              <h3 className="error-modal-title">Registration Error</h3>
+              <p className="error-modal-message">
+                {errorMessage}
+              </p>
+              <div className="error-modal-buttons">
+                <button 
+                  className="error-modal-btn error-modal-btn-primary"
+                  onClick={handleCloseErrorModal}
+                >
+                  Close
                 </button>
               </div>
             </div>

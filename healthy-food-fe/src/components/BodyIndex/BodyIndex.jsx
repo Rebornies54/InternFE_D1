@@ -380,7 +380,7 @@ const BodyIndex = () => {
                 recommendedFoods.map((food) => (
                   <div className="food-item" key={food.id}>
                     <div className="food-img-container">
-                      {getFoodImageUrl(food) ? (
+                      {getFoodImageUrl(food) && getFoodImageUrl(food).trim() !== '' ? (
                         <img 
                           src={getFoodImageUrl(food)} 
                           alt={food.name}
@@ -389,7 +389,7 @@ const BodyIndex = () => {
                         />
                       ) : null}
                       <div className="food-img-placeholder" style={{ 
-                        display: getFoodImageUrl(food) ? 'none' : 'block',
+                        display: getFoodImageUrl(food) && getFoodImageUrl(food).trim() !== '' ? 'none' : 'block',
                         backgroundColor: getPlaceholderColor(food.category_id)
                       }}></div>
                     </div>
@@ -495,7 +495,7 @@ const BodyIndex = () => {
             <div className="food-modal">
               <button className="modal-close-btn" onClick={closeModal}>×</button>
               <div className="food-modal-img-large">
-                {getFoodImageUrl(selectedFood) ? (
+                {getFoodImageUrl(selectedFood) && getFoodImageUrl(selectedFood).trim() !== '' ? (
                   <img 
                     src={getFoodImageUrl(selectedFood)} 
                     alt={selectedFood.name}
@@ -504,7 +504,7 @@ const BodyIndex = () => {
                   />
                 ) : null}
                 <div className="food-img-placeholder food-modal-img-placeholder" style={{ 
-                  display: getFoodImageUrl(selectedFood) ? 'none' : 'block',
+                  display: getFoodImageUrl(selectedFood) && getFoodImageUrl(selectedFood).trim() !== '' ? 'none' : 'block',
                   backgroundColor: getPlaceholderColor(selectedFood.category_id)
                 }}></div>
               </div>

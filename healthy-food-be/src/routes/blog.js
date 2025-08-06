@@ -84,6 +84,12 @@ router.get('/posts/:id', async (req, res) => {
       });
     }
     
+    // Tăng view count
+    await pool.execute(
+      'UPDATE blog_posts SET views_count = views_count + 1 WHERE id = ?',
+      [id]
+    );
+    
     res.json({
       success: true,
       data: posts[0]
@@ -486,13 +492,7 @@ router.get('/my-blogs', auth, async (req, res) => {
     const [posts] = await pool.execute(query, [userId]);
     console.log(`Found ${posts.length} posts for user ${userId}`);
     
-    if (posts.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Không tìm thấy bài viết'
-      });
-    }
-    
+    // Trả về mảng rỗng thay vì 404 khi user không có bài viết
     res.json({
       success: true,
       data: posts
@@ -1122,6 +1122,43 @@ router.post('/sync-likes-count', auth, async (req, res) => {
     });
   } finally {
     connection.release();
+  }
+});
+
+// Tăng view count cho bài viết
+router.post('/posts/:id/view', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Kiểm tra bài viết có tồn tại không
+    const [posts] = await pool.execute(
+      'SELECT id FROM blog_posts WHERE id = ?',
+      [id]
+    );
+    
+    if (posts.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy bài viết'
+      });
+    }
+    
+    // Tăng view count
+    await pool.execute(
+      'UPDATE blog_posts SET views_count = views_count + 1 WHERE id = ?',
+      [id]
+    );
+    
+    res.json({
+      success: true,
+      message: 'Đã tăng view count'
+    });
+  } catch (error) {
+    console.error('Error incrementing view count:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi tăng view count'
+    });
   }
 });
 
