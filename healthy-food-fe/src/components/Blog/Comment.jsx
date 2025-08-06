@@ -83,7 +83,7 @@ const CommentItem = ({ comment, onReply, onEdit, onDelete, onLike, isLiked, show
       <div className="comment-header">
         <div className="comment-author">
           <div className="comment-avatar">
-            {comment.author_avatar ? (
+            {comment.author_avatar && comment.author_avatar.trim() !== '' ? (
               <img src={comment.author_avatar} alt={comment.author_name} />
             ) : (
               <div className="avatar-placeholder">

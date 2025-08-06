@@ -6,10 +6,8 @@ export default function ScrollToTop() {
   const prevPathRef = useRef(pathname);
 
   useEffect(() => {
-    // Scroll to top whenever pathname changes
     const performScroll = () => {
       try {
-        // If there's a hash in URL, scroll to that element
         if (hash) {
           const element = document.getElementById(hash.substring(1));
           if (element) {
@@ -18,32 +16,30 @@ export default function ScrollToTop() {
           }
         }
         
-        // If no hash, scroll to top
+        // Always scroll to top when pathname changes, regardless of current position
         window.scrollTo({
           top: 0,
           left: 0,
           behavior: 'smooth'
         });
       } catch (error) {
-        // Fallback for browsers that don't support smooth scroll
+        console.error('ScrollToTop: Error during scroll:', error);
         window.scrollTo(0, 0);
       }
     };
 
-    // Check if pathname actually changed
     if (prevPathRef.current !== pathname) {
-      // Use multiple approaches to ensure scroll happens
       const timer1 = setTimeout(() => {
         performScroll();
-      }, 50);
+      }, 100);
 
       const timer2 = setTimeout(() => {
         performScroll();
-      }, 150);
+      }, 300);
 
       const timer3 = setTimeout(() => {
         requestAnimationFrame(performScroll);
-      }, 100);
+      }, 500);
 
       prevPathRef.current = pathname;
       

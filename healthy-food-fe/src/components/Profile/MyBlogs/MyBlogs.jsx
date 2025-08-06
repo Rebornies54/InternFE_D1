@@ -13,10 +13,12 @@ const MyBlogs = () => {
     title: '',
     description: '',
     content: '',
-    category: ''
+    category: '',
+    image_url: null
   });
 
   useEffect(() => {
+    // Chỉ fetch khi component được mount (tức là khi tab my-blogs được chọn)
     fetchMyBlogs();
   }, []);
 
@@ -57,7 +59,8 @@ const MyBlogs = () => {
       title: blog.title,
       description: blog.description || '',
       content: blog.content,
-      category: blog.category
+      category: blog.category,
+      image_url: blog.image_url || null // Giữ nguyên ảnh
     });
   };
 
@@ -75,7 +78,8 @@ const MyBlogs = () => {
           title: '',
           description: '',
           content: '',
-          category: ''
+          category: '',
+          image_url: null
         });
       }
     } catch (error) {
@@ -90,7 +94,8 @@ const MyBlogs = () => {
       title: '',
       description: '',
       content: '',
-      category: ''
+      category: '',
+      image_url: null
     });
   };
 
@@ -159,6 +164,17 @@ const MyBlogs = () => {
                       <option value="Bí quyết">Bí quyết</option>
                     </select>
                   </div>
+                  <div className="form-group">
+                    <label>Ảnh hiện tại:</label>
+                    {editForm.image_url && editForm.image_url.trim() !== '' ? (
+                      <div className="current-image">
+                        <img src={editForm.image_url} alt="Current" style={{maxWidth: '200px', maxHeight: '150px'}} />
+                        <p>Ảnh hiện tại sẽ được giữ nguyên</p>
+                      </div>
+                    ) : (
+                      <p>Không có ảnh</p>
+                    )}
+                  </div>
                   <div className="edit-actions">
                     <button onClick={handleUpdate} className="btn-save">Lưu</button>
                     <button onClick={handleCancelEdit} className="btn-cancel">Hủy</button>
@@ -169,6 +185,11 @@ const MyBlogs = () => {
                   <div className="blog-info">
                     <h3>{blog.title}</h3>
                     <p className="blog-description">{blog.description}</p>
+                    {blog.image_url && blog.image_url.trim() !== '' && (
+                      <div className="blog-image">
+                        <img src={blog.image_url} alt={blog.title} style={{maxWidth: '200px', maxHeight: '150px'}} />
+                      </div>
+                    )}
                     <div className="blog-meta">
                       <span>Danh mục: {blog.category}</span>
                       <span>Ngày tạo: {formatDate(blog.created_at)}</span>

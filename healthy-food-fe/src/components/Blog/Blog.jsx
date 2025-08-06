@@ -1,19 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useBlogContext } from '../../context/BlogContext';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
-import { Heart } from 'lucide-react';
+import { blogAPI } from '../../services/api';
+import { Heart, Eye } from 'lucide-react';
+import { 
+  AnimatedCard, 
+  AnimatedButton, 
+  FadeIn, 
+  SlideInLeft, 
+  StaggeredList, 
+  StaggeredItem,
+  AnimatedModal,
+  LoadingSpinner
+} from '../AnimatedComponents';
 import './Blog.css';
 import CreateBlog from './CreateBlog';
 import Comment from './Comment';
 
 const FoodCard = ({ post, onClick, onLike, isLiked, likeCount }) => (
-  <div className="blog-card">
+  <AnimatedCard className="blog-card">
     <div className="blog-card-image" onClick={() => onClick(post)}>
-      {post.image ? (
-        <img src={post.image} alt={post.title} />
+      {post.image_url && post.image_url.trim() !== '' ? (
+        <img src={post.image_url} alt={post.title} />
       ) : (
         <span>Ảnh minh họa</span>
       )}
+      {/* View count overlay */}
+      <div className="blog-card-view-count">
+        <Eye size={14} />
+        <span>{post.views_count || 0}</span>
+      </div>
     </div>
     <div className="blog-card-content" onClick={() => onClick(post)}>
       <h3 className="blog-card-title">{post.title}</h3>
@@ -24,21 +40,21 @@ const FoodCard = ({ post, onClick, onLike, isLiked, likeCount }) => (
       </div>
     </div>
     <div className="blog-card-actions" onClick={(e) => e.stopPropagation()}>
-      <button 
+      <AnimatedButton 
         className={`like-button ${isLiked ? 'liked' : ''}`}
         onClick={() => onLike(post.id)}
       >
         <Heart size={16} />
         <span className="like-count">{likeCount}</span>
-      </button>
+      </AnimatedButton>
     </div>
-  </div>
+  </AnimatedCard>
 );
 
 const FoodItem = ({ food, onClick }) => (
-  <div className="food-item" onClick={() => onClick(food)}>
+  <AnimatedCard className="food-item" onClick={() => onClick(food)}>
     <div className="food-item-image">
-      {food.image_url ? (
+      {food.image_url && food.image_url.trim() !== '' ? (
         <img src={food.image_url} alt={food.name} />
       ) : (
         <span></span>
@@ -53,7 +69,7 @@ const FoodItem = ({ food, onClick }) => (
         <span className="nutrition-item">{food.carbs}g carbs</span>
       </div>
     </div>
-  </div>
+  </AnimatedCard>
 );
 
 const FoodCategoryFilter = ({ categories, selectedCategory, onCategoryChange }) => (
@@ -167,8 +183,8 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
         </button>
       </div>
     </div>
-    {post.image && <div className="blog-detail-image">
-      <img src={post.image} alt={post.title} />
+    {post.image_url && post.image_url.trim() !== '' && <div className="blog-detail-image">
+      <img src={post.image_url} alt={post.title} />
     </div>}
     <div className="blog-detail-content">
       {post.content.split('\n\n').map((paragraph, idx) => (
@@ -181,19 +197,71 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
   </div>
 );
 
-const CategoryFilter = ({ categories, selected, onChange }) => (
-  <div className="blog-categories">
-    {categories.map(category => (
-      <button
-        key={category}
-        className={`category-button ${selected === category ? 'active' : ''}`}
-        onClick={() => onChange(category)}
-      >
-        {category.charAt(0).toUpperCase() + category.slice(1)}
-      </button>
-    ))}
-  </div>
-);
+const CategoryFilter = ({ categories, selected, onChange }) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const selectCategory = (category) => {
+    onChange(category);
+    setIsDropdownOpen(false);
+  };
+
+  const getSelectedCategoryLabel = () => {
+    if (!selected) return 'Tất cả danh mục';
+    return selected.charAt(0).toUpperCase() + selected.slice(1);
+  };
+
+  return (
+    <div className={`blog-categories-dropdown ${isDropdownOpen ? 'open' : ''}`} ref={dropdownRef}>
+      <div className="dropdown-trigger" onClick={toggleDropdown}>
+        <span className="dropdown-selected">{getSelectedCategoryLabel()}</span>
+        <div className="dropdown-arrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </div>
+      </div>
+      
+      {isDropdownOpen && (
+        <div className="dropdown-menu">
+          <div 
+            className={`dropdown-item ${!selected ? 'selected' : ''}`}
+            onClick={() => selectCategory('')}
+          >
+            Tất cả danh mục
+          </div>
+          {categories.map(category => (
+            <div
+              key={category}
+              className={`dropdown-item ${selected === category ? 'selected' : ''}`}
+              onClick={() => selectCategory(category)}
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const SearchBar = ({ value, onChange }) => (
   <div className="blog-search">
@@ -289,7 +357,8 @@ const Blog = () => {
     openFoodModal,
     closeFoodModal,
     getFoodVariations,
-    fetchBlogPosts
+    fetchBlogPosts,
+    incrementViewCount
   } = useBlogContext();
   
   const [selectedPost, setSelectedPost] = useState(null);
@@ -317,9 +386,22 @@ const Blog = () => {
     scrollToTop();
   };
 
-  const handlePostClick = (post) => {
-    setSelectedPost(post);
+  const handlePostClick = async (post) => {
+    try {
+      // Fetch blog detail từ API để có dữ liệu mới nhất
+      const response = await blogAPI.getPostById(post.id);
+      if (response.data.success) {
+        setSelectedPost(response.data.data);
+      } else {
+        setSelectedPost(post); // Fallback to local data
+      }
+    } catch (error) {
+      console.error('Error fetching blog detail:', error);
+      setSelectedPost(post); // Fallback to local data
+    }
     scrollToTop();
+    // Tăng view count khi click vào bài viết
+    incrementViewCount(post.id);
   };
 
   const handleBackClick = () => {

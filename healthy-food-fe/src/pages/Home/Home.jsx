@@ -4,7 +4,6 @@ import logo from '../../assets/logo/healthy-food-logo.png';
 import { User, ChevronDown, ChevronRight, LogOut, Search, Clock, Calendar, Star, Utensils, Menu, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useBlogContext } from '../../context/BlogContext';
-import { useNavigationScroll } from '../../hooks/useNavigationScroll';
 import { usePageScroll } from '../../hooks/usePageScroll';
 import './home.css';
 
@@ -15,11 +14,13 @@ import CalorieIndex from '../../components/CalorieIndex';
 import CalorieCalculation from '../../components/CalorieCalculation';
 import Dashboard from '../../components/Dashboard';
 import Profile from '../../components/Profile';
+import HomePage from '../../components/HomePage/HomePage';
 
 // Navigation tabs configuration
 const navTabs = [
   { label: 'Blog', path: '/home/blog', key: 'blog' },
   { label: 'Body Index', path: '/home/body-index', key: 'body' },
+  { label: 'HOME', path: '/home', key: 'home', isHome: true },
   { label: 'Calorie Index', path: '/home/calorie-index', key: 'calorie' },
   { label: 'Calorie Calculation', path: '/home/calorie-calculation', key: 'calculation' },
   { label: 'Dashboard', path: '/home/dashboard', key: 'dashboard' },
@@ -28,11 +29,11 @@ const navTabs = [
 // Custom NavLink component for better control
 const NavLink = ({ to, children, className, onClick }) => {
   const location = useLocation();
-  const navigateWithScroll = useNavigationScroll();
+  const navigate = useNavigate();
   
   const handleClick = (e) => {
     e.preventDefault();
-    navigateWithScroll(to);
+    navigate(to);
     if (onClick) onClick();
   };
   
@@ -100,18 +101,20 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
           <span className="home-app-name">HEALTHY FOOD</span>
         </div>
         
-        {/* Desktop Navigation */}
-        <nav className="home-nav desktop-nav">
-          {navTabs.map(tab => (
-            <NavLink
-              key={tab.key}
-              to={tab.path}
-              className={`home-nav-link ${tab.key}`}
-            >
-              {tab.label}
-            </NavLink>
-          ))}
-        </nav>
+        {/* Desktop Navigation Container */}
+        <div className="home-nav-container">
+          <nav className="home-nav desktop-nav">
+            {navTabs.map(tab => (
+              <NavLink
+                key={tab.key}
+                to={tab.path}
+                className={`home-nav-link ${tab.key} ${tab.isHome ? 'home-tab' : ''}`}
+              >
+                {tab.label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
 
         {/* Mobile Menu Button */}
         <button 
@@ -179,7 +182,7 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
               <NavLink
                 key={tab.key}
                 to={tab.path}
-                className={`home-nav-link mobile-nav-link ${tab.key}`}
+                className={`home-nav-link mobile-nav-link ${tab.key} ${tab.isHome ? 'home-tab' : ''}`}
                 onClick={toggleMobileMenu}
               >
                 {tab.label}
@@ -500,6 +503,15 @@ const ProfilePage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   );
 };
 
+const HomePageComponent = ({ isMobileMenuOpen, toggleMobileMenu }) => {
+  usePageScroll();
+  return (
+    <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
+      <HomePage />
+    </PageLayout>
+  );
+};
+
 const Home = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -509,7 +521,8 @@ const Home = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<BlogPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+      <Route path="/" element={<HomePageComponent isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+      <Route path="/home" element={<HomePageComponent isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
       <Route path="/blog" element={<BlogPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
       <Route path="/body-index" element={<BodyIndexPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
       <Route path="/calorie-index" element={<CalorieIndexPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
@@ -519,5 +532,14 @@ const Home = () => {
     </Routes>
   );
 };
+
+// Export các components để sử dụng trong App.jsx
+Home.HomePageComponent = HomePageComponent;
+Home.BlogPage = BlogPage;
+Home.BodyIndexPage = BodyIndexPage;
+Home.CalorieIndexPage = CalorieIndexPage;
+Home.CalorieCalculationPage = CalorieCalculationPage;
+Home.DashboardPage = DashboardPage;
+Home.ProfilePage = ProfilePage;
 
 export default Home;
