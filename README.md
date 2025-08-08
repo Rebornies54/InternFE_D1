@@ -1,14 +1,6 @@
 # Healthy Food Application
 
 
-## 🚀 Quick Start
-
-### Option 1: Docker (Recommended)
-
-#### Yêu cầu hệ thống
-- Docker Desktop hoặc Docker Engine
-- Docker Compose
-- Ít nhất 4GB RAM
 
 #### Chạy ứng dụng với Docker
 ```bash
@@ -96,7 +88,7 @@ npm run build         # Build frontend
 ### Build frontend:
 ```bash
 cd healthy-food-fe
-npm run build
+npm run dev
 ```
 
 ### Deploy backend:
