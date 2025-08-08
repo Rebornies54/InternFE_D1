@@ -203,6 +203,10 @@ CREATE TABLE IF NOT EXISTS blog_comment_likes (
     UNIQUE KEY unique_user_comment_like (user_id, comment_id)
 );
 
+-- Insert sample users for blog posts
+INSERT INTO users (id, name, email, password, phone, gender, birthday, province, district, address, avatar_url) VALUES
+(1, 'Admin User', 'admin@healthyfood.com', '$2b$10$rQZ8K9mN2pL4vX7yJ1hF3sA6bC8dE9fG0hI1jK2lM3nO4pQ5rS6tU7vW8xY9zA0bB1cD2eF3gH4iI5jJ6kK7lL8mM9nN0oO1pP2qQ3rR4sS5tT6uU7vV8wW9xX0yY1zZ', '0123456789', 'male', '1990-01-01', 'Hà Nội', 'Cầu Giấy', '123 Đường ABC', NULL);
+
 -- Insert sample blog posts
 INSERT INTO blog_posts (user_id, title, description, content, category, likes_count) VALUES
 (1, 'Khoai tây - Nguồn vitamin C dồi dào', 'Khoai tây chứa hàm lượng vitamin C cao...', 'Khoai tây thường bị đánh giá thấp về giá trị dinh dưỡng, nhưng thực tế chúng chứa nhiều vitamin và khoáng chất quan trọng. Một củ khoai tây cỡ trung bình cung cấp khoảng 27mg vitamin C, chiếm 30% nhu cầu hàng ngày của cơ thể. Ngoài ra, khoai tây còn chứa kali, vitamin B6 và chất xơ. Cách chế biến khoai tây cũng ảnh hưởng đến hàm lượng dinh dưỡng - nướng hoặc luộc sẽ giữ được nhiều vitamin hơn so với chiên.', 'thực phẩm', 15),

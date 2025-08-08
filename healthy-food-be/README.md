@@ -26,7 +26,7 @@ CREATE DATABASE `healthy-food`;
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=your_password
-DB_NAME=healthy-food
+DB_NAME=healthyfood
 DB_PORT=3306
 ```
 
