@@ -3,22 +3,50 @@
 
 ## 🚀 Quick Start
 
-### 1. Cài đặt dependencies
+### Option 1: Docker (Recommended)
+
+#### Yêu cầu hệ thống
+- Docker Desktop hoặc Docker Engine
+- Docker Compose
+- Ít nhất 4GB RAM
+
+#### Chạy ứng dụng với Docker
+```bash
+# Chạy toàn bộ ứng dụng
+docker-compose up -d
+
+# Truy cập ứng dụng
+# Frontend: http://localhost:5173
+# Backend API: http://localhost:5000
+```
+
+#### Thiết lập database (chỉ chạy 1 lần)
+```bash
+docker-compose --profile setup up db-setup
+```
+
+### Option 2: Local Development
+
+#### 1. Cài đặt dependencies
 ```bash
 npm run install-all
 ```
 
-### 2. Cấu hình database
+#### 2. Cấu hình database
 1. Tạo file `.env` trong thư mục `healthy-food-be`:
 ```bash
 cd healthy-food-be
 cp env.example .env
 ```
 
+2. Cập nhật thông tin database trong file `.env`
 
+3. Setup database:
 ```bash
 npm run setup-db
 ```
+
+4. Chạy ứng dụng:
 ```bash
 npm run dev
 ```
@@ -48,6 +76,16 @@ InternFE_D1/
 
 ## 🔄 Scripts
 
+### Docker Commands
+```bash
+docker-compose up -d              # Chạy toàn bộ ứng dụng
+docker-compose down               # Dừng ứng dụng
+docker-compose logs               # Xem logs
+docker-compose up -d --build      # Rebuild và chạy
+docker-compose --profile setup up db-setup  # Setup database
+```
+
+### Local Development Commands
 ```bash
 npm run install-all    # Cài đặt tất cả dependencies
 npm run dev           # Chạy cả frontend và backend
