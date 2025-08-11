@@ -28,16 +28,10 @@ docker-compose logs db-setup
 
 #### Bước 4: Truy cập ứng dụng
 - **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:5000
+- **Backend API**: http://localhost:5000/health
 - **Database**: localhost:3308 (MySQL)
 
 ### Option 2: Local Development
-
-#### Yêu cầu hệ thống
-- **Node.js** (version 16.0.0+)
-- **MySQL** (version 8.0+)
-- **npm** hoặc **yarn**
-- **Git**
 
 #### Bước 1: Clone và cài đặt dependencies
 ```bash
