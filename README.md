@@ -2,11 +2,6 @@
 
 ### Option 1: Docker (Recommended)
 
-#### Yêu cầu hệ thống
-- Docker Desktop hoặc Docker Engine
-- Docker Compose
-- Ít nhất 4GB RAM
-
 #### Chạy ứng dụng với Docker
 ```bash
 # Chạy toàn bộ ứng dụng
