@@ -40,7 +40,14 @@ npm run setup-db
 
 4. Chạy ứng dụng:
 ```bash
+npm install
 npm run dev
+```
+5. Deploy backend:
+```bash
+cd healthy-food-be
+npm install 
+npm start
 ```
 
 Frontend sẽ chạy tại: `http://localhost:5173`
