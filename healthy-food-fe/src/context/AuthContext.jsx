@@ -15,6 +15,26 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentBmi, setCurrentBmi] = useState(() => {
+    const stored = localStorage.getItem('currentBmi');
+    return stored ? Number(stored) : null;
+  });
+
+  const refreshCurrentBmi = async () => {
+    try {
+      const res = await authAPI.getBMIData();
+      if (res.data?.success && res.data?.data) {
+        const bmiVal = Number(res.data.data.bmi);
+        setCurrentBmi(bmiVal);
+        localStorage.setItem('currentBmi', String(bmiVal));
+      } else {
+        setCurrentBmi(null);
+        localStorage.removeItem('currentBmi');
+      }
+    } catch (_) {
+      // ignore
+    }
+  };
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -23,9 +43,11 @@ const AuthProvider = ({ children }) => {
         try {
           const response = await authAPI.getCurrentUser();
           setUser(response.data.data);
+          await refreshCurrentBmi();
         } catch (error) {
           localStorage.removeItem('token');
           localStorage.removeItem('user');
+          localStorage.removeItem('currentBmi');
         }
       }
       setLoading(false);
@@ -45,6 +67,7 @@ const AuthProvider = ({ children }) => {
       setUser(user);
       
       await new Promise(resolve => setTimeout(resolve, 100));
+      await refreshCurrentBmi();
       
       return { success: true };
     } catch (error) {
@@ -86,8 +109,10 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('currentBmi');
     setUser(null);
     setError(null);
+    setCurrentBmi(null);
   };
 
   const updateProfile = async (userData) => {
@@ -124,6 +149,16 @@ const AuthProvider = ({ children }) => {
     user,
     loading,
     error,
+    currentBmi,
+    setCurrentBmi: (bmiVal) => {
+      if (typeof bmiVal === 'number' && !Number.isNaN(bmiVal)) {
+        setCurrentBmi(bmiVal);
+        localStorage.setItem('currentBmi', String(bmiVal));
+      } else {
+        setCurrentBmi(null);
+        localStorage.removeItem('currentBmi');
+      }
+    },
     login,
     register,
     logout,

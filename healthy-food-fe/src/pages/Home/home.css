@@ -62,7 +62,7 @@ body {
 
 .home-container {
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   display: flex;

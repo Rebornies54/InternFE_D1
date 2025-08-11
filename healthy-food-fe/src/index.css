@@ -10,11 +10,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   background-color: #fff;
+  overflow-x: hidden;
 }
 
 button {

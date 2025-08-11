@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useBlogContext } from '../../context/BlogContext';
+import { authAPI } from '../../services/api';
 import { 
   Target, 
   Users, 
@@ -23,6 +24,7 @@ const HomePage = () => {
   const { posts } = useBlogContext();
   const navigate = useNavigate();
   const latestPosts = posts.slice(0, 3);
+  const [currentBmi, setCurrentBmi] = useState(null);
 
   // Reset body height on mount
   useEffect(() => {
@@ -52,6 +54,24 @@ const HomePage = () => {
       viewportHeight: window.visualViewport?.height || window.innerHeight
     });
   }, []);
+
+  // Load current BMI for signed-in user
+  useEffect(() => {
+    const loadBmi = async () => {
+      if (!user) return;
+      try {
+        const res = await authAPI.getBMIData();
+        if (res.data?.success && res.data?.data) {
+          setCurrentBmi(Number(res.data.data.bmi));
+        } else {
+          setCurrentBmi(null);
+        }
+      } catch (_) {
+        setCurrentBmi(null);
+      }
+    };
+    loadBmi();
+  }, [user]);
 
   // Banner slider functionality
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -423,13 +443,13 @@ const HomePage = () => {
                 <p className="user-name">{user.name}</p>
               </div>
             </div>
-            <div className="user-stats">
+                <div className="user-stats">
               <div className="user-stat-card">
                 <div className="stat-icon">
                   <Target size={20} />
                 </div>
                 <div className="stat-info">
-                  <span className="stat-value">23.5</span>
+                      <span className="stat-value">{currentBmi?.toFixed ? currentBmi.toFixed(1) : '—'}</span>
                   <span className="stat-label">BMI hiện tại</span>
                 </div>
               </div>
