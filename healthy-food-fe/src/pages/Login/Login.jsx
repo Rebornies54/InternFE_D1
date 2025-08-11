@@ -120,7 +120,8 @@ const Login = () => {
                       name="email" 
                       type="email" 
                       placeholder="Enter your email" 
-                      className="login-input" 
+                      className="login-input"
+                      autoComplete="email" 
                     />
                     {errors.email && touched.email && (
                       <div style={{ color: 'red', fontSize: '0.95rem' }}>
@@ -136,7 +137,8 @@ const Login = () => {
                         name="password" 
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter your password" 
-                        className="login-input password-input" 
+                        className="login-input password-input"
+                        autoComplete="current-password" 
                       />
                       <button
                         type="button"

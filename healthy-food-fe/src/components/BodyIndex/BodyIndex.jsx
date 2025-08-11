@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { foodAPI } from '../../services/api';
 import { authAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import { useFoodContext } from '../../context/FoodContext';
 import { useCalorieContext } from '../../context/CalorieContext';
 import './BodyIndex.css';
 
 const BodyIndex = () => {
+  const { setCurrentBmi } = useAuth();
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [bmi, setBmi] = useState('');
@@ -78,6 +80,7 @@ const BodyIndex = () => {
         setHeight(bmiData.height.toString());
         setWeight(bmiData.weight.toString());
         setBmi(bmiData.bmi.toString());
+        setCurrentBmi(Number(bmiData.bmi));
         
         // Generate recommendations based on saved BMI
         generateRecommendations(bmiData.bmi.toString());
@@ -115,6 +118,7 @@ const BodyIndex = () => {
           bmi: parseFloat(bmiValue),
           bmi_category: bmiCategory
         });
+        setCurrentBmi(parseFloat(bmiValue));
 
       } catch (error) {
         // Error saving BMI data
