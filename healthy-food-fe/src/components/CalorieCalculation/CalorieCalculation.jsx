@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { foodAPI } from '../../services/api';
 import { useFoodContext } from '../../context/FoodContext';
-import { useScrollToTop } from '../../hooks/useScrollToTop';
 import DatePicker from '../DatePicker';
 import './CalorieCalculation.css';
 
@@ -31,7 +30,7 @@ const CalorieCalculation = () => {
   const [editCalories, setEditCalories] = useState(0);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
-  const scrollToTop = useScrollToTop();
+
 
   // Mobile menu state
   const [activeMobileMenu, setActiveMobileMenu] = useState(null);
@@ -774,7 +773,6 @@ const CalorieCalculation = () => {
             <button 
               onClick={() => {
                 setCurrentPage(prev => Math.max(1, prev - 1));
-                scrollToTop();
               }}
               disabled={currentPage === 1}
               className="pagination-btn"
@@ -787,7 +785,6 @@ const CalorieCalculation = () => {
             <button 
               onClick={() => {
                 setCurrentPage(prev => Math.min(totalPages, prev + 1));
-                scrollToTop();
               }}
               disabled={currentPage === totalPages}
               className="pagination-btn"

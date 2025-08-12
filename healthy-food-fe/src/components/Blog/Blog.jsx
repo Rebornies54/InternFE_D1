@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useBlogContext } from '../../context/BlogContext';
-import { useScrollToTop } from '../../hooks/useScrollToTop';
 import { blogAPI } from '../../services/api';
 import { Heart, Eye } from 'lucide-react';
 import { 
@@ -21,10 +20,27 @@ const FoodCard = ({ post, onClick, onLike, isLiked, likeCount }) => (
   <AnimatedCard className="blog-card">
     <div className="blog-card-image" onClick={() => onClick(post)}>
       {post.image_url && post.image_url.trim() !== '' ? (
-        <img src={post.image_url} alt={post.title} />
-      ) : (
+        <img 
+          src={post.image_url} 
+          alt={post.title}
+          onError={(e) => {
+            console.warn(`Failed to load blog image: ${post.image_url}`);
+            e.target.style.display = 'none';
+            const placeholder = e.target.parentNode.querySelector('.blog-image-placeholder');
+            if (placeholder) {
+              placeholder.style.display = 'flex';
+            }
+          }}
+        />
+      ) : null}
+      <div 
+        className="blog-image-placeholder" 
+        style={{ 
+          display: (post.image_url && post.image_url.trim() !== '') ? 'none' : 'flex'
+        }}
+      >
         <span>Ảnh minh họa</span>
-      )}
+      </div>
       {/* View count overlay */}
       <div className="blog-card-view-count">
         <Eye size={14} />
@@ -55,10 +71,33 @@ const FoodItem = ({ food, onClick }) => (
   <AnimatedCard className="food-item" onClick={() => onClick(food)}>
     <div className="food-item-image">
       {food.image_url && food.image_url.trim() !== '' ? (
-        <img src={food.image_url} alt={food.name} />
-      ) : (
-        <span></span>
-      )}
+        <img 
+          src={food.image_url} 
+          alt={food.name}
+          onError={(e) => {
+            console.warn(`Failed to load food image: ${food.image_url}`);
+            e.target.style.display = 'none';
+            const placeholder = e.target.parentNode.querySelector('.food-image-placeholder');
+            if (placeholder) {
+              placeholder.style.display = 'flex';
+            }
+          }}
+        />
+      ) : null}
+      <div 
+        className="food-image-placeholder" 
+        style={{ 
+          display: (food.image_url && food.image_url.trim() !== '') ? 'none' : 'flex'
+        }}
+      >
+        <div className="food-placeholder-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <span className="food-placeholder-text">{food.name.split(' ')[0]}</span>
+      </div>
     </div>
     <div className="food-item-content">
       <h3 className="food-item-title">{food.name}</h3>
@@ -183,9 +222,28 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
         </button>
       </div>
     </div>
-    {post.image_url && post.image_url.trim() !== '' && <div className="blog-detail-image">
-      <img src={post.image_url} alt={post.title} />
-    </div>}
+    {post.image_url && post.image_url.trim() !== '' && (
+      <div className="blog-detail-image">
+        <img 
+          src={post.image_url} 
+          alt={post.title}
+          onError={(e) => {
+            console.warn(`Failed to load blog detail image: ${post.image_url}`);
+            e.target.style.display = 'none';
+            const placeholder = e.target.parentNode.querySelector('.blog-detail-placeholder');
+            if (placeholder) {
+              placeholder.style.display = 'flex';
+            }
+          }}
+        />
+        <div 
+          className="blog-detail-placeholder" 
+          style={{ display: 'none' }}
+        >
+          <span>Ảnh minh họa</span>
+        </div>
+      </div>
+    )}
     <div className="blog-detail-content">
       {post.content.split('\n\n').map((paragraph, idx) => (
         <p key={idx}>{paragraph}</p>
@@ -278,6 +336,7 @@ const FoodList = ({ foods, onFoodClick, loading, currentPage, itemsPerPage, tota
   if (loading) {
     return (
       <div className="food-list-loading">
+        <div className="loading-spinner"></div>
         <p>Đang tải danh sách thực phẩm...</p>
       </div>
     );
@@ -286,7 +345,14 @@ const FoodList = ({ foods, onFoodClick, loading, currentPage, itemsPerPage, tota
   if (foods.length === 0) {
     return (
       <div className="no-foods-message">
-        <p>Không tìm thấy thực phẩm nào.</p>
+        <div className="no-foods-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <p>Không tìm thấy thực phẩm nào phù hợp với tiêu chí tìm kiếm.</p>
+        <p className="no-foods-suggestion">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p>
       </div>
     );
   }
@@ -373,17 +439,54 @@ const Blog = () => {
   const itemsPerPage = 8; // 8-10 items per page
 
   const [showCreate, setShowCreate] = useState(false);
-  const scrollToTop = useScrollToTop();
 
-  // Handle tab change with scroll to top
+  // Handle tab change
   const handleTabChange = (newTab) => {
     setActiveTab(newTab);
-    scrollToTop();
+    
+    // Scroll to top when switching tabs
+    setTimeout(() => {
+      try {
+        // Try to scroll the blog container first
+        const blogContainer = document.querySelector('.blog-container');
+        if (blogContainer && blogContainer.scrollTop > 0) {
+          blogContainer.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+          });
+        } else {
+          // Fallback to document.body
+          document.body.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+          });
+        }
+      } catch (error) {
+        console.error('Error scrolling to top:', error);
+        // Fallback to instant scroll
+        document.body.scrollTo(0, 0);
+      }
+    }, 100);
   };
 
   const handleShowCreate = () => {
     setShowCreate(true);
-    scrollToTop();
+    
+    // Scroll to top when opening create blog modal
+    setTimeout(() => {
+      try {
+        document.body.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+      } catch (error) {
+        console.error('Error scrolling to top:', error);
+        document.body.scrollTo(0, 0);
+      }
+    }, 100);
   };
 
   const handlePostClick = async (post) => {
@@ -399,13 +502,26 @@ const Blog = () => {
       console.error('Error fetching blog detail:', error);
       setSelectedPost(post); // Fallback to local data
     }
-    scrollToTop();
     // Tăng view count khi click vào bài viết
     incrementViewCount(post.id);
   };
 
   const handleBackClick = () => {
     setSelectedPost(null);
+    
+    // Scroll to top when returning from blog detail
+    setTimeout(() => {
+      try {
+        document.body.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+      } catch (error) {
+        console.error('Error scrolling to top:', error);
+        document.body.scrollTo(0, 0);
+      }
+    }, 100);
   };
 
   const handleFoodClick = (food) => {
@@ -424,7 +540,6 @@ const Blog = () => {
 
   const handleFoodPageChange = (page) => {
     setCurrentFoodPage(page);
-    scrollToTop(); // Scroll to top when page changes
   };
 
   // Filter food items based on category and search

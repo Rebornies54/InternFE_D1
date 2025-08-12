@@ -10,7 +10,8 @@
 }
 
 .login-box {
-  width: 341px;
+  width: 100%;
+  max-width: 341px;
   height: 457px;
   background: #fff;
   border: none;
@@ -38,7 +39,8 @@
 
 /* Main Title */
 .login-title {
-  width: 120px;
+  width: 100%;
+  max-width: 120px;
   height: 37px;
   font-family: Montserrat, sans-serif;
   font-weight: 700;
@@ -54,7 +56,8 @@
 
 /* Form */
 .login-form {
-  width: 341px;
+  width: 100%;
+  max-width: 341px;
   height: 457px;
   display: flex;
   flex-direction: column;
@@ -73,7 +76,8 @@
 }
 
 .login-label {
-  width: 341px;
+  width: 100%;
+  max-width: 341px;
   height: 22px;
   font-family: Montserrat, sans-serif;
   font-weight: 700;
@@ -86,7 +90,8 @@
 
 
 .login-input {
-  width: 341px;
+  width: 100%;
+  max-width: 341px;
   height: 40px;
   background: #FFFFFF;
   border: 1px solid #D9D9D9;
