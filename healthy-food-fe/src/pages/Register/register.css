@@ -30,7 +30,8 @@ body, html {
 }
 
 .register-box {
-  width: 706px;
+  width: 100%;
+  max-width: 706px;
   background: #fff;
   border-radius: var(--border-radius);
   padding: 32px 0;
@@ -42,7 +43,8 @@ body, html {
 
 /** Header **/
 .register-head {
-  width: 568px;
+  width: 100%;
+  max-width: 568px;
   margin-bottom: 24px;
   display: flex;
   flex-direction: column;
@@ -78,8 +80,8 @@ body, html {
 }
 
 .register-form-wrapper {
-  width: 680px;
-  max-width: calc(100% - 26px);
+  width: 100%;
+  max-width: 680px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -89,7 +91,8 @@ body, html {
 .register-form-row {
   display: flex;
   gap: 24px;
-  width: 724px;
+  width: 100%;
+  max-width: 724px;
   align-items: flex-start;
 }
 
@@ -110,7 +113,8 @@ body, html {
 .register-form-group-email,
 .register-form-group-password,
 .register-form-group-phone {
-  width: 341px;
+  width: 100%;
+  max-width: 341px;
 }
 
 /** Labels **/
@@ -149,16 +153,19 @@ body, html {
 .register-input-phone,
 .register-input-password,
 .register-select-gender {
-  width: 341px;
+  width: 100%;
+  max-width: 341px;
 }
 
 .register-select-province {
-  width: 679px;
+  width: 100%;
+  max-width: 679px;
 }
 
 .register-input-address,
 .register-select-district {
-  width: 706px;
+  width: 100%;
+  max-width: 706px;
 }
 
 .register-input,
@@ -197,12 +204,19 @@ body, html {
   pointer-events: none;
 }
 
-.register-select-gender-wrapper { width: 341px; }
+.register-select-gender-wrapper { 
+  width: 100%; 
+  max-width: 341px; 
+}
 .register-select-province-wrapper {
-  width: 679px; 
+  width: 100%; 
+  max-width: 679px; 
   margin-bottom: 32px;
 }
-.register-select-district-wrapper { width: 706px; }
+.register-select-district-wrapper { 
+  width: 100%; 
+  max-width: 706px; 
+}
 /** Error Messages **/
 .register-error {
   color: red;
@@ -212,7 +226,8 @@ body, html {
 
 /** Button **/
 .register-button {
-  width: 341px;
+  width: 100%;
+  max-width: 341px;
   height: 40px;
   gap: 8px;
   padding: 9px 12px;
@@ -236,7 +251,8 @@ body, html {
 
 /** Footer **/
 .register-footer {
-  width: 706px;
+  width: 100%;
+  max-width: 706px;
   height: 20px;
   font-weight: 400;
   font-family: Montserrat, sans-serif;

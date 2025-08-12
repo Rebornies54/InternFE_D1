@@ -131,7 +131,7 @@ export const BlogProvider = ({ children }) => {
         // Map API data to frontend format
         const mappedPosts = response.data.data.map(post => ({
           ...post,
-          image: post.image_url, // Map image_url to image for frontend compatibility
+          // Giữ nguyên image_url, không map thành image để tránh confusion
           date: new Date(post.created_at).toLocaleDateString('vi-VN')
         }));
         setPosts(mappedPosts);

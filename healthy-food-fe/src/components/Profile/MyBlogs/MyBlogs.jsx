@@ -187,7 +187,15 @@ const MyBlogs = () => {
                     <p className="blog-description">{blog.description}</p>
                     {blog.image_url && blog.image_url.trim() !== '' && (
                       <div className="blog-image">
-                        <img src={blog.image_url} alt={blog.title} style={{maxWidth: '200px', maxHeight: '150px'}} />
+                        <img 
+                          src={blog.image_url} 
+                          alt={blog.title} 
+                          style={{maxWidth: '200px', maxHeight: '150px'}}
+                          onError={(e) => {
+                            console.warn(`Failed to load my blog image: ${blog.image_url}`);
+                            e.target.style.display = 'none';
+                          }}
+                        />
                       </div>
                     )}
                     <div className="blog-meta">

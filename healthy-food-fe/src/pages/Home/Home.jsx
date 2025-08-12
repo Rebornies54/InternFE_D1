@@ -4,7 +4,8 @@ import logo from '../../assets/logo/healthy-food-logo.png';
 import { User, ChevronDown, ChevronRight, LogOut, Search, Clock, Calendar, Star, Utensils, Menu, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useBlogContext } from '../../context/BlogContext';
-import { usePageScroll } from '../../hooks/usePageScroll';
+import ScrollToTop from '../../components/ScrollToTop';
+
 import './home.css';
 
 // Import các component mới
@@ -147,7 +148,6 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
                   to="/home/profile" 
                   className="user-dropdown-item"
                   onClick={() => {
-                    window.scrollTo(0, 0);
                     setShowUserDropdown(false);
                   }}
                 >
@@ -450,7 +450,6 @@ const PageLayout = ({ children, isMobileMenuOpen, toggleMobileMenu }) => (
 
 // Page components sử dụng layout phù hợp
 const BlogPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
-  usePageScroll();
   return (
     <BlogLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <Blog />
@@ -459,7 +458,6 @@ const BlogPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
 };
 
 const BodyIndexPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
-  usePageScroll();
   return (
     <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <BodyIndex />
@@ -468,7 +466,6 @@ const BodyIndexPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
 };
 
 const CalorieIndexPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
-  usePageScroll();
   return (
     <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <CalorieIndex />
@@ -477,7 +474,6 @@ const CalorieIndexPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
 };
 
 const CalorieCalculationPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
-  usePageScroll();
   return (
     <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <CalorieCalculation />
@@ -486,7 +482,6 @@ const CalorieCalculationPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
 };
 
 const DashboardPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
-  usePageScroll();
   return (
     <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <Dashboard />
@@ -495,7 +490,6 @@ const DashboardPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
 };
 
 const ProfilePage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
-  usePageScroll();
   return (
     <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <Profile />
@@ -504,7 +498,6 @@ const ProfilePage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
 };
 
 const HomePageComponent = ({ isMobileMenuOpen, toggleMobileMenu }) => {
-  usePageScroll();
   return (
     <PageLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
       <HomePage />
@@ -520,16 +513,19 @@ const Home = () => {
   };
 
   return (
-    <Routes>
-      <Route path="/" element={<HomePageComponent isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
-      <Route path="/home" element={<HomePageComponent isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
-      <Route path="/blog" element={<BlogPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
-      <Route path="/body-index" element={<BodyIndexPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
-      <Route path="/calorie-index" element={<CalorieIndexPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
-      <Route path="/calorie-calculation" element={<CalorieCalculationPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
-      <Route path="/dashboard" element={<DashboardPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
-      <Route path="/profile" element={<ProfilePage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<HomePageComponent isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+        <Route path="/home" element={<HomePageComponent isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+        <Route path="/blog" element={<BlogPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+        <Route path="/body-index" element={<BodyIndexPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+        <Route path="/calorie-index" element={<CalorieIndexPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+        <Route path="/calorie-calculation" element={<CalorieCalculationPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+        <Route path="/dashboard" element={<DashboardPage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+        <Route path="/profile" element={<ProfilePage isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />} />
+      </Routes>
+    </>
   );
 };
 

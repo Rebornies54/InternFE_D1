@@ -41,16 +41,6 @@ const HomePage = () => {
     // Reset any inline styles that might have been set
     document.body.removeAttribute('style');
     document.documentElement.removeAttribute('style');
-    
-    // Log current dimensions for debugging
-    console.log('Body height reset:', {
-      bodyHeight: document.body.offsetHeight,
-      bodyScrollHeight: document.body.scrollHeight,
-      htmlHeight: document.documentElement.offsetHeight,
-      htmlScrollHeight: document.documentElement.scrollHeight,
-      windowHeight: window.innerHeight,
-      viewportHeight: window.visualViewport?.height || window.innerHeight
-    });
   }, []);
 
   // Banner slider functionality
@@ -373,12 +363,27 @@ const HomePage = () => {
             <div key={post.id} className="blog-card">
               <div className="blog-card-image">
                 {post.image_url && post.image_url.trim() !== '' ? (
-                  <img src={post.image_url} alt={post.title} />
-                ) : (
-                  <div className="blog-placeholder">
-                    <Coffee size={24} />
-                  </div>
-                )}
+                  <img 
+                    src={post.image_url} 
+                    alt={post.title}
+                    onError={(e) => {
+                      console.warn(`Failed to load homepage blog image: ${post.image_url}`);
+                      e.target.style.display = 'none';
+                      const placeholder = e.target.parentNode.querySelector('.blog-placeholder');
+                      if (placeholder) {
+                        placeholder.style.display = 'flex';
+                      }
+                    }}
+                  />
+                ) : null}
+                <div 
+                  className="blog-placeholder" 
+                  style={{ 
+                    display: (post.image_url && post.image_url.trim() !== '') ? 'none' : 'flex'
+                  }}
+                >
+                  <Coffee size={24} />
+                </div>
                 <span className="blog-category">{post.category}</span>
               </div>
               <div className="blog-card-content">
