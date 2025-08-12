@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS users (
     avatar_url VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Food categories table
 CREATE TABLE IF NOT EXISTS food_categories (
@@ -20,7 +21,8 @@ CREATE TABLE IF NOT EXISTS food_categories (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Food items table
 CREATE TABLE IF NOT EXISTS food_items (
@@ -36,7 +38,8 @@ CREATE TABLE IF NOT EXISTS food_items (
     image_url VARCHAR(500) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES food_categories(id) ON DELETE CASCADE
-);
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- User food logs table
 CREATE TABLE IF NOT EXISTS user_food_logs (
@@ -49,7 +52,8 @@ CREATE TABLE IF NOT EXISTS user_food_logs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (food_item_id) REFERENCES food_items(id) ON DELETE CASCADE
-);
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- User BMI data table
 CREATE TABLE IF NOT EXISTS user_bmi_data (
@@ -63,7 +67,8 @@ CREATE TABLE IF NOT EXISTS user_bmi_data (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE KEY unique_user_bmi (user_id)
-);
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Insert default food categories
 INSERT INTO food_categories (name, description) VALUES
@@ -157,11 +162,13 @@ CREATE TABLE IF NOT EXISTS blog_posts (
     content LONGTEXT NOT NULL,
     image_url VARCHAR(500),
     category VARCHAR(100) NOT NULL,
+    views_count INT DEFAULT 0,
     likes_count INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Blog post likes table
 CREATE TABLE IF NOT EXISTS blog_post_likes (
@@ -172,7 +179,8 @@ CREATE TABLE IF NOT EXISTS blog_post_likes (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES blog_posts(id) ON DELETE CASCADE,
     UNIQUE KEY unique_user_post_like (user_id, post_id)
-);
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Blog comments table
 CREATE TABLE IF NOT EXISTS blog_comments (
@@ -190,7 +198,8 @@ CREATE TABLE IF NOT EXISTS blog_comments (
     INDEX idx_post_id (post_id),
     INDEX idx_user_id (user_id),
     INDEX idx_parent_id (parent_id)
-);
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Blog comment likes table
 CREATE TABLE IF NOT EXISTS blog_comment_likes (

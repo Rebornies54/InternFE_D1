@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useBlogContext } from '../../context/BlogContext';
 import { motion, useInView } from 'framer-motion';
+import { authAPI } from '../../services/api';
 import { 
   Target, 
   Users, 
@@ -25,6 +26,7 @@ const HomePage = () => {
   const { posts } = useBlogContext();
   const navigate = useNavigate();
   const latestPosts = posts.slice(0, 3);
+  const [currentBmi, setCurrentBmi] = useState(null);
 
   // Carousel drag state
   const [isDragging, setIsDragging] = useState(false);
@@ -126,20 +128,42 @@ const HomePage = () => {
     document.body.removeAttribute('style');
     document.documentElement.removeAttribute('style');
   }, []);
+// Load current BMI for signed-in user
+useEffect(() => {
+  const loadBmi = async () => {
+    if (!user) return;
+    try {
+      const res = await authAPI.getBMIData();
+      if (res.data?.success && res.data?.data) {
+        setCurrentBmi(Number(res.data.data.bmi));
+      } else {
+        setCurrentBmi(null);
+      }
+    } catch (_) {
+      setCurrentBmi(null);
+    }
+  };
+  loadBmi();
+}, [user]);
 
-  // Menu carousel functionality with infinite loop
-  const [currentMenuIndex, setCurrentMenuIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  
-  const originalMenuItems = [
+// Banner slider functionality
+const [currentBanner, setCurrentBanner] = useState(0);
+const banners = [
+];
+
+// Menu carousel functionality with infinite loop
+const [currentMenuIndex, setCurrentMenuIndex] = useState(0);
+const [isTransitioning, setIsTransitioning] = useState(false);
+
+const originalMenuItems = [
     {
-      "id": 1,
-      "title": "Cháo yến mạch trái cây",
-      "meal": "Bữa sáng",
-      "calories": "420 kcal",
-      "image": "https://cdn.pixabay.com/photo/2016/11/06/23/31/breakfast-1804457_1280.jpg",
-      "nutrition": { "protein": "15g", "carbs": "60g", "fats": "12g" },
-      "description": "Bữa sáng giàu chất xơ với yến mạch, táo, chuối và hạt chia"
+      id: 1,
+      title: "Cháo yến mạch trái cây",
+      meal: "Bữa sáng",
+      calories: "420 kcal",
+      image: "https://cdn.pixabay.com/photo/2016/11/06/23/31/breakfast-1804457_1280.jpg",
+      nutrition: { protein: "15g", carbs: "60g", fats: "12g" },
+      description: "Bữa sáng giàu chất xơ với yến mạch, táo, chuối và hạt chia"
     },
     {
       "id": 2,
@@ -804,7 +828,7 @@ const HomePage = () => {
                   <Target size={20} />
                 </motion.div>
                 <div className="stat-info">
-                  <span className="stat-value">23.5</span>
+                      <span className="stat-value">{currentBmi?.toFixed ? currentBmi.toFixed(1) : '—'}</span>
                   <span className="stat-label">BMI hiện tại</span>
                 </div>
               </motion.div>

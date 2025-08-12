@@ -46,6 +46,7 @@ const FormField = ({ label, name, type = "text", as, placeholder, required, chil
         type={type}
         className={`register-input ${className}`}
         placeholder={placeholder}
+        autoComplete={name === 'password' ? 'new-password' : name}
       />
     )}
   </div>
