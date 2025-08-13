@@ -231,7 +231,11 @@ const originalMenuItems = [
   ];
 
   // Create tripled array for infinite loop: [original] + [original] + [original]
-  const menuItems = [...originalMenuItems, ...originalMenuItems, ...originalMenuItems];
+  const menuItems = [
+    ...originalMenuItems.map((item, index) => ({ ...item, uniqueId: `set1-${item.id}` })),
+    ...originalMenuItems.map((item, index) => ({ ...item, uniqueId: `set2-${item.id}` })),
+    ...originalMenuItems.map((item, index) => ({ ...item, uniqueId: `set3-${item.id}` }))
+  ];
 
   // Auto slide for menu carousel with infinite loop
   useEffect(() => {
@@ -495,11 +499,11 @@ const originalMenuItems = [
                  transition: isDragging || isTransitioning ? 'none' : 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
                }}
              >
-              {menuItems.map((item, index) => (
-                <div 
-                  key={item.id} 
-                  className={`menu-carousel-card ${index === currentMenuIndex ? 'active' : ''}`}
-                >
+                             {menuItems.map((item, index) => (
+                 <div 
+                   key={item.uniqueId} 
+                   className={`menu-carousel-card ${index === currentMenuIndex ? 'active' : ''}`}
+                 >
                   <div className="menu-card-image">
                     {item.image && item.image.trim() !== '' && (
                       <img src={item.image} alt={item.title} />
