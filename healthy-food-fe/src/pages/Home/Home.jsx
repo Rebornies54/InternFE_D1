@@ -54,11 +54,12 @@ const NavLink = ({ to, children, className, onClick }) => {
 // Components
 const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   
   const handleLogout = () => {
     logout();
-    // Redirect sẽ được xử lý bởi ProtectedRoute
+    navigate('/login');
   };
 
   const toggleUserDropdown = () => {

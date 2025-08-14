@@ -46,6 +46,14 @@ export const authAPI = {
   
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
   
+  verifyOTP: (email, otp) => api.post('/auth/verify-otp', { email, otp }),
+  
+  resetPassword: (email, otp, newPassword) => api.post('/auth/reset-password', { 
+    email, 
+    otp, 
+    newPassword 
+  }),
+  
   uploadAvatar: (formData) => api.post('/auth/profile/avatar', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
