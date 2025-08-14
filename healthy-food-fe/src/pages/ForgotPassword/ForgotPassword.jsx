@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useScrollToTop, useForm, useModal, useError } from '../../hooks';
 import useOTP from '../../hooks/useOTP';
+import { DEFAULTS, UI } from '../../constants';
 import './ForgotPassword.css';
 
 const ForgotPasswordSchema = Yup.object().shape({
@@ -29,7 +30,7 @@ const ForgotPassword = () => {
   const { error, setError, clearError } = useError();
   
   // State quản lý các bước
-  const [currentStep, setCurrentStep] = useState('email'); // 'email', 'otp', 'reset', 'success'
+  const [currentStep, setCurrentStep] = useState(DEFAULTS.CURRENT_STEP); // 'email', 'otp', 'reset', 'success'
   const [userEmail, setUserEmail] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   
@@ -147,12 +148,7 @@ const ForgotPassword = () => {
         </div>
         
         {error && (
-          <div style={{ 
-            color: 'red', 
-            textAlign: 'center', 
-            marginBottom: '1rem',
-            fontSize: '0.9rem'
-          }}>
+          <div className="forgot-password-error-message">
             {error}
           </div>
         )}

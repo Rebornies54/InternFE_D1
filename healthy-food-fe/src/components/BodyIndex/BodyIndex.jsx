@@ -4,6 +4,7 @@ import { authAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useFoodContext } from '../../context/FoodContext';
 import { useCalorieContext } from '../../context/CalorieContext';
+import { DEFAULTS } from '../../constants';
 import './BodyIndex.css';
 
 const BodyIndex = () => {
@@ -13,7 +14,7 @@ const BodyIndex = () => {
   const [bmi, setBmi] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFood, setSelectedFood] = useState(null);
-  const [activeImg, setActiveImg] = useState(0);
+  const [activeImg, setActiveImg] = useState(DEFAULTS.ACTIVE_IMG);
   const [dragStartX, setDragStartX] = useState(null);
   
   // Food data states
@@ -323,13 +324,13 @@ const BodyIndex = () => {
               <div className="bmi-results-container">
                 <div className="bmi-value-display">
                   <div 
-                    className="bmi-number" 
+                    className="bmi-number bmi-number-colored" 
                     style={{ color: getBMICategoryColor(bmi) }}
                   >
                     {bmi}
                   </div>
                   <div 
-                    className="bmi-category"
+                    className="bmi-category bmi-category-colored"
                     style={{ 
                       color: getBMICategoryColor(bmi),
                       backgroundColor: `${getBMICategoryColor(bmi)}15`
@@ -341,7 +342,7 @@ const BodyIndex = () => {
                 
                 <div className="bmi-scale">
                   <div 
-                    className="bmi-marker"
+                    className="bmi-marker bmi-marker-positioned"
                     style={{ 
                       left: `${getBMIMarkerPosition(bmi)}%`,
                       borderColor: getBMICategoryColor(bmi)
@@ -363,13 +364,9 @@ const BodyIndex = () => {
           <h2 className="body-index-section-title">
             Recommended Dishes
             {bmi && (
-              <span style={{ 
-                fontSize: '15px', 
+              <span className="bmi-badge" style={{ 
                 color: getBMICategoryColor(bmi),
-                fontWeight: 'normal',
-                backgroundColor: `${getBMICategoryColor(bmi)}15`,
-                padding: '6px 14px',
-                borderRadius: '10px'
+                backgroundColor: `${getBMICategoryColor(bmi)}15`
               }}>
                 Based on BMI: {getBMICategory(bmi)}
               </span>
@@ -392,7 +389,7 @@ const BodyIndex = () => {
                           onError={(e) => handleImageError(e, food.name)}
                         />
                       ) : null}
-                      <div className="food-img-placeholder" style={{ 
+                      <div className="food-img-placeholder food-img-placeholder-colored" style={{ 
                         display: getFoodImageUrl(food) && getFoodImageUrl(food).trim() !== '' ? 'none' : 'block',
                         backgroundColor: getPlaceholderColor(food.category_id)
                       }}></div>
@@ -507,7 +504,7 @@ const BodyIndex = () => {
                     onError={(e) => handleImageError(e, selectedFood.name)}
                   />
                 ) : null}
-                <div className="food-img-placeholder food-modal-img-placeholder" style={{ 
+                <div className="food-img-placeholder food-modal-img-placeholder food-img-placeholder-colored" style={{ 
                   display: getFoodImageUrl(selectedFood) && getFoodImageUrl(selectedFood).trim() !== '' ? 'none' : 'block',
                   backgroundColor: getPlaceholderColor(selectedFood.category_id)
                 }}></div>

@@ -7,6 +7,35 @@
   font-family: 'Inter', sans-serif;
 }
 
+/* BMI Dynamic Styles */
+.bmi-number-colored {
+  /* Color will be set dynamically via JavaScript */
+}
+
+.bmi-category-colored {
+  /* Color and background will be set dynamically via JavaScript */
+}
+
+.bmi-marker-positioned {
+  /* Position will be set dynamically via JavaScript */
+}
+
+.bmi-badge {
+  font-size: 15px;
+  font-weight: normal;
+  padding: 6px 14px;
+  border-radius: 10px;
+}
+
+.food-img-placeholder-colored {
+  /* Background color will be set dynamically via JavaScript */
+}
+
+.food-modal-img-placeholder {
+  max-width: 200px;
+  max-height: 150px;
+}
+
 .body-index-title {
   margin: 0 0 40px 0;
   padding: 0;

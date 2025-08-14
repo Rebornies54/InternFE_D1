@@ -16,13 +16,14 @@ import {
   StaggeredItem,
   AnimatedModal
 } from './AnimatedComponents';
+import { DEFAULTS } from '../constants';
 
 const AnimationPlayground = () => {
   const [showModal, setShowModal] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [activeTab, setActiveTab] = useState('basic');
+  const [progress, setProgress] = useState(DEFAULTS.PROGRESS);
+  const [activeTab, setActiveTab] = useState(DEFAULTS.ACTIVE_TAB);
 
-  if (process.env.NODE_ENV === 'production') {
+  if (import.meta.env.MODE === 'production') {
     return null;
   }
 

@@ -3,8 +3,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { useLoading, useError } from '../../../hooks';
 import './ProfileInfo.css';
 import { authAPI } from '../../../services/api';
-
-const API_BASE_URL = 'http://localhost:5000';
+import { API_CONFIG } from '../../../constants';
 
 const ProfileInfo = ({ profileData, setProfileData }) => {
   const { updateProfile } = useAuth();
@@ -53,7 +52,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           let avatarUrl = res.data.avatarUrl;
           // Ensure the URL is complete
           if (avatarUrl && avatarUrl.startsWith('/')) {
-            avatarUrl = API_BASE_URL + avatarUrl;
+            avatarUrl = API_CONFIG.BASE_URL + avatarUrl;
           }
           
           // Update both tempData and profileData
@@ -200,7 +199,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
             type="file"
             accept="image/*"
             onChange={handleAvatarChange}
-            style={{ display: 'none' }}
+            className="profile-info-file-input-hidden"
             disabled={!isEditing || isSaving || isUploading}
           />
         </label>
@@ -226,11 +225,10 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           </label>
           <input
             type="email"
-            className="profile-info-input"
+            className="profile-info-input-disabled"
             value={profileData.email}
             disabled
             placeholder="Email"
-            style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
           />
         </div>
         <div className="profile-info-form-group">
@@ -320,7 +318,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           <div className="profile-info-actions-divider"></div>
           <div className="profile-info-actions-placeholder"></div>
           {isEditing ? (
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div className="profile-info-actions-buttons">
               <button 
                 type="button" 
                 className="profile-info-btn-cancel" 

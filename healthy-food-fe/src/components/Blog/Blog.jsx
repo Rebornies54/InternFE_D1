@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useBlogContext } from '../../context/BlogContext';
 import { blogAPI } from '../../services/api';
+import { PAGINATION, DEFAULTS, ERROR_MESSAGES } from '../../constants';
 import { Heart, Eye } from 'lucide-react';
 import { 
   AnimatedCard, 
@@ -34,10 +35,7 @@ const FoodCard = ({ post, onClick, onLike, isLiked, likeCount }) => (
         />
       ) : null}
       <div 
-        className="blog-image-placeholder" 
-        style={{ 
-          display: (post.image_url && post.image_url.trim() !== '') ? 'none' : 'flex'
-        }}
+        className={`blog-image-placeholder ${(post.image_url && post.image_url.trim() !== '') ? 'blog-image-placeholder-hidden' : 'blog-image-placeholder-visible'}`}
       >
         <span>Ảnh minh họa</span>
       </div>
@@ -85,10 +83,7 @@ const FoodItem = ({ food, onClick }) => (
         />
       ) : null}
       <div 
-        className="food-image-placeholder" 
-        style={{ 
-          display: (food.image_url && food.image_url.trim() !== '') ? 'none' : 'flex'
-        }}
+        className={`food-image-placeholder ${(food.image_url && food.image_url.trim() !== '') ? 'food-image-placeholder-hidden' : 'food-image-placeholder-visible'}`}
       >
         <div className="food-placeholder-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -237,8 +232,7 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
           }}
         />
         <div 
-          className="blog-detail-placeholder" 
-          style={{ display: 'none' }}
+          className="blog-detail-placeholder blog-detail-placeholder-hidden"
         >
           <span>Ảnh minh họa</span>
         </div>
@@ -431,33 +425,70 @@ const Blog = () => {
   const [selectedFoodCategory, setSelectedFoodCategory] = useState('');
   const [foodSearchQuery, setFoodSearchQuery] = useState('');
   
-  const [currentFoodPage, setCurrentFoodPage] = useState(1);
-  const itemsPerPage = 8;
+  const [currentFoodPage, setCurrentFoodPage] = useState(DEFAULTS.CURRENT_PAGE);
+  const itemsPerPage = PAGINATION.BLOG_PAGE_SIZE;
 
   const [showCreate, setShowCreate] = useState(false);
+
+  // Add refs for DOM elements
+  const blogContainerRef = useRef(null);
+  const bodyRef = useRef(document.body);
+
+  // State for image loading
+  const [imageStates, setImageStates] = useState({});
+
+  // Handle image load success
+  const handleImageLoad = useCallback((postId, type = 'blog') => {
+    setImageStates(prev => ({
+      ...prev,
+      [`${type}_${postId}`]: 'loaded'
+    }));
+  }, []);
+
+  // Handle image load error
+  const handleImageError = useCallback((postId, type = 'blog') => {
+    setImageStates(prev => ({
+      ...prev,
+      [`${type}_${postId}`]: 'error'
+    }));
+  }, []);
+
+  // Check if image should be shown
+  const shouldShowImage = useCallback((postId, imageUrl, type = 'blog') => {
+    const state = imageStates[`${type}_${postId}`];
+    return imageUrl && imageUrl.trim() !== '' && state !== 'error';
+  }, [imageStates]);
+
+  // Check if placeholder should be shown
+  const shouldShowPlaceholder = useCallback((postId, imageUrl, type = 'blog') => {
+    const state = imageStates[`${type}_${postId}`];
+    return !imageUrl || imageUrl.trim() === '' || state === 'error';
+  }, [imageStates]);
 
   const handleTabChange = (newTab) => {
     setActiveTab(newTab);
     
     setTimeout(() => {
       try {
-        const blogContainer = document.querySelector('.blog-container');
-        if (blogContainer && blogContainer.scrollTop > 0) {
-          blogContainer.scrollTo({
+        // Use refs instead of direct DOM access
+        if (blogContainerRef.current && blogContainerRef.current.scrollTop > 0) {
+          blogContainerRef.current.scrollTo({
             top: 0,
             left: 0,
             behavior: 'smooth'
           });
         } else {
-          document.body.scrollTo({
+          bodyRef.current.scrollTo({
             top: 0,
             left: 0,
             behavior: 'smooth'
           });
         }
       } catch (error) {
-        console.error('Error scrolling to top:', error);
-        document.body.scrollTo(0, 0);
+        if (import.meta.env.MODE === 'development') {
+          console.error('Error scrolling to top:', error);
+        }
+        bodyRef.current.scrollTo(0, 0);
       }
     }, 100);
   };
@@ -467,14 +498,13 @@ const Blog = () => {
     
     setTimeout(() => {
       try {
-        document.body.scrollTo({
+        bodyRef.current.scrollTo({
           top: 0,
           left: 0,
           behavior: 'smooth'
         });
       } catch (error) {
-        console.error('Error scrolling to top:', error);
-        document.body.scrollTo(0, 0);
+        bodyRef.current.scrollTo(0, 0);
       }
     }, 100);
   };
@@ -488,7 +518,7 @@ const Blog = () => {
         setSelectedPost(post);
       }
     } catch (error) {
-      console.error('Error fetching blog detail:', error);
+      // Fallback to existing post data on error
       setSelectedPost(post);
     }
     incrementViewCount(post.id);
@@ -499,14 +529,13 @@ const Blog = () => {
     
     setTimeout(() => {
       try {
-        document.body.scrollTo({
+        bodyRef.current.scrollTo({
           top: 0,
           left: 0,
           behavior: 'smooth'
         });
       } catch (error) {
-        console.error('Error scrolling to top:', error);
-        document.body.scrollTo(0, 0);
+        bodyRef.current.scrollTo(0, 0);
       }
     }, 100);
   };
@@ -540,8 +569,61 @@ const Blog = () => {
 
   const foodVariations = selectedFood ? getFoodVariations(selectedFood) : [];
 
+  // Replace direct DOM manipulation in image rendering
+  const renderBlogImage = (post) => {
+    const imageKey = `blog_${post.id}`;
+    const showImage = shouldShowImage(post.id, post.image_url, 'blog');
+    const showPlaceholder = shouldShowPlaceholder(post.id, post.image_url, 'blog');
+
+    return (
+      <div className="blog-image-container">
+        {showImage ? (
+          <img
+            src={post.image_url}
+            alt={post.title}
+            className="blog-image"
+            onLoad={() => handleImageLoad(post.id, 'blog')}
+            onError={() => handleImageError(post.id, 'blog')}
+          />
+        ) : null}
+        {showPlaceholder && (
+          <div className="blog-image-placeholder">
+            <span>Ảnh minh họa</span>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderFoodImage = (food) => {
+    const imageKey = `food_${food.id}`;
+    const showImage = shouldShowImage(food.id, food.image_url, 'food');
+    const showPlaceholder = shouldShowPlaceholder(food.id, food.image_url, 'food');
+
+    return (
+      <div className="food-image-container">
+        {showImage ? (
+          <img
+            src={food.image_url}
+            alt={food.name}
+            className="food-image"
+            onLoad={() => handleImageLoad(food.id, 'food')}
+            onError={() => handleImageError(food.id, 'food')}
+          />
+        ) : null}
+        {showPlaceholder && (
+          <div className="food-image-placeholder">
+            <div className="food-placeholder-icon">
+              <span>🍽️</span>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="blog-container">
+    <div className="blog-container" ref={blogContainerRef}>
       {selectedPost ? (
         <BlogDetail 
           post={selectedPost} 
@@ -569,7 +651,7 @@ const Blog = () => {
 
           {activeTab === 'blog' ? (
             <>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+              <div className="blog-create-button-container">
                 <button 
                   className="create-blog-btn" 
                   onClick={handleShowCreate}

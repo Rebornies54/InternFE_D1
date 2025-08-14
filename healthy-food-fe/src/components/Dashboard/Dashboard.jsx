@@ -171,7 +171,7 @@ function Dashboard() {
                 <XAxis dataKey="week" tick={{ fill: '#555', fontSize: 12 }} />
                 <YAxis tick={{ fill: '#555', fontSize: 12 }} />
                 <Tooltip />
-                <Legend wrapperStyle={{ fontSize: 12, color: '#555' }} />
+                <Legend wrapperStyle={{ fontSize: 12, color: '#555' }} className="dashboard-chart-legend" />
                 <Bar dataKey="total" fill="#9c27b0" name="Total Calories" radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>

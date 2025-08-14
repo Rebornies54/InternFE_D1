@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { debugImageLoading, getFullImageUrl } from '../utils/imageUtils';
+import { getFullImageUrl, checkImageAccessibility, preloadImage, validateImageUrl } from '../utils/imageUtils';
 
 const ImageDebugger = ({ imageUrl, onDebugComplete }) => {
   const [debugInfo, setDebugInfo] = useState(null);
@@ -10,13 +10,24 @@ const ImageDebugger = ({ imageUrl, onDebugComplete }) => {
     
     setIsDebugging(true);
     try {
-      const info = await debugImageLoading(imageUrl);
+      const fullUrl = getFullImageUrl(imageUrl);
+      const isValidUrl = validateImageUrl(fullUrl);
+      const isAccessible = await checkImageAccessibility(fullUrl);
+      const preloadSuccess = await preloadImage(fullUrl);
+      
+      const info = {
+        isValidUrl,
+        fullUrl,
+        isAccessible,
+        preloadSuccess
+      };
+      
       setDebugInfo(info);
       if (onDebugComplete) {
         onDebugComplete(info);
       }
     } catch (error) {
-      console.error('Debug failed:', error);
+      // Silent fail for debug operations
     } finally {
       setIsDebugging(false);
     }

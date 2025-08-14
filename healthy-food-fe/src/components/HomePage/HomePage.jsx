@@ -110,8 +110,12 @@ const HomePage = () => {
     }
   };
 
-  // Reset body height on mount
+  // Reset body height on mount with proper cleanup
   useEffect(() => {
+    // Store original styles for cleanup
+    const originalBodyStyle = document.body.getAttribute('style');
+    const originalHtmlStyle = document.documentElement.getAttribute('style');
+    
     // Reset any forced height from previous debugging
     document.body.style.height = '';
     document.body.style.minHeight = '';
@@ -127,6 +131,21 @@ const HomePage = () => {
     // Reset any inline styles that might have been set
     document.body.removeAttribute('style');
     document.documentElement.removeAttribute('style');
+    
+    // Cleanup function to restore original styles
+    return () => {
+      if (originalBodyStyle) {
+        document.body.setAttribute('style', originalBodyStyle);
+      } else {
+        document.body.removeAttribute('style');
+      }
+      
+      if (originalHtmlStyle) {
+        document.documentElement.setAttribute('style', originalHtmlStyle);
+      } else {
+        document.documentElement.removeAttribute('style');
+      }
+    };
   }, []);
 // Load current BMI for signed-in user
 useEffect(() => {
@@ -474,13 +493,12 @@ const originalMenuItems = [
         </motion.div>
         
         <div 
-          className={`menu-carousel-container ${isDragging ? 'dragging' : ''}`}
+          className={`menu-carousel-container ${isDragging ? 'dragging' : ''} homepage-carousel-cursor`}
           ref={carouselRef}
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
           onMouseUp={handleDragEnd}
           onMouseLeave={handleDragEnd}
-          style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
         >
           <button 
             className="carousel-nav-btn carousel-prev"
@@ -491,14 +509,14 @@ const originalMenuItems = [
           </button>
           
           <div className="menu-carousel">
-                         <div 
-               className="menu-carousel-track"
-               ref={trackRef}
-               style={{
-                 transform: getTrackTransform(),
-                 transition: isDragging || isTransitioning ? 'none' : 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
-               }}
-             >
+                                     <div 
+              className="menu-carousel-track homepage-carousel-track-transformed"
+              ref={trackRef}
+              style={{
+                transform: getTrackTransform(),
+                transition: isDragging || isTransitioning ? 'none' : 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
+              }}
+            >
                              {menuItems.map((item, index) => (
                  <div 
                    key={item.uniqueId} 
@@ -746,10 +764,7 @@ const originalMenuItems = [
                   />
                 ) : null}
                 <div 
-                  className="blog-placeholder" 
-                  style={{ 
-                    display: (post.image_url && post.image_url.trim() !== '') ? 'none' : 'flex'
-                  }}
+                  className={`blog-placeholder ${(post.image_url && post.image_url.trim() !== '') ? 'homepage-blog-placeholder-hidden' : 'homepage-blog-placeholder-visible'}`}
                 >
                   <Coffee size={24} />
                 </div>

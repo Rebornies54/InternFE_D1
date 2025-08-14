@@ -168,7 +168,7 @@ const MyBlogs = () => {
                     <label>Ảnh hiện tại:</label>
                     {editForm.image_url && editForm.image_url.trim() !== '' ? (
                       <div className="current-image">
-                        <img src={editForm.image_url} alt="Current" style={{maxWidth: '200px', maxHeight: '150px'}} />
+                        <img src={editForm.image_url} alt="Current" className="my-blogs-current-image" />
                         <p>Ảnh hiện tại sẽ được giữ nguyên</p>
                       </div>
                     ) : (
@@ -190,7 +190,7 @@ const MyBlogs = () => {
                         <img 
                           src={blog.image_url} 
                           alt={blog.title} 
-                          style={{maxWidth: '200px', maxHeight: '150px'}}
+                          className="my-blogs-preview-image"
                           onError={(e) => {
                             console.warn(`Failed to load my blog image: ${blog.image_url}`);
                             e.target.style.display = 'none';

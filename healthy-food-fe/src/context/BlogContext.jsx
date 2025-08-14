@@ -1,98 +1,76 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { foodAPI, blogAPI } from '../services/api';
+import { PAGINATION, DEFAULTS, STORAGE_KEYS, ERROR_MESSAGES } from '../constants';
 
 const BlogContext = createContext();
 
-/**
- * Custom hook để sử dụng BlogContext
- * @returns {Object} BlogContext value
- */
-export const useBlogContext = () => useContext(BlogContext);
-
-const initialBlogPosts = [
-  {
-    id: 1,
-    title: "Khoai tây - Nguồn vitamin C dồi dào",
-    description: "Khoai tây chứa hàm lượng vitamin C cao...",
-    image: "",
-    category: "thực phẩm",
-    date: "2025-07-10",
-    content: `Khoai tây thường bị đánh giá thấp...`
-  },
-  {
-    id: 2,
-    title: "Rau củ - Thực phẩm ít calo, nhiều dưỡng chất",
-    description: "Rau củ là lựa chọn tuyệt vời...",
-    image: "",
-    category: "thực phẩm",
-    date: "2025-07-12",
-    content: `Rau củ là nền tảng của mọi chế độ ăn lành mạnh...`
-  },
-  {
-    id: 3,
-    title: "Nấm - Protein thực vật chất lượng cao",
-    description: "Giàu protein và ít calo...",
-    image: "",
-    category: "thực phẩm",
-    date: "2025-07-15",
-    content: `Nấm không chỉ là một nguyên liệu ngon miệng...`
-  },
-  {
-    id: 4,
-    title: "Cách xây dựng thực đơn cân bằng",
-    description: "Một thực đơn cân bằng giúp cung cấp đầy đủ dưỡng chất...",
-    image: "",
-    category: "thực đơn",
-    date: "2025-07-05",
-    content: `Thực đơn cân bằng lý tưởng nên bao gồm...`
-  },
-  {
-    id: 5,
-    title: "Bí quyết ăn uống cân bằng khi bận rộn",
-    description: "Duy trì chế độ ăn lành mạnh ngay cả khi lịch trình bận rộn...",
-    image: "",
-    category: "bí quyết",
-    date: "2025-07-08",
-    content: `Cuộc sống bận rộn không phải là lý do để từ bỏ ăn uống lành mạnh...`
-  },
-  {
-    id: 6,
-    title: "Thủy phân cơ thể - Tầm quan trọng của nước",
-    description: "Uống đủ nước không chỉ giúp duy trì sức khỏe...",
-    image: "",
-    category: "bí quyết",
-    date: "2025-07-03",
-    content: `Nước đóng vai trò thiết yếu trong mọi chức năng của cơ thể...`
+export const useBlogContext = () => {
+  const context = useContext(BlogContext);
+  if (!context) {
+    throw new Error('useBlogContext must be used within a BlogProvider');
   }
-];
+  return context;
+};
 
 export const BlogProvider = ({ children }) => {
+  // State for food data
+  const [foodItems, setFoodItems] = useState([]);
+  const [foodCategories, setFoodCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // State for blog posts
   const [posts, setPosts] = useState([]);
-  const [categories] = useState(['tất cả', 'thực phẩm', 'thực đơn', 'bí quyết']);
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [userLikes, setUserLikes] = useState(new Set());
+  const [selectedPost, setSelectedPost] = useState(null);
+  
+  // State for blog categories and filtering
+  const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('tất cả');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPost, setCurrentPost] = useState(null);
-  const [postsLoading, setPostsLoading] = useState(false);
-  const [userLikes, setUserLikes] = useState(new Set());
   
-  const [foodItems, setFoodItems] = useState([]);
-  const [foodCategories, setFoodCategories] = useState([]);
+  // State for food modal
   const [selectedFood, setSelectedFood] = useState(null);
   const [showFoodModal, setShowFoodModal] = useState(false);
-  const [loading, setLoading] = useState(false);
 
+  // State for comments
   const [comments, setComments] = useState([]);
-  const [commentLikes, setCommentLikes] = useState(new Set());
   const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentLikes, setCommentLikes] = useState(new Set());
+  const [commentPagination, setCommentPagination] = useState({});
+
+  // State for replies
   const [replies, setReplies] = useState({});
   const [repliesLoading, setRepliesLoading] = useState({});
-  const [commentPagination, setCommentPagination] = useState({
-    current_page: 1,
-    total_pages: 0,
-    total_comments: 0,
-    has_next: false,
-    has_prev: false
-  });
+  const [replyLikes, setReplyLikes] = useState({});
+  const [repliesPagination, setRepliesPagination] = useState({});
+
+  // State for error handling
+  const [error, setError] = useState(null);
+
+  // Clear error after 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  /**
+   * Set error message with user-friendly text
+   * @param {string} message - Error message
+   * @param {Error} originalError - Original error object
+   */
+  const setErrorMessage = (message, originalError = null) => {
+    setError(message);
+    // In development, you might want to log the original error
+    if (import.meta.env.MODE === 'development' && originalError) {
+      // Only log in development mode
+    }
+  };
 
   /**
    * Fetch food items from database
@@ -100,12 +78,15 @@ export const BlogProvider = ({ children }) => {
   const fetchFoodItems = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await foodAPI.getAllItems();
       if (response.data.success) {
         setFoodItems(response.data.data);
+      } else {
+        setErrorMessage(ERROR_MESSAGES.FOOD_FETCH_FAILED);
       }
     } catch (error) {
-      console.error('Error fetching food items:', error);
+      setErrorMessage(ERROR_MESSAGES.NETWORK_ERROR, error);
     } finally {
       setLoading(false);
     }
@@ -116,12 +97,15 @@ export const BlogProvider = ({ children }) => {
    */
   const fetchFoodCategories = async () => {
     try {
+      setError(null);
       const response = await foodAPI.getCategories();
       if (response.data.success) {
         setFoodCategories(response.data.data);
+      } else {
+        setErrorMessage(ERROR_MESSAGES.CATEGORY_FETCH_FAILED);
       }
     } catch (error) {
-      console.error('Error fetching food categories:', error);
+      setErrorMessage(ERROR_MESSAGES.NETWORK_ERROR, error);
     }
   };
 
@@ -131,6 +115,7 @@ export const BlogProvider = ({ children }) => {
   const fetchBlogPosts = async () => {
     try {
       setPostsLoading(true);
+      setError(null);
       const response = await blogAPI.getAllPosts();
       if (response.data.success) {
         const mappedPosts = response.data.data.map(post => ({
@@ -138,9 +123,11 @@ export const BlogProvider = ({ children }) => {
           date: new Date(post.created_at).toLocaleDateString('vi-VN')
         }));
         setPosts(mappedPosts);
+      } else {
+        setErrorMessage(ERROR_MESSAGES.BLOG_FETCH_FAILED);
       }
     } catch (error) {
-      console.error('Error fetching blog posts:', error);
+      setErrorMessage(ERROR_MESSAGES.NETWORK_ERROR, error);
     } finally {
       setPostsLoading(false);
     }
@@ -151,6 +138,7 @@ export const BlogProvider = ({ children }) => {
    */
   const fetchUserLikes = async () => {
     try {
+      setError(null);
       const likedPosts = new Set();
       for (const post of posts) {
         try {
@@ -159,12 +147,13 @@ export const BlogProvider = ({ children }) => {
             likedPosts.add(post.id);
           }
         } catch (error) {
-          console.error('Error checking like status:', error);
+          // Silent fail for individual like checks
+          continue;
         }
       }
       setUserLikes(likedPosts);
     } catch (error) {
-      console.error('Error fetching user likes:', error);
+      setErrorMessage(ERROR_MESSAGES.LIKES_FETCH_FAILED, error);
     }
   };
 
@@ -200,56 +189,13 @@ export const BlogProvider = ({ children }) => {
         return newLikes;
       });
 
-      // Call API
+      // Make API call
       const response = await blogAPI.toggleLike(postId);
-      
-      if (response.data.success) {
-        // Update with accurate data from server
-        setPosts(prev => prev.map(post => {
-          if (post.id === postId) {
-            return {
-              ...post,
-              likes_count: response.data.liked ? 
-                (currentPost?.likes_count || 0) + 1 : 
-                Math.max((currentPost?.likes_count || 0) - 1, 0)
-            };
-          }
-          return post;
-        }));
-
-        setUserLikes(prev => {
-          const newLikes = new Set(prev);
-          if (response.data.liked) {
-            newLikes.add(postId);
-          } else {
-            newLikes.delete(postId);
-          }
-          return newLikes;
-        });
-      } else {
-        // Rollback optimistic update if API fails
-        setPosts(prev => prev.map(post => {
-          if (post.id === postId) {
-            return {
-              ...post,
-              likes_count: currentPost?.likes_count || 0
-            };
-          }
-          return post;
-        }));
-
-        setUserLikes(prev => {
-          const newLikes = new Set(prev);
-          if (isCurrentlyLiked) {
-            newLikes.add(postId);
-          } else {
-            newLikes.delete(postId);
-          }
-          return newLikes;
-        });
+      if (!response.data.success) {
+        throw new Error('Failed to toggle like');
       }
     } catch (error) {
-      console.error('Error toggling like:', error);
+      setErrorMessage(ERROR_MESSAGES.LIKE_TOGGLE_FAILED, error);
       
       // Rollback optimistic update on error
       const currentPost = posts.find(post => post.id === postId);
@@ -277,16 +223,48 @@ export const BlogProvider = ({ children }) => {
     }
   };
 
-  /**
-   * Fetch comments for a post with pagination and sorting
-   * @param {number} postId - The post ID
-   * @param {number} page - Page number (default: 1)
-   * @param {string} sortBy - Sort order ('newest', 'oldest', 'most_liked')
-   */
-  const fetchComments = useCallback(async (postId, page = 1, sortBy = 'newest') => {
+  // Memoize expensive operations
+  const memoizedPosts = useMemo(() => posts, [posts]);
+  const memoizedComments = useMemo(() => comments, [comments]);
+
+  // Optimize comment likes checking with batch API call
+  const checkCommentLikesBatch = useCallback(async (commentIds) => {
+    if (!commentIds || commentIds.length === 0) return new Set();
+    
+    try {
+      // Batch API call instead of individual calls
+      const response = await blogAPI.checkCommentLikesBatch(commentIds);
+      if (response.data.success) {
+        return new Set(response.data.data.likedCommentIds || []);
+      }
+    } catch (error) {
+      // Fallback to individual calls if batch API not available
+      const likedComments = new Set();
+      const checkPromises = commentIds.map(async (commentId) => {
+        try {
+          const likeResponse = await blogAPI.checkCommentLiked(commentId);
+          if (likeResponse.data.success && likeResponse.data.liked) {
+            likedComments.add(commentId);
+          }
+        } catch (error) {
+          // Silent fail for individual like checks
+        }
+      });
+      
+      await Promise.all(checkPromises);
+      return likedComments;
+    }
+    
+    return new Set();
+  }, []);
+
+  // Optimize fetchComments with batch operations
+  const fetchComments = useCallback(async (postId, page = 1, limit = 10) => {
     try {
       setCommentsLoading(true);
-      const response = await blogAPI.getComments(postId, page, sortBy);
+      setError(null);
+      
+      const response = await blogAPI.getComments(postId, page, limit);
       
       if (response.data.success) {
         if (page === 1) {
@@ -296,32 +274,21 @@ export const BlogProvider = ({ children }) => {
         }
         setCommentPagination(response.data.data.pagination);
         
-        // Initialize comment likes for new comments (only on first page)
-        if (page === 1) {
-          const likedComments = new Set();
-          const checkPromises = response.data.data.comments.map(async (comment) => {
-            try {
-              const likeResponse = await blogAPI.checkCommentLiked(comment.id);
-              if (likeResponse.data.success && likeResponse.data.liked) {
-                likedComments.add(comment.id);
-              }
-            } catch (error) {
-              console.error('Error checking comment like status:', error);
-            }
-          });
-          
-          await Promise.all(checkPromises);
+        // Batch check comment likes for first page
+        if (page === 1 && response.data.data.comments.length > 0) {
+          const commentIds = response.data.data.comments.map(comment => comment.id);
+          const likedComments = await checkCommentLikesBatch(commentIds);
           setCommentLikes(likedComments);
         }
+      } else {
+        setErrorMessage(ERROR_MESSAGES.COMMENTS_FETCH_FAILED);
       }
     } catch (error) {
-      console.error('Error fetching comments:', error);
+      setErrorMessage(ERROR_MESSAGES.NETWORK_ERROR, error);
     } finally {
       setCommentsLoading(false);
     }
-  }, []);
-
-
+  }, [checkCommentLikesBatch]);
 
   /**
    * Create a new comment for a post
@@ -331,67 +298,70 @@ export const BlogProvider = ({ children }) => {
    */
   const createComment = async (postId, commentData) => {
     try {
+      setError(null);
       const response = await blogAPI.createComment(postId, commentData);
       
       if (response.data.success) {
         const newComment = response.data.data;
         
-        // Optimistic update
+        // Add to comments list
         setComments(prev => [newComment, ...prev]);
         
-        // Update pagination
-        setCommentPagination(prev => ({
-          ...prev,
-          total_comments: prev.total_comments + 1,
-          total_pages: Math.ceil((prev.total_comments + 1) / 10)
+        // Update post comment count
+        setPosts(prev => prev.map(post => {
+          if (post.id === postId) {
+            return {
+              ...post,
+              comments_count: (post.comments_count || 0) + 1
+            };
+          }
+          return post;
         }));
         
         return { success: true, comment: newComment };
+      } else {
+        setErrorMessage(ERROR_MESSAGES.COMMENT_CREATE_FAILED);
+        return { success: false, message: response.data.message };
       }
     } catch (error) {
-      console.error('Error creating comment:', error);
-      return { success: false, message: error.response?.data?.message || 'Lỗi khi tạo comment' };
+      setErrorMessage(ERROR_MESSAGES.NETWORK_ERROR, error);
+      return { success: false, message: ERROR_MESSAGES.NETWORK_ERROR };
     }
   };
 
   /**
    * Update an existing comment
    * @param {number} commentId - The comment ID
-   * @param {string} content - New comment content
-   * @returns {Object} Result object with success status and updated comment
+   * @param {Object} commentData - Updated comment data
+   * @returns {Object} Result object with success status
    */
-  const updateComment = async (commentId, content) => {
+  const updateComment = async (commentId, commentData) => {
     try {
-      const response = await blogAPI.updateComment(commentId, { content });
+      setError(null);
+      const response = await blogAPI.updateComment(commentId, commentData);
       
       if (response.data.success) {
         const updatedComment = response.data.data;
         
-        // Optimistic update for comments and replies
+        // Update in comments list
         setComments(prev => prev.map(comment => 
           comment.id === commentId ? updatedComment : comment
         ));
         
-        setReplies(prev => {
-          const newReplies = { ...prev };
-          Object.keys(newReplies).forEach(key => {
-            newReplies[key] = newReplies[key].map(reply => 
-              reply.id === commentId ? updatedComment : reply
-            );
-          });
-          return newReplies;
-        });
-        
         return { success: true, comment: updatedComment };
+      } else {
+        setErrorMessage(ERROR_MESSAGES.COMMENT_UPDATE_FAILED);
+        return { success: false, message: response.data.message };
       }
     } catch (error) {
-      console.error('Error updating comment:', error);
-      return { success: false, message: error.response?.data?.message || 'Lỗi khi cập nhật comment' };
+      setErrorMessage(ERROR_MESSAGES.NETWORK_ERROR, error);
+      return { success: false, message: ERROR_MESSAGES.NETWORK_ERROR };
     }
   };
 
   const deleteComment = async (commentId) => {
     try {
+      setError(null);
       const response = await blogAPI.deleteComment(commentId);
       
       if (response.data.success) {
@@ -415,17 +385,23 @@ export const BlogProvider = ({ children }) => {
         }));
         
         return { success: true };
+      } else {
+        setErrorMessage(ERROR_MESSAGES.COMMENT_DELETE_FAILED);
+        return { success: false, message: response.data.message };
       }
     } catch (error) {
-      // Error deleting comment
-      return { success: false, message: error.response?.data?.message || 'Lỗi khi xóa comment' };
+      setErrorMessage(ERROR_MESSAGES.NETWORK_ERROR, error);
+      return { success: false, message: ERROR_MESSAGES.NETWORK_ERROR };
     }
   };
 
-  const fetchReplies = useCallback(async (commentId, page = 1) => {
+  // Optimize fetchReplies with batch operations
+  const fetchReplies = useCallback(async (commentId, page = 1, limit = 5) => {
     try {
-      setRepliesLoading(prev => ({ ...prev, [commentId]: true }));
-      const response = await blogAPI.getReplies(commentId, page);
+      setRepliesLoading(true);
+      setError(null);
+      
+      const response = await blogAPI.getReplies(commentId, page, limit);
       
       if (response.data.success) {
         if (page === 1) {
@@ -437,31 +413,26 @@ export const BlogProvider = ({ children }) => {
           }));
         }
         
-        // Khởi tạo commentLikes cho replies mới - chỉ gọi một lần
-        if (page === 1 && response.data.data.replies && response.data.data.replies.length > 0) {
-          const likedReplies = new Set();
-          const checkPromises = response.data.data.replies.map(async (reply) => {
-            try {
-              const likeResponse = await blogAPI.checkCommentLiked(reply.id);
-              if (likeResponse.data.success && likeResponse.data.liked) {
-                likedReplies.add(reply.id);
-              }
-            } catch (error) {
-              // Error checking reply like status
-            }
-          });
-          
-          await Promise.all(checkPromises);
-          setCommentLikes(prev => new Set([...prev, ...likedReplies]));
+        // Batch check reply likes for first page
+        if (page === 1 && response.data.data.replies.length > 0) {
+          const replyIds = response.data.data.replies.map(reply => reply.id);
+          const likedReplies = await checkCommentLikesBatch(replyIds);
+          setReplyLikes(prev => ({ ...prev, [commentId]: likedReplies }));
         }
+        
+        setRepliesPagination(prev => ({
+          ...prev,
+          [commentId]: response.data.data.pagination
+        }));
+      } else {
+        setErrorMessage(ERROR_MESSAGES.REPLIES_FETCH_FAILED);
       }
     } catch (error) {
-      // Error fetching replies
-      // Không làm crash app khi có lỗi fetch replies
+      setErrorMessage(ERROR_MESSAGES.NETWORK_ERROR, error);
     } finally {
-      setRepliesLoading(prev => ({ ...prev, [commentId]: false }));
+      setRepliesLoading(false);
     }
-  }, []);
+  }, [checkCommentLikesBatch]);
 
   const toggleCommentLike = async (commentId) => {
     try {
@@ -641,6 +612,28 @@ export const BlogProvider = ({ children }) => {
     fetchFoodCategories();
     fetchBlogPosts();
   }, []);
+  
+  // Fetch categories for blog filtering
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        // You can fetch categories from API or use static categories
+        const blogCategories = [
+          'tất cả',
+          'thực phẩm',
+          'thực đơn', 
+          'bí quyết',
+          'câu chuyện',
+          'công thức'
+        ];
+        setCategories(blogCategories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (posts.length > 0) {
@@ -648,12 +641,15 @@ export const BlogProvider = ({ children }) => {
     }
   }, [posts]);
 
-  const filteredPosts = posts.filter(post => {
-    const matchCategory = selectedCategory === 'tất cả' || post.category === selectedCategory;
-    const matchSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        post.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchCategory && matchSearch;
-  });
+  // Filter posts based on selected category and search query
+  const filteredPosts = useMemo(() => {
+    return posts.filter(post => {
+      const matchCategory = post.category === selectedCategory || selectedCategory === 'tất cả';
+      const matchSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          post.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchCategory && matchSearch;
+    });
+  }, [posts, selectedCategory, searchQuery]);
 
   const addPost = (newPost) => {
     const postWithId = {
@@ -808,7 +804,8 @@ export const BlogProvider = ({ children }) => {
         )
       );
     } catch (error) {
-      console.error('Error incrementing view count:', error);
+      // Silent fail for view count increment
+      // This is not critical for user experience
     }
   };
 

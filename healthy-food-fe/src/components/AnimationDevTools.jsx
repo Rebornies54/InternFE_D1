@@ -21,7 +21,7 @@ const AnimationDevTools = () => {
   const [showModal, setShowModal] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  if (process.env.NODE_ENV === 'production') {
+  if (import.meta.env.MODE === 'production') {
     return null;
   }
 

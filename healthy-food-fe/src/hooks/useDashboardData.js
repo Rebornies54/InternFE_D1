@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { foodAPI } from '../services/api';
+import { ERROR_MESSAGES } from '../constants';
 
 export const useDashboardData = () => {
   const [dailyStats, setDailyStats] = useState(null);
@@ -47,8 +48,7 @@ export const useDashboardData = () => {
         setDailyStats(response.data.data);
       }
     } catch (error) {
-      console.error('Error loading daily stats:', error);
-      setError('Failed to load daily statistics');
+      setError(ERROR_MESSAGES.NETWORK_ERROR);
     } finally {
       setLoading(false);
     }
@@ -66,8 +66,7 @@ export const useDashboardData = () => {
         }
       }
     } catch (error) {
-      console.error('Error loading weekly stats:', error);
-      setError('Failed to load weekly statistics');
+      setError(ERROR_MESSAGES.NETWORK_ERROR);
     } finally {
       setLoading(false);
     }
@@ -85,8 +84,7 @@ export const useDashboardData = () => {
         }
       }
     } catch (error) {
-      console.error('Error loading monthly stats:', error);
-      setError('Failed to load monthly statistics');
+      setError(ERROR_MESSAGES.NETWORK_ERROR);
     } finally {
       setLoading(false);
     }

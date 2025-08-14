@@ -61,7 +61,7 @@ export default function ScrollToTop() {
           behavior: 'smooth'
         });
       } catch (error) {
-        console.error('ScrollToTop: Error during scroll:', error);
+        // Fallback to simple scroll on error
         const scrollableElement = findScrollableElement();
         scrollableElement.scrollTo(0, 0);
       }

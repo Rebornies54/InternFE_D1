@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { STORAGE_KEYS, UI } from '../constants';
 
 const CalorieContext = createContext();
 
@@ -12,7 +13,7 @@ export const useCalorieContext = () => {
 
 export const CalorieProvider = ({ children }) => {
   const [calorieData, setCalorieData] = useState(() => {
-    const savedData = localStorage.getItem('calorieCalculationData');
+    const savedData = localStorage.getItem(STORAGE_KEYS.CALORIE_DATA);
     return savedData ? JSON.parse(savedData) : {
       age: 25,
       gender: 'Female',
@@ -31,7 +32,7 @@ export const CalorieProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    localStorage.setItem('calorieCalculationData', JSON.stringify(calorieData));
+    localStorage.setItem(STORAGE_KEYS.CALORIE_DATA, JSON.stringify(calorieData));
   }, [calorieData]);
 
   const updateCalorieData = (newData) => {

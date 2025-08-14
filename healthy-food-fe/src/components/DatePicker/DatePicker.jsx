@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { UI } from '../../constants';
 import './DatePicker.css';
 
 const DatePicker = ({ 
@@ -42,8 +43,8 @@ const DatePicker = ({
 
   const formatDate = (date) => {
     if (!date) return '';
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(UI.DATE_FORMAT_PADDING, '0');
+    const month = (date.getMonth() + 1).toString().padStart(UI.DATE_FORMAT_PADDING, '0');
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
@@ -77,7 +78,7 @@ const DatePicker = ({
       });
     }
     
-    const remainingDays = 42 - days.length;
+    const remainingDays = UI.CALENDAR_DAYS_IN_VIEW - days.length;
     for (let i = 1; i <= remainingDays; i++) {
       days.push({
         date: new Date(year, month + 1, i),

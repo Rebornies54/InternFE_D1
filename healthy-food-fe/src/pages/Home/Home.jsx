@@ -4,6 +4,7 @@ import logo from '../../assets/logo/healthy-food-logo.png';
 import { User, ChevronDown, ChevronRight, LogOut, Search, Clock, Calendar, Star, Utensils, Menu, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useBlogContext } from '../../context/BlogContext';
+import { STORAGE_KEYS } from '../../constants';
 import ScrollToTop from '../../components/ScrollToTop';
 
 import './home.css';
@@ -310,7 +311,7 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
 
         <div className="home-sidebar-menu">
           {/* À la carte Menu */}
-          <div className="home-sidebar-menu-item" onClick={() => toggleMenu('alacarte')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('alacarte')}>
             {expandedMenus.alacarte ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Utensils size={16} />
             <span>À la carte Menu</span>
@@ -323,7 +324,7 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
           )}
 
           {/* Seasonal Menu */}
-          <div className="home-sidebar-menu-item" onClick={() => toggleMenu('seasonal')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('seasonal')}>
             {expandedMenus.seasonal ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Calendar size={16} />
             <span>Seasonal Menu</span>
@@ -336,7 +337,7 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
           )}
 
           {/* Menu by Time */}
-          <div className="home-sidebar-menu-item" onClick={() => toggleMenu('daily')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('daily')}>
             {expandedMenus.daily ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Clock size={16} />
             <span>Menu by Time</span>
@@ -353,7 +354,7 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
           )}
 
           {/* Menu by Day */}
-          <div className="home-sidebar-menu-item" onClick={() => toggleMenu('weekday')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('weekday')}>
             {expandedMenus.weekday ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Calendar size={16} />
             <span>Menu by Day</span>
@@ -370,7 +371,7 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
           )}
 
           {/* Popular Menu */}
-          <div className="home-sidebar-menu-item" onClick={() => toggleMenu('popular')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('popular')}>
             {expandedMenus.popular ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Star size={16} />
             <span>Popular Menu</span>
@@ -404,7 +405,7 @@ const BlogLayout = ({ children, isMobileMenuOpen, toggleMobileMenu }) => {
   // Load expanded menu state from localStorage
   useEffect(() => {
     try {
-      const savedMenuState = localStorage.getItem('blogExpandedMenus');
+      const savedMenuState = localStorage.getItem(STORAGE_KEYS.BLOG_MENUS);
       if (savedMenuState) {
         setExpandedMenus(JSON.parse(savedMenuState));
       }
@@ -416,7 +417,7 @@ const BlogLayout = ({ children, isMobileMenuOpen, toggleMobileMenu }) => {
   // Save expanded menu state to localStorage
   useEffect(() => {
     try {
-      localStorage.setItem('blogExpandedMenus', JSON.stringify(expandedMenus));
+      localStorage.setItem(STORAGE_KEYS.BLOG_MENUS, JSON.stringify(expandedMenus));
           } catch (e) {
         // Silent fail for localStorage errors
       }

@@ -1,15 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { blogAPI } from '../../services/api';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
+import { BLOG_CATEGORIES } from '../../constants';
 import './Blog.css';
-
-const BLOG_CATEGORIES = [
-  { value: 'thực phẩm', label: 'Thực phẩm' },
-  { value: 'thực đơn', label: 'Thực đơn' },
-  { value: 'bí quyết', label: 'Bí quyết' },
-  { value: 'câu chuyện', label: 'Câu chuyện' },
-  { value: 'công thức', label: 'Công thức' },
-];
 
 const CreateBlog = ({ onClose, onCreated }) => {
   const [title, setTitle] = useState('');

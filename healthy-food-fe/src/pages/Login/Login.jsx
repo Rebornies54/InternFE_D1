@@ -124,7 +124,7 @@ const Login = () => {
                       autoComplete="email" 
                     />
                     {errors.email && touched.email && (
-                      <div style={{ color: 'red', fontSize: '0.95rem' }}>
+                      <div className="login-error-message">
                         {errors.email}
                       </div>
                     )}
@@ -160,7 +160,7 @@ const Login = () => {
                       </button>
                     </div>
                     {errors.password && touched.password && (
-                      <div style={{ color: 'red', fontSize: '0.95rem' }}>
+                      <div className="login-error-message">
                         {errors.password}
                       </div>
                     )}

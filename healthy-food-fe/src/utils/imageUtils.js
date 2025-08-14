@@ -3,7 +3,7 @@
 /**
  * Check if an image URL is valid and accessible
  * @param {string} url - The image URL to check
- * @returns {Promise<boolean>} - True if image is accessible, false otherwise
+ * @returns {Promise<boolean>} 
  */
 export const checkImageAccessibility = async (url) => {
   if (!url || url.trim() === '') {
@@ -14,33 +14,28 @@ export const checkImageAccessibility = async (url) => {
     const response = await fetch(url, { method: 'HEAD' });
     return response.ok && response.headers.get('content-type')?.startsWith('image/');
   } catch (error) {
-    console.warn(`Image accessibility check failed for ${url}:`, error);
     return false;
   }
 };
 
+import { API_CONFIG } from '../constants';
+
 /**
  * Get the full image URL with proper base URL
  * @param {string} imageUrl - The image URL (can be relative or absolute)
- * @param {string} baseUrl - The base URL (default: http://localhost:5000)
+ * @param {string} baseUrl - The base URL (default: from API_CONFIG)
  * @returns {string} - The complete image URL
  */
-export const getFullImageUrl = (imageUrl, baseUrl = 'http://localhost:5000') => {
+export const getFullImageUrl = (imageUrl, baseUrl = API_CONFIG.BASE_URL) => {
   if (!imageUrl || imageUrl.trim() === '') {
     return null;
   }
-
-  // If it's already a full URL, return as is
   if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
     return imageUrl;
   }
-
-  // If it's a relative URL starting with /, prepend base URL
   if (imageUrl.startsWith('/')) {
     return `${baseUrl}${imageUrl}`;
   }
-
-  // Otherwise, assume it's a filename and prepend uploads path
   return `${baseUrl}/uploads/${imageUrl}`;
 };
 
@@ -51,8 +46,6 @@ export const getFullImageUrl = (imageUrl, baseUrl = 'http://localhost:5000') => 
  * @param {string} fallbackSelector - CSS selector for fallback element
  */
 export const handleImageError = (event, imageUrl, fallbackSelector = null) => {
-  console.warn(`Failed to load image: ${imageUrl}`);
-  
   // Hide the failed image
   event.target.style.display = 'none';
   
@@ -80,39 +73,38 @@ export const preloadImage = (url) => {
 };
 
 /**
- * Debug image loading issues
- * @param {string} imageUrl - The image URL to debug
+ * Validate image URL format
+ * @param {string} imageUrl - The image URL to validate
+ * @returns {boolean} - True if URL format is valid
  */
-export const debugImageLoading = async (imageUrl) => {
-  console.group(`🔍 Debugging image: ${imageUrl}`);
-  
-  // Check if URL is valid
-  const isValidUrl = imageUrl && imageUrl.trim() !== '';
-  console.log('✅ URL valid:', isValidUrl);
-  
-  if (!isValidUrl) {
-    console.groupEnd();
-    return;
+export const validateImageUrl = (imageUrl) => {
+  if (!imageUrl || imageUrl.trim() === '') {
+    return false;
   }
-  
-  // Get full URL
-  const fullUrl = getFullImageUrl(imageUrl);
-  console.log('🔗 Full URL:', fullUrl);
-  
-  // Check accessibility
-  const isAccessible = await checkImageAccessibility(fullUrl);
-  console.log('🌐 Accessible:', isAccessible);
-  
-  // Try to preload
-  const preloadSuccess = await preloadImage(fullUrl);
-  console.log('📦 Preload success:', preloadSuccess);
-  
-  console.groupEnd();
-  
-  return {
-    isValidUrl,
-    fullUrl,
-    isAccessible,
-    preloadSuccess
-  };
+
+  try {
+    const url = new URL(imageUrl, window.location.origin);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Get image dimensions asynchronously
+ * @param {string} url - The image URL
+ * @returns {Promise<{width: number, height: number} | null>} - Image dimensions or null if failed
+ */
+export const getImageDimensions = (url) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      resolve({
+        width: img.naturalWidth,
+        height: img.naturalHeight
+      });
+    };
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
 };

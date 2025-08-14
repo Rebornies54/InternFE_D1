@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { foodAPI } from '../../services/api';
 import { useFoodContext } from '../../context/FoodContext';
+import { PAGINATION, DEFAULTS, VALIDATION } from '../../constants';
 import DatePicker from '../DatePicker';
 import './CalorieCalculation.css';
 
@@ -8,9 +9,9 @@ const CalorieCalculation = () => {
   // State for food database
   const [foodCategories, setFoodCategories] = useState([]);
   const [foodItems, setFoodItems] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState(DEFAULTS.SELECTED_CATEGORY);
   const [selectedFood, setSelectedFood] = useState('');
-  const [quantity, setQuantity] = useState(100);
+  const [quantity, setQuantity] = useState(DEFAULTS.QUANTITY);
   const [dailyFoodLog, setDailyFoodLog] = useState([]);
   const [loading, setLoading] = useState(false);
   
@@ -19,15 +20,15 @@ const CalorieCalculation = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   
   // State for pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(DEFAULTS.CURRENT_PAGE);
+  const itemsPerPage = PAGINATION.DEFAULT_PAGE_SIZE;
   const totalPages = Math.max(1, Math.ceil(dailyFoodLog.length / itemsPerPage));
 
   // State for edit functionality
   const [editingLog, setEditingLog] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editQuantity, setEditQuantity] = useState(100);
-  const [editCalories, setEditCalories] = useState(0);
+  const [editQuantity, setEditQuantity] = useState(DEFAULTS.EDIT_QUANTITY);
+  const [editCalories, setEditCalories] = useState(DEFAULTS.EDIT_CALORIES);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
@@ -384,44 +385,73 @@ const CalorieCalculation = () => {
   };
 
   // Add pending foods to Daily Food Tracking
-  const addPendingFoodsToTracking = async () => {
+  const addPendingFoodsToTracking = useCallback(async () => {
     if (pendingFoods.length === 0) return;
 
     try {
       setLoading(true);
-      let successCount = 0;
+      
+      // Batch API call instead of sequential calls
+      const batchData = pendingFoods.map(food => ({
+        food_item_id: food.id,
+        quantity: food.quantity,
+        calories: Math.round(food.calories * food.quantity / 100),
+        log_date: selectedDate
+      }));
 
-      for (const food of pendingFoods) {
-        const calories = Math.round(food.calories * food.quantity / 100);
-        const logData = {
-          food_item_id: food.id,
-          quantity: food.quantity,
-          calories: calories,
-          log_date: selectedDate
-        };
-
-        try {
-          const response = await foodAPI.addFoodLog(logData);
-          if (response.data.success) {
-            successCount++;
-          }
-        } catch (error) {
-          // Error adding food to pending
+      try {
+        // Try batch API first
+        const response = await foodAPI.addFoodLogsBatch(batchData);
+        if (response.data.success) {
+          setMessage(`Đã thêm ${pendingFoods.length} sản phẩm vào Daily Food Tracking`);
+          setMessageType('success');
+          
+          // Reload data
+          await Promise.all([
+            loadUserFoodLogs(),
+            loadDailyStatistics()
+          ]);
+          
+          // Clear pending foods
+          clearPendingFoods();
         }
-      }
+      } catch (batchError) {
+        // Fallback to individual calls if batch API not available
+        let successCount = 0;
+        const promises = pendingFoods.map(async (food) => {
+          const calories = Math.round(food.calories * food.quantity / 100);
+          const logData = {
+            food_item_id: food.id,
+            quantity: food.quantity,
+            calories: calories,
+            log_date: selectedDate
+          };
 
-      if (successCount > 0) {
-        setMessage(`Đã thêm ${successCount} sản phẩm vào Daily Food Tracking`);
-        setMessageType('success');
-        
-        // Reload data
-        await Promise.all([
-          loadUserFoodLogs(),
-          loadDailyStatistics()
-        ]);
-        
-        // Clear pending foods
-        clearPendingFoods();
+          try {
+            const response = await foodAPI.addFoodLog(logData);
+            if (response.data.success) {
+              successCount++;
+            }
+          } catch (error) {
+            // Error adding food to pending
+          }
+        });
+
+        await Promise.all(promises);
+
+        if (successCount > 0) {
+          setMessage(`Đã thêm ${successCount} sản phẩm vào Daily Food Tracking`);
+          setMessageType('success');
+          
+          // Reload data
+          await Promise.all([
+            loadUserFoodLogs(),
+            loadDailyStatistics()
+          ]);
+          
+          // Clear pending foods
+          clearPendingFoods();
+        }
       }
     } catch (error) {
       // Error adding pending foods
@@ -430,7 +460,7 @@ const CalorieCalculation = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pendingFoods, selectedDate, loadUserFoodLogs, loadDailyStatistics, clearPendingFoods]);
 
   // Format date for display
   const formatDate = (dateString) => {

@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useBlogContext } from '../../context/BlogContext';
 import { Heart, MessageCircle, Edit, Trash2, Reply, MoreVertical } from 'lucide-react';
 import SortComments from './SortComments';
+import { ERROR_MESSAGES } from '../../constants';
 import './Comment.css';
 
 const CommentItem = ({ comment, onReply, onEdit, onDelete, onLike, isLiked, showReplies = false, currentUser, fetchReplies, replies, repliesLoading, commentLikes }) => {
@@ -30,9 +31,12 @@ const CommentItem = ({ comment, onReply, onEdit, onDelete, onLike, isLiked, show
         if (fetchReplies) {
           fetchReplies(comment.id);
         }
+      } else {
+        // Handle error from onReply function
+        // Error message is already handled by the context
       }
     } catch (error) {
-      console.error('Error creating reply:', error);
+      // Silent fail - error handling is done in context
     } finally {
       setIsSubmitting(false);
     }
@@ -43,7 +47,7 @@ const CommentItem = ({ comment, onReply, onEdit, onDelete, onLike, isLiked, show
     try {
       await onLike(comment.id);
     } catch (error) {
-      console.error('Error toggling comment like:', error);
+      // Silent fail - error handling is done in context
     }
   };
 
@@ -72,7 +76,7 @@ const CommentItem = ({ comment, onReply, onEdit, onDelete, onLike, isLiked, show
         return date.toLocaleDateString('vi-VN');
       }
     } catch (error) {
-      console.error('Error formatting date:', error);
+      // Fallback to default text on date formatting error
       return 'Vừa xong';
     }
   };
@@ -224,7 +228,7 @@ const CommentForm = ({ onSubmit, placeholder = "Viết bình luận..." }) => {
         setContent('');
       }
     } catch (error) {
-      console.error('Error creating comment:', error);
+      // Silent fail - error handling is done in parent component
     } finally {
       setIsSubmitting(false);
     }
@@ -293,8 +297,7 @@ const Comment = ({ postId }) => {
     try {
       return await createComment(postId, { content });
     } catch (error) {
-      console.error('Error creating comment:', error);
-      return { success: false, message: 'Lỗi khi tạo comment' };
+      return { success: false, message: ERROR_MESSAGES.COMMENT_CREATE_FAILED };
     }
   };
 
@@ -305,8 +308,7 @@ const Comment = ({ postId }) => {
     try {
       return await createComment(postId, { content, parent_id: parentId });
     } catch (error) {
-      console.error('Error creating reply:', error);
-      return { success: false, message: 'Lỗi khi tạo reply' };
+      return { success: false, message: ERROR_MESSAGES.REPLY_CREATE_FAILED };
     }
   };
 
@@ -326,7 +328,7 @@ const Comment = ({ postId }) => {
         setEditContent('');
       }
     } catch (error) {
-      console.error('Error updating comment:', error);
+      // Silent fail - error handling is done in context
     }
   };
 
@@ -335,9 +337,9 @@ const Comment = ({ postId }) => {
     if (window.confirm('Bạn có chắc muốn xóa bình luận này?')) {
       try {
         await deleteComment(commentId);
-          } catch (error) {
-      console.error('Error deleting comment:', error);
-    }
+      } catch (error) {
+        // Silent fail - error handling is done in context
+      }
     }
   };
 

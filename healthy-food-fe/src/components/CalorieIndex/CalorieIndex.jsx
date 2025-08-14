@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCalorieContext } from '../../context/CalorieContext';
 import CheckboxOption from './CheckboxOption';
+import { VALIDATION } from '../../constants';
 import './CalorieIndex.css';
 
 const CalorieIndex = () => {
@@ -21,8 +22,8 @@ const CalorieIndex = () => {
     setError('');
     
     // Validate inputs
-    if (!calorieData.age || calorieData.age < 15 || calorieData.age > 80) {
-      setError('Please enter a valid age between 15 and 80');
+    if (!calorieData.age || calorieData.age < VALIDATION.MIN_AGE || calorieData.age > VALIDATION.MAX_AGE) {
+      setError(`Please enter a valid age between ${VALIDATION.MIN_AGE} and ${VALIDATION.MAX_AGE}`);
       return;
     }
     
