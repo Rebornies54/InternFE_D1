@@ -17,13 +17,11 @@ import {
   AnimatedModal
 } from './AnimatedComponents';
 
-// Animation Playground - Chỉ dành cho development
 const AnimationPlayground = () => {
   const [showModal, setShowModal] = useState(false);
   const [progress, setProgress] = useState(0);
   const [activeTab, setActiveTab] = useState('basic');
 
-  // Chỉ render trong development
   if (process.env.NODE_ENV === 'production') {
     return null;
   }

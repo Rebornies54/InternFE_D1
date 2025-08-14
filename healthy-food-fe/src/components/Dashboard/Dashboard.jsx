@@ -22,7 +22,6 @@ function Dashboard() {
   const [selectedWeek, setSelectedWeek] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   
-  // Use custom hook for dashboard data
   const {
     dailyStats,
     weeklyStats,
@@ -39,11 +38,9 @@ function Dashboard() {
     setError
   } = useDashboardData();
 
-  // Week and month options
   const [weekOptions, setWeekOptions] = useState([]);
   const [monthOptions, setMonthOptions] = useState([]);
 
-  // Generate week and month options
   useEffect(() => {
     const { weeks, months } = generateDateOptions();
     setWeekOptions(weeks);
@@ -53,7 +50,6 @@ function Dashboard() {
     if (months.length > 0) setSelectedMonth(months[0].label);
   }, [generateDateOptions]);
 
-  // Load data when date/week/month changes
   useEffect(() => {
     if (selectedDate) {
       loadDailyStats(selectedDate);

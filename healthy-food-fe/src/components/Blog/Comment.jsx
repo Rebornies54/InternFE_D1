@@ -27,24 +27,23 @@ const CommentItem = ({ comment, onReply, onEdit, onDelete, onLike, isLiked, show
       if (result && result.success) {
         setReplyContent('');
         setShowReplyForm(false);
-        // Refresh replies
         if (fetchReplies) {
           fetchReplies(comment.id);
         }
       }
     } catch (error) {
-      // Error creating reply
+      console.error('Error creating reply:', error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleLike = async () => {
-    if (!currentUser) return; // Chỉ cho phép like nếu đã login
+    if (!currentUser) return;
     try {
       await onLike(comment.id);
     } catch (error) {
-      // Error toggling comment like
+      console.error('Error toggling comment like:', error);
     }
   };
 
@@ -73,7 +72,7 @@ const CommentItem = ({ comment, onReply, onEdit, onDelete, onLike, isLiked, show
         return date.toLocaleDateString('vi-VN');
       }
     } catch (error) {
-      // Error formatting date
+      console.error('Error formatting date:', error);
       return 'Vừa xong';
     }
   };
@@ -225,7 +224,7 @@ const CommentForm = ({ onSubmit, placeholder = "Viết bình luận..." }) => {
         setContent('');
       }
     } catch (error) {
-      // Error creating comment
+      console.error('Error creating comment:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -294,7 +293,7 @@ const Comment = ({ postId }) => {
     try {
       return await createComment(postId, { content });
     } catch (error) {
-      // Error creating comment
+      console.error('Error creating comment:', error);
       return { success: false, message: 'Lỗi khi tạo comment' };
     }
   };
@@ -306,7 +305,7 @@ const Comment = ({ postId }) => {
     try {
       return await createComment(postId, { content, parent_id: parentId });
     } catch (error) {
-      // Error creating reply
+      console.error('Error creating reply:', error);
       return { success: false, message: 'Lỗi khi tạo reply' };
     }
   };
@@ -327,7 +326,7 @@ const Comment = ({ postId }) => {
         setEditContent('');
       }
     } catch (error) {
-      // Error updating comment
+      console.error('Error updating comment:', error);
     }
   };
 
@@ -336,9 +335,9 @@ const Comment = ({ postId }) => {
     if (window.confirm('Bạn có chắc muốn xóa bình luận này?')) {
       try {
         await deleteComment(commentId);
-      } catch (error) {
-        // Error deleting comment
-      }
+          } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
     }
   };
 
@@ -350,13 +349,11 @@ const Comment = ({ postId }) => {
 
   const handleSortChange = (newSort) => {
     setCurrentSort(newSort);
-    // Reset to page 1 when changing sort
     if (fetchComments) {
       fetchComments(postId, 1, newSort);
     }
   };
 
-  // Kiểm tra nếu không có postId
   if (!postId) {
     return <div className="comments-section">Không tìm thấy bài viết</div>;
   }

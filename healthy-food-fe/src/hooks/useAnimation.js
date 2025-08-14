@@ -1,6 +1,9 @@
 import { useCallback } from 'react';
 
-// Hook để tạo animation variants
+/**
+ * Hook để tạo animation variants cho Framer Motion
+ * @returns {Object} Object chứa các animation variants
+ */
 export const useAnimationVariants = () => {
   const fadeInUp = useCallback((delay = 0) => ({
     initial: { opacity: 0, y: 20 },
@@ -58,7 +61,10 @@ export const useAnimationVariants = () => {
   };
 };
 
-// Hook để tạo hover animations
+/**
+ * Hook để tạo hover animations
+ * @returns {Object} Object chứa các hover animation variants
+ */
 export const useHoverAnimation = () => {
   const buttonHover = useCallback(() => ({
     whileHover: { 
@@ -92,7 +98,10 @@ export const useHoverAnimation = () => {
   };
 };
 
-// Hook để tạo loading animations
+/**
+ * Hook để tạo loading animations
+ * @returns {Object} Object chứa các loading animation variants
+ */
 export const useLoadingAnimation = () => {
   const spinnerAnimation = useCallback(() => ({
     animate: { rotate: 360 },
@@ -129,7 +138,10 @@ export const useLoadingAnimation = () => {
   };
 };
 
-// Hook để tạo page transitions
+/**
+ * Hook để tạo page transitions
+ * @returns {Object} Object chứa các page transition variants
+ */
 export const usePageTransition = () => {
   const pageEnter = useCallback(() => ({
     initial: { opacity: 0, y: 20 },

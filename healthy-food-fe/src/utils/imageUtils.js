@@ -1,4 +1,4 @@
-// Image utility functions for debugging and handling image loading issues
+
 
 /**
  * Check if an image URL is valid and accessible

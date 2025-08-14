@@ -24,12 +24,10 @@ const CreateBlog = ({ onClose, onCreated }) => {
   const fileInputRef = useRef(null);
   const scrollToTop = useScrollToTop();
 
-  // Scroll to top when modal opens
   useEffect(() => {
     scrollToTop();
   }, [scrollToTop]);
 
-  // Update character count
   useEffect(() => {
     setCharCount({
       title: title.length,
@@ -75,7 +73,6 @@ const CreateBlog = ({ onClose, onCreated }) => {
     try {
       let imageUrl = '';
       
-      // Upload image if any
       if (image) {
         const formData = new FormData();
         formData.append('image', image);
@@ -85,7 +82,6 @@ const CreateBlog = ({ onClose, onCreated }) => {
         }
       }
       
-      // Create post
       await blogAPI.createPost({
         title,
         description: description || null,

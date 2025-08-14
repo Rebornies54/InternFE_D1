@@ -32,7 +32,7 @@ const AuthProvider = ({ children }) => {
         localStorage.removeItem('currentBmi');
       }
     } catch (_) {
-      // ignore
+      // Ignore BMI fetch errors
     }
   };
 

@@ -10,7 +10,6 @@ export const useForm = (initialState = {}) => {
       ...prev,
       [field]: value
     }));
-    // Clear field error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({
         ...prev,

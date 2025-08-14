@@ -9,7 +9,6 @@ export const useScrollToTop = () => {
         behavior
       });
     } catch (error) {
-      // Fallback for browsers that don't support smooth scroll
       window.scrollTo(0, 0);
     }
   }, []);

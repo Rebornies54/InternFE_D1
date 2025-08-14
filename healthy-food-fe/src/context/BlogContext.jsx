@@ -1,13 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { foodAPI, blogAPI } from '../services/api';
 
-// Khởi tạo context
 const BlogContext = createContext();
 
-// Custom hook sử dụng BlogContext
+/**
+ * Custom hook để sử dụng BlogContext
+ * @returns {Object} BlogContext value
+ */
 export const useBlogContext = () => useContext(BlogContext);
 
-// Dữ liệu mẫu ban đầu
 const initialBlogPosts = [
   {
     id: 1,
@@ -74,14 +75,12 @@ export const BlogProvider = ({ children }) => {
   const [postsLoading, setPostsLoading] = useState(false);
   const [userLikes, setUserLikes] = useState(new Set());
   
-  // Food items state
   const [foodItems, setFoodItems] = useState([]);
   const [foodCategories, setFoodCategories] = useState([]);
   const [selectedFood, setSelectedFood] = useState(null);
   const [showFoodModal, setShowFoodModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Comment states
   const [comments, setComments] = useState([]);
   const [commentLikes, setCommentLikes] = useState(new Set());
   const [commentsLoading, setCommentsLoading] = useState(false);
@@ -95,7 +94,9 @@ export const BlogProvider = ({ children }) => {
     has_prev: false
   });
 
-  // Fetch food items from database
+  /**
+   * Fetch food items from database
+   */
   const fetchFoodItems = async () => {
     try {
       setLoading(true);
@@ -104,13 +105,15 @@ export const BlogProvider = ({ children }) => {
         setFoodItems(response.data.data);
       }
     } catch (error) {
-      // Error fetching food items
+      console.error('Error fetching food items:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch food categories
+  /**
+   * Fetch food categories from database
+   */
   const fetchFoodCategories = async () => {
     try {
       const response = await foodAPI.getCategories();
@@ -118,32 +121,34 @@ export const BlogProvider = ({ children }) => {
         setFoodCategories(response.data.data);
       }
     } catch (error) {
-      // Error fetching food categories
+      console.error('Error fetching food categories:', error);
     }
   };
 
-  // Fetch blog posts from API
+  /**
+   * Fetch blog posts from API and map to frontend format
+   */
   const fetchBlogPosts = async () => {
     try {
       setPostsLoading(true);
       const response = await blogAPI.getAllPosts();
       if (response.data.success) {
-        // Map API data to frontend format
         const mappedPosts = response.data.data.map(post => ({
           ...post,
-          // Giữ nguyên image_url, không map thành image để tránh confusion
           date: new Date(post.created_at).toLocaleDateString('vi-VN')
         }));
         setPosts(mappedPosts);
       }
     } catch (error) {
-      // Error fetching blog posts
+      console.error('Error fetching blog posts:', error);
     } finally {
       setPostsLoading(false);
     }
   };
 
-  // Fetch user likes
+  /**
+   * Fetch user likes for all posts
+   */
   const fetchUserLikes = async () => {
     try {
       const likedPosts = new Set();
@@ -154,23 +159,25 @@ export const BlogProvider = ({ children }) => {
             likedPosts.add(post.id);
           }
         } catch (error) {
-          // Error checking like status
+          console.error('Error checking like status:', error);
         }
       }
       setUserLikes(likedPosts);
     } catch (error) {
-      // Error fetching user likes
+      console.error('Error fetching user likes:', error);
     }
   };
 
-  // Toggle like for a post
+  /**
+   * Toggle like for a post with optimistic updates
+   * @param {number} postId - The post ID to toggle like
+   */
   const toggleLike = async (postId) => {
     try {
-      // Optimistic update - cập nhật UI ngay lập tức
       const currentPost = posts.find(post => post.id === postId);
       const isCurrentlyLiked = userLikes.has(postId);
       
-      // Optimistic update cho posts
+      // Optimistic update for immediate UI feedback
       setPosts(prev => prev.map(post => {
         if (post.id === postId) {
           return {
@@ -183,7 +190,6 @@ export const BlogProvider = ({ children }) => {
         return post;
       }));
 
-      // Optimistic update cho userLikes
       setUserLikes(prev => {
         const newLikes = new Set(prev);
         if (isCurrentlyLiked) {
@@ -194,11 +200,11 @@ export const BlogProvider = ({ children }) => {
         return newLikes;
       });
 
-      // Gọi API
+      // Call API
       const response = await blogAPI.toggleLike(postId);
       
       if (response.data.success) {
-        // Cập nhật lại với dữ liệu chính xác từ server
+        // Update with accurate data from server
         setPosts(prev => prev.map(post => {
           if (post.id === postId) {
             return {
@@ -211,7 +217,6 @@ export const BlogProvider = ({ children }) => {
           return post;
         }));
 
-        // Cập nhật userLikes với response từ server
         setUserLikes(prev => {
           const newLikes = new Set(prev);
           if (response.data.liked) {
@@ -222,7 +227,7 @@ export const BlogProvider = ({ children }) => {
           return newLikes;
         });
       } else {
-        // Nếu API thất bại, rollback optimistic update
+        // Rollback optimistic update if API fails
         setPosts(prev => prev.map(post => {
           if (post.id === postId) {
             return {
@@ -244,9 +249,9 @@ export const BlogProvider = ({ children }) => {
         });
       }
     } catch (error) {
-      // Error toggling like
+      console.error('Error toggling like:', error);
       
-      // Rollback optimistic update khi có lỗi
+      // Rollback optimistic update on error
       const currentPost = posts.find(post => post.id === postId);
       const isCurrentlyLiked = userLikes.has(postId);
       
@@ -272,7 +277,12 @@ export const BlogProvider = ({ children }) => {
     }
   };
 
-  // Comment functions
+  /**
+   * Fetch comments for a post with pagination and sorting
+   * @param {number} postId - The post ID
+   * @param {number} page - Page number (default: 1)
+   * @param {string} sortBy - Sort order ('newest', 'oldest', 'most_liked')
+   */
   const fetchComments = useCallback(async (postId, page = 1, sortBy = 'newest') => {
     try {
       setCommentsLoading(true);
@@ -286,7 +296,7 @@ export const BlogProvider = ({ children }) => {
         }
         setCommentPagination(response.data.data.pagination);
         
-        // Khởi tạo commentLikes cho các comment mới - chỉ gọi một lần
+        // Initialize comment likes for new comments (only on first page)
         if (page === 1) {
           const likedComments = new Set();
           const checkPromises = response.data.data.comments.map(async (comment) => {
@@ -296,7 +306,7 @@ export const BlogProvider = ({ children }) => {
                 likedComments.add(comment.id);
               }
             } catch (error) {
-              // Error checking comment like status
+              console.error('Error checking comment like status:', error);
             }
           });
           
@@ -305,7 +315,7 @@ export const BlogProvider = ({ children }) => {
         }
       }
     } catch (error) {
-      // Error fetching comments
+      console.error('Error fetching comments:', error);
     } finally {
       setCommentsLoading(false);
     }
@@ -313,6 +323,12 @@ export const BlogProvider = ({ children }) => {
 
 
 
+  /**
+   * Create a new comment for a post
+   * @param {number} postId - The post ID
+   * @param {Object} commentData - Comment data
+   * @returns {Object} Result object with success status and comment data
+   */
   const createComment = async (postId, commentData) => {
     try {
       const response = await blogAPI.createComment(postId, commentData);
@@ -333,11 +349,17 @@ export const BlogProvider = ({ children }) => {
         return { success: true, comment: newComment };
       }
     } catch (error) {
-      // Error creating comment
+      console.error('Error creating comment:', error);
       return { success: false, message: error.response?.data?.message || 'Lỗi khi tạo comment' };
     }
   };
 
+  /**
+   * Update an existing comment
+   * @param {number} commentId - The comment ID
+   * @param {string} content - New comment content
+   * @returns {Object} Result object with success status and updated comment
+   */
   const updateComment = async (commentId, content) => {
     try {
       const response = await blogAPI.updateComment(commentId, { content });
@@ -345,12 +367,11 @@ export const BlogProvider = ({ children }) => {
       if (response.data.success) {
         const updatedComment = response.data.data;
         
-        // Optimistic update
+        // Optimistic update for comments and replies
         setComments(prev => prev.map(comment => 
           comment.id === commentId ? updatedComment : comment
         ));
         
-        // Update replies if exists
         setReplies(prev => {
           const newReplies = { ...prev };
           Object.keys(newReplies).forEach(key => {
@@ -364,7 +385,7 @@ export const BlogProvider = ({ children }) => {
         return { success: true, comment: updatedComment };
       }
     } catch (error) {
-      // Error updating comment
+      console.error('Error updating comment:', error);
       return { success: false, message: error.response?.data?.message || 'Lỗi khi cập nhật comment' };
     }
   };
@@ -615,21 +636,18 @@ export const BlogProvider = ({ children }) => {
     });
   }, []);
 
-  // Load data on component mount
   useEffect(() => {
     fetchFoodItems();
     fetchFoodCategories();
     fetchBlogPosts();
   }, []);
 
-  // Fetch user likes when posts are loaded
   useEffect(() => {
     if (posts.length > 0) {
       fetchUserLikes();
     }
   }, [posts]);
 
-  // Lọc bài viết theo danh mục và từ khóa tìm kiếm
   const filteredPosts = posts.filter(post => {
     const matchCategory = selectedCategory === 'tất cả' || post.category === selectedCategory;
     const matchSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -637,7 +655,6 @@ export const BlogProvider = ({ children }) => {
     return matchCategory && matchSearch;
   });
 
-  // Thêm bài viết mới
   const addPost = (newPost) => {
     const postWithId = {
       ...newPost,
@@ -647,22 +664,18 @@ export const BlogProvider = ({ children }) => {
     setPosts(prev => [...prev, postWithId]);
   };
 
-  // Cập nhật bài viết
   const updatePost = (updatedPost) => {
     setPosts(prev => prev.map(post => post.id === updatedPost.id ? updatedPost : post));
   };
 
-  // Xóa bài viết
   const deletePost = (postId) => {
     setPosts(prev => prev.filter(post => post.id !== postId));
   };
 
-  // Lấy bài viết theo ID
   const getPostById = (postId) => {
     return posts.find(post => post.id === postId);
   };
 
-  // Food modal functions
   const openFoodModal = (food) => {
     setSelectedFood(food);
     setShowFoodModal(true);
@@ -673,17 +686,14 @@ export const BlogProvider = ({ children }) => {
     setShowFoodModal(false);
   };
 
-  // Generate food variations based on selected food
   const getFoodVariations = (food) => {
     if (!food) return [];
     
     const baseName = food.name.split('(')[0].trim();
     const categoryName = food.category_name?.toLowerCase() || '';
     
-    // Định nghĩa cách chế biến phù hợp cho từng loại thực phẩm
     const variations = [];
     
-    // Meat / Eggs / Seafood
     if (categoryName.includes('meat') || categoryName.includes('eggs') || categoryName.includes('seafood')) {
       variations.push(
         { name: `${baseName} (raw)`, serving: '100g', calories: food.calories },
@@ -693,7 +703,6 @@ export const BlogProvider = ({ children }) => {
         { name: `${baseName} (steamed)`, serving: '100g', calories: Math.round(food.calories * 0.85) }
       );
     }
-    // Vegetables & Legumes
     else if (categoryName.includes('vegetables') || categoryName.includes('legumes')) {
       variations.push(
         { name: `${baseName} (raw)`, serving: '100g', calories: food.calories },
@@ -703,7 +712,6 @@ export const BlogProvider = ({ children }) => {
         { name: `${baseName} (roasted)`, serving: '100g', calories: Math.round(food.calories * 1.1) }
       );
     }
-    // Fruits
     else if (categoryName.includes('fruits')) {
       variations.push(
         { name: `${baseName} (fresh)`, serving: '100g', calories: food.calories },
@@ -713,7 +721,6 @@ export const BlogProvider = ({ children }) => {
         { name: `${baseName} (frozen)`, serving: '100g', calories: Math.round(food.calories * 0.9) }
       );
     }
-    // Grains / Cereals / Breads
     else if (categoryName.includes('grains') || categoryName.includes('cereals') || categoryName.includes('breads')) {
       variations.push(
         { name: `${baseName} (cooked)`, serving: '100g', calories: food.calories },
@@ -723,7 +730,6 @@ export const BlogProvider = ({ children }) => {
         { name: `${baseName} (steamed)`, serving: '100g', calories: Math.round(food.calories * 0.95) }
       );
     }
-    // Beverages & Dairy Products
     else if (categoryName.includes('beverages') || categoryName.includes('dairy')) {
       if (baseName.toLowerCase().includes('milk') || baseName.toLowerCase().includes('yogurt')) {
         variations.push(
@@ -751,7 +757,6 @@ export const BlogProvider = ({ children }) => {
         );
       }
     }
-    // Snacks & Processed Foods
     else if (categoryName.includes('snacks') || categoryName.includes('processed')) {
       if (baseName.toLowerCase().includes('chips') || baseName.toLowerCase().includes('fries')) {
         variations.push(
@@ -779,7 +784,6 @@ export const BlogProvider = ({ children }) => {
         );
       }
     }
-    // Default fallback
     else {
       variations.push(
         { name: `${baseName} (raw)`, serving: '100g', calories: food.calories },
@@ -793,11 +797,9 @@ export const BlogProvider = ({ children }) => {
     return variations;
   };
 
-  // Tăng view count cho bài viết
   const incrementViewCount = async (postId) => {
     try {
       await blogAPI.incrementViewCount(postId);
-      // Cập nhật local state nếu cần
       setPosts(prevPosts => 
         prevPosts.map(post => 
           post.id === postId 

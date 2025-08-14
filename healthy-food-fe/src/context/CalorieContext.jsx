@@ -11,7 +11,6 @@ export const useCalorieContext = () => {
 };
 
 export const CalorieProvider = ({ children }) => {
-  // Load data from localStorage on initialization
   const [calorieData, setCalorieData] = useState(() => {
     const savedData = localStorage.getItem('calorieCalculationData');
     return savedData ? JSON.parse(savedData) : {
@@ -31,12 +30,10 @@ export const CalorieProvider = ({ children }) => {
     };
   });
 
-  // Save data to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('calorieCalculationData', JSON.stringify(calorieData));
   }, [calorieData]);
 
-  // Update calorie data
   const updateCalorieData = (newData) => {
     setCalorieData(prev => ({
       ...prev,
@@ -44,7 +41,6 @@ export const CalorieProvider = ({ children }) => {
     }));
   };
 
-  // Reset data to defaults
   const resetCalorieData = () => {
     const defaultData = {
       age: 25,
@@ -63,9 +59,7 @@ export const CalorieProvider = ({ children }) => {
     setCalorieData(defaultData);
   };
 
-  // Calculate BMR using Mifflin-St Jeor Equation
   const calculateMifflinStJeor = (weight, height, age, gender) => {
-    // Convert string inputs to numbers if needed
     const w = parseFloat(weight);
     const h = parseFloat(height);
     const a = parseFloat(age);
@@ -77,7 +71,6 @@ export const CalorieProvider = ({ children }) => {
     }
   };
 
-  // Calculate BMR using Revised Harris-Benedict Equation
   const calculateHarrisBenedict = (weight, height, age, gender) => {
     const w = parseFloat(weight);
     const h = parseFloat(height);
@@ -90,30 +83,26 @@ export const CalorieProvider = ({ children }) => {
     }
   };
 
-  // Calculate BMR using Katch-McArdle Formula (requires body fat percentage)
   const calculateKatchMcArdle = (weight, bodyFat) => {
     const w = parseFloat(weight);
-    const f = parseFloat(bodyFat) / 100; // Convert percentage to decimal
+    const f = parseFloat(bodyFat) / 100;
     
     if (isNaN(f)) {
-      return null; // Return null if body fat is not provided
+      return null;
     }
     
     return 370 + 21.6 * (1 - f) * w;
   };
 
-  // Calculate BMR based on selected formula
   const calculateBMR = (data) => {
     const { weight, height, age, gender, bodyFat, formula, unitSystem } = data;
-    
-    // Convert imperial to metric if needed
     let weightKg = weight;
     let heightCm = height;
     
-    if (unitSystem === 'imperial') {
-      weightKg = weight * 0.453592; // Convert pounds to kg
-      heightCm = height * 2.54; // Convert inches to cm
-    }
+          if (unitSystem === 'imperial') {
+        weightKg = weight * 0.453592;
+        heightCm = height * 2.54;
+      }
     
     let bmr;
     
@@ -167,7 +156,6 @@ export const CalorieProvider = ({ children }) => {
     return Math.round(bmr * activityMultiplier);
   };
 
-  // Perform full calculation
   const performCalculation = () => {
     if (!calorieData.activityLevel || calorieData.activityLevel === '') {
       return { success: false, message: 'Please select activity level' };
@@ -182,7 +170,6 @@ export const CalorieProvider = ({ children }) => {
     const bmr = bmrResult.bmr;
     const tdee = calculateTDEE(bmr, calorieData.activityLevel);
     
-    // Create a history entry
     const newHistoryEntry = {
       date: new Date().toISOString(),
       weight: calorieData.weight,
@@ -194,7 +181,6 @@ export const CalorieProvider = ({ children }) => {
       tdee: tdee
     };
     
-    // Add entry to history, keeping only the last 10 entries
     const updatedHistory = [newHistoryEntry, ...(calorieData.history || [])].slice(0, 10);
     
     updateCalorieData({
@@ -208,38 +194,34 @@ export const CalorieProvider = ({ children }) => {
     return { success: true, bmr: bmr, tdee: tdee };
   };
 
-  // Get calorie goals based on TDEE
   const getCalorieGoals = (tdee) => {
     return {
       maintenance: Math.round(tdee),
       weightLoss: {
-        mild: Math.round(tdee - 250), // -0.25kg per week
-        moderate: Math.round(tdee - 500), // -0.5kg per week
-        aggressive: Math.round(tdee - 1000) // -1kg per week
+        mild: Math.round(tdee - 250),
+        moderate: Math.round(tdee - 500),
+        aggressive: Math.round(tdee - 1000)
       },
       weightGain: {
-        mild: Math.round(tdee + 250), // +0.25kg per week
-        moderate: Math.round(tdee + 500), // +0.5kg per week
-        aggressive: Math.round(tdee + 1000) // +1kg per week
+        mild: Math.round(tdee + 250),
+        moderate: Math.round(tdee + 500),
+        aggressive: Math.round(tdee + 1000)
       }
     };
   };
 
-  // Convert between metric and imperial units
   const convertUnits = (unitSystem) => {
     if (unitSystem === 'metric' && calorieData.unitSystem === 'imperial') {
-      // Convert from imperial to metric
       updateCalorieData({
         unitSystem: 'metric',
-        weight: Math.round(calorieData.weight * 0.453592), // lb to kg
-        height: Math.round(calorieData.height * 2.54) // in to cm
+        weight: Math.round(calorieData.weight * 0.453592),
+        height: Math.round(calorieData.height * 2.54)
       });
     } else if (unitSystem === 'imperial' && calorieData.unitSystem === 'metric') {
-      // Convert from metric to imperial
       updateCalorieData({
         unitSystem: 'imperial',
-        weight: Math.round(calorieData.weight * 2.20462), // kg to lb
-        height: Math.round(calorieData.height / 2.54) // cm to in
+        weight: Math.round(calorieData.weight * 2.20462),
+        height: Math.round(calorieData.height / 2.54)
       });
     }
   };

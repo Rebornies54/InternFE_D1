@@ -259,7 +259,6 @@ const CategoryFilter = ({ categories, selected, onChange }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -357,7 +356,6 @@ const FoodList = ({ foods, onFoodClick, loading, currentPage, itemsPerPage, tota
     );
   }
 
-  // Get current items for pagination
   const getCurrentItems = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -428,26 +426,21 @@ const Blog = () => {
   } = useBlogContext();
   
   const [selectedPost, setSelectedPost] = useState(null);
-  const [activeTab, setActiveTab] = useState('blog'); // 'blog' or 'menu'
+  const [activeTab, setActiveTab] = useState('blog');
   
-  // Food filtering state
   const [selectedFoodCategory, setSelectedFoodCategory] = useState('');
   const [foodSearchQuery, setFoodSearchQuery] = useState('');
   
-  // Pagination state for food list
   const [currentFoodPage, setCurrentFoodPage] = useState(1);
-  const itemsPerPage = 8; // 8-10 items per page
+  const itemsPerPage = 8;
 
   const [showCreate, setShowCreate] = useState(false);
 
-  // Handle tab change
   const handleTabChange = (newTab) => {
     setActiveTab(newTab);
     
-    // Scroll to top when switching tabs
     setTimeout(() => {
       try {
-        // Try to scroll the blog container first
         const blogContainer = document.querySelector('.blog-container');
         if (blogContainer && blogContainer.scrollTop > 0) {
           blogContainer.scrollTo({
@@ -456,7 +449,6 @@ const Blog = () => {
             behavior: 'smooth'
           });
         } else {
-          // Fallback to document.body
           document.body.scrollTo({
             top: 0,
             left: 0,
@@ -465,7 +457,6 @@ const Blog = () => {
         }
       } catch (error) {
         console.error('Error scrolling to top:', error);
-        // Fallback to instant scroll
         document.body.scrollTo(0, 0);
       }
     }, 100);
@@ -474,7 +465,6 @@ const Blog = () => {
   const handleShowCreate = () => {
     setShowCreate(true);
     
-    // Scroll to top when opening create blog modal
     setTimeout(() => {
       try {
         document.body.scrollTo({
@@ -491,25 +481,22 @@ const Blog = () => {
 
   const handlePostClick = async (post) => {
     try {
-      // Fetch blog detail từ API để có dữ liệu mới nhất
       const response = await blogAPI.getPostById(post.id);
       if (response.data.success) {
         setSelectedPost(response.data.data);
       } else {
-        setSelectedPost(post); // Fallback to local data
+        setSelectedPost(post);
       }
     } catch (error) {
       console.error('Error fetching blog detail:', error);
-      setSelectedPost(post); // Fallback to local data
+      setSelectedPost(post);
     }
-    // Tăng view count khi click vào bài viết
     incrementViewCount(post.id);
   };
 
   const handleBackClick = () => {
     setSelectedPost(null);
     
-    // Scroll to top when returning from blog detail
     setTimeout(() => {
       try {
         document.body.scrollTo({
@@ -530,19 +517,18 @@ const Blog = () => {
 
   const handleFoodCategoryChange = (categoryId) => {
     setSelectedFoodCategory(categoryId);
-    setCurrentFoodPage(1); // Reset to first page when filter changes
+    setCurrentFoodPage(1);
   };
 
   const handleFoodSearchChange = (query) => {
     setFoodSearchQuery(query);
-    setCurrentFoodPage(1); // Reset to first page when search changes
+    setCurrentFoodPage(1);
   };
 
   const handleFoodPageChange = (page) => {
     setCurrentFoodPage(page);
   };
 
-  // Filter food items based on category and search
   const filteredFoodItems = foodItems.filter(food => {
     const matchCategory = !selectedFoodCategory || food.category_id == selectedFoodCategory;
     const matchSearch = food.name.toLowerCase().includes(foodSearchQuery.toLowerCase()) ||
@@ -550,7 +536,6 @@ const Blog = () => {
     return matchCategory && matchSearch;
   });
 
-  // Calculate total pages for food list
   const totalFoodPages = Math.max(1, Math.ceil(filteredFoodItems.length / itemsPerPage));
 
   const foodVariations = selectedFood ? getFoodVariations(selectedFood) : [];

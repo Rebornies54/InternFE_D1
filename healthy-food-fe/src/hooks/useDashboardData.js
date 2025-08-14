@@ -8,13 +8,11 @@ export const useDashboardData = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Generate date options
   const generateDateOptions = useCallback(() => {
     const currentDate = new Date();
     const weeks = [];
     const months = [];
 
-    // Generate last 4 weeks
     for (let i = 0; i < 4; i++) {
       const weekStart = new Date(currentDate);
       weekStart.setDate(currentDate.getDate() - (currentDate.getDay() + 7 * i));
@@ -28,7 +26,6 @@ export const useDashboardData = () => {
       });
     }
 
-    // Generate last 6 months
     for (let i = 0; i < 6; i++) {
       const monthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
       months.push({
@@ -41,7 +38,6 @@ export const useDashboardData = () => {
     return { weeks, months };
   }, []);
 
-  // Load daily statistics
   const loadDailyStats = useCallback(async (date) => {
     try {
       setLoading(true);
@@ -58,7 +54,6 @@ export const useDashboardData = () => {
     }
   }, []);
 
-  // Load weekly statistics
   const loadWeeklyStats = useCallback(async (weekLabel, weekOptions) => {
     try {
       setLoading(true);
@@ -78,7 +73,6 @@ export const useDashboardData = () => {
     }
   }, []);
 
-  // Load monthly statistics
   const loadMonthlyStats = useCallback(async (monthLabel, monthOptions) => {
     try {
       setLoading(true);
@@ -98,7 +92,6 @@ export const useDashboardData = () => {
     }
   }, []);
 
-  // Transform data for charts
   const getRadarData = useCallback(() => {
     if (!dailyStats?.topFoods) return [];
     
@@ -131,11 +124,10 @@ export const useDashboardData = () => {
         total: Math.round(week.weekly_calories)
       };
       
-      // Add category breakdown if available
       if (monthlyStats.categoryBreakdown) {
         monthlyStats.categoryBreakdown.slice(0, 5).forEach((category, index) => {
           const colors = ['#7ef9a2', '#b388ff', '#ffb3c6', '#ffd6a5', '#7ad7f0'];
-          weekData[`category_${index}`] = Math.round(category.total_calories / 4); // Divide by 4 weeks
+          weekData[`category_${index}`] = Math.round(category.total_calories / 4);
         });
       }
       

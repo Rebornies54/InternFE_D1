@@ -4,7 +4,6 @@ const useRememberPassword = () => {
   const [rememberPassword, setRememberPassword] = useState(false);
   const [savedCredentials, setSavedCredentials] = useState(null);
 
-  // Load saved credentials on component mount
   useEffect(() => {
     const saved = localStorage.getItem('rememberedCredentials');
     if (saved) {
@@ -19,7 +18,6 @@ const useRememberPassword = () => {
     }
   }, []);
 
-  // Save credentials to localStorage
   const saveCredentials = (email, password) => {
     if (rememberPassword) {
       const credentials = { email, password };
@@ -29,7 +27,6 @@ const useRememberPassword = () => {
     }
   };
 
-  // Clear saved credentials
   const clearCredentials = () => {
     localStorage.removeItem('rememberedCredentials');
     setSavedCredentials(null);

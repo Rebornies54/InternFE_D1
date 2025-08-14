@@ -17,12 +17,10 @@ import {
   AnimatedModal
 } from './AnimatedComponents';
 
-// Development Tool - Chỉ hiển thị trong development mode
 const AnimationDevTools = () => {
   const [showModal, setShowModal] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Chỉ render trong development
   if (process.env.NODE_ENV === 'production') {
     return null;
   }
