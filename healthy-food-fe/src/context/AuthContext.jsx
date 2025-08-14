@@ -145,6 +145,45 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const forgotPassword = async (email) => {
+    try {
+      setError(null);
+      const response = await authAPI.forgotPassword(email);
+      
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Failed to send OTP';
+      setError(message);
+      return { success: false, message };
+    }
+  };
+
+  const verifyOTP = async (email, otp) => {
+    try {
+      setError(null);
+      const response = await authAPI.verifyOTP(email, otp);
+      
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Invalid OTP';
+      setError(message);
+      return { success: false, message };
+    }
+  };
+
+  const resetPassword = async (email, otp, newPassword) => {
+    try {
+      setError(null);
+      const response = await authAPI.resetPassword(email, otp, newPassword);
+      
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Failed to reset password';
+      setError(message);
+      return { success: false, message };
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -164,6 +203,9 @@ const AuthProvider = ({ children }) => {
     logout,
     updateProfile,
     changePassword,
+    forgotPassword,
+    verifyOTP,
+    resetPassword,
     isAuthenticated: !!user,
   };
 

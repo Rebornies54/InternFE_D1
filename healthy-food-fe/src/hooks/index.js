@@ -7,6 +7,7 @@ export { useNavigationScroll } from './useNavigationScroll';
 export { usePageScroll } from './usePageScroll';
 export { useScrollToTop } from './useScrollToTop';
 export { default as useRememberPassword } from './useRememberPassword';
+export { default as useOTP } from './useOTP';
 export { 
   useAnimationVariants, 
   useHoverAnimation, 

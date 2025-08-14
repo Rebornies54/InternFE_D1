@@ -46,7 +46,7 @@ function App() {
                   <Route path="/register" element={<Register />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/home/*" element={<Home />} />
-                  <Route path="/" element={<Navigate to="/home" replace />} />
+                  <Route path="/" element={<Navigate to="/login" replace />} />
                 </Routes>
               </Suspense>
             </BrowserRouter>
