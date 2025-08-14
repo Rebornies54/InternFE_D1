@@ -35,7 +35,7 @@ const FormField = ({ label, name, type = "text", as, placeholder, required, chil
           name={name}
           className={`register-select ${className}`}
         >
-          <option value="" disabled selected hidden>{placeholder}</option>
+          <option value="" disabled>{placeholder}</option>
           {children}
         </Field>
       </div>
