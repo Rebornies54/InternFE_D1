@@ -37,7 +37,6 @@ const Login = () => {
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     await withSubmitting(async () => {
-      // Check if all required fields are filled
       const errors = {};
       if (!values.email) errors.email = 'Email is required';
       if (!values.password) errors.password = 'Password is required';
@@ -51,7 +50,7 @@ const Login = () => {
 
       const result = await login(values);
       if (result.success) {
-        // Save credentials if remember password is checked
+
         if (rememberPassword) {
           saveCredentials(values.email, values.password);
         } else {
@@ -83,7 +82,6 @@ const Login = () => {
     }
   };
 
-  // Set initial values from saved credentials
   const getInitialValues = () => {
     if (savedCredentials) {
       return {

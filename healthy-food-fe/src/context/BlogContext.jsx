@@ -40,16 +40,13 @@ export const BlogProvider = ({ children }) => {
   const [commentLikes, setCommentLikes] = useState(new Set());
   const [commentPagination, setCommentPagination] = useState({});
 
-  // State for replies
   const [replies, setReplies] = useState({});
   const [repliesLoading, setRepliesLoading] = useState({});
   const [replyLikes, setReplyLikes] = useState({});
   const [repliesPagination, setRepliesPagination] = useState({});
 
-  // State for error handling
   const [error, setError] = useState(null);
 
-  // Clear error after 5 seconds
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
@@ -66,9 +63,7 @@ export const BlogProvider = ({ children }) => {
    */
   const setErrorMessage = (message, originalError = null) => {
     setError(message);
-    // In development, you might want to log the original error
     if (import.meta.env.MODE === 'development' && originalError) {
-      // Only log in development mode
     }
   };
 
@@ -166,7 +161,6 @@ export const BlogProvider = ({ children }) => {
       const currentPost = posts.find(post => post.id === postId);
       const isCurrentlyLiked = userLikes.has(postId);
       
-      // Optimistic update for immediate UI feedback
       setPosts(prev => prev.map(post => {
         if (post.id === postId) {
           return {
@@ -189,15 +183,12 @@ export const BlogProvider = ({ children }) => {
         return newLikes;
       });
 
-      // Make API call
       const response = await blogAPI.toggleLike(postId);
       if (!response.data.success) {
         throw new Error('Failed to toggle like');
       }
     } catch (error) {
       setErrorMessage(ERROR_MESSAGES.LIKE_TOGGLE_FAILED, error);
-      
-      // Rollback optimistic update on error
       const currentPost = posts.find(post => post.id === postId);
       const isCurrentlyLiked = userLikes.has(postId);
       
@@ -223,22 +214,18 @@ export const BlogProvider = ({ children }) => {
     }
   };
 
-  // Memoize expensive operations
   const memoizedPosts = useMemo(() => posts, [posts]);
   const memoizedComments = useMemo(() => comments, [comments]);
 
-  // Optimize comment likes checking with batch API call
   const checkCommentLikesBatch = useCallback(async (commentIds) => {
     if (!commentIds || commentIds.length === 0) return new Set();
     
     try {
-      // Batch API call instead of individual calls
       const response = await blogAPI.checkCommentLikesBatch(commentIds);
       if (response.data.success) {
         return new Set(response.data.data.likedCommentIds || []);
       }
     } catch (error) {
-      // Fallback to individual calls if batch API not available
       const likedComments = new Set();
       const checkPromises = commentIds.map(async (commentId) => {
         try {
@@ -247,7 +234,6 @@ export const BlogProvider = ({ children }) => {
             likedComments.add(commentId);
           }
         } catch (error) {
-          // Silent fail for individual like checks
         }
       });
       
@@ -258,7 +244,6 @@ export const BlogProvider = ({ children }) => {
     return new Set();
   }, []);
 
-  // Optimize fetchComments with batch operations
   const fetchComments = useCallback(async (postId, page = 1, limit = 10) => {
     try {
       setCommentsLoading(true);
@@ -273,8 +258,7 @@ export const BlogProvider = ({ children }) => {
           setComments(prev => [...prev, ...response.data.data.comments]);
         }
         setCommentPagination(response.data.data.pagination);
-        
-        // Batch check comment likes for first page
+
         if (page === 1 && response.data.data.comments.length > 0) {
           const commentIds = response.data.data.comments.map(comment => comment.id);
           const likedComments = await checkCommentLikesBatch(commentIds);
@@ -303,11 +287,9 @@ export const BlogProvider = ({ children }) => {
       
       if (response.data.success) {
         const newComment = response.data.data;
-        
-        // Add to comments list
+
         setComments(prev => [newComment, ...prev]);
         
-        // Update post comment count
         setPosts(prev => prev.map(post => {
           if (post.id === postId) {
             return {
@@ -342,8 +324,7 @@ export const BlogProvider = ({ children }) => {
       
       if (response.data.success) {
         const updatedComment = response.data.data;
-        
-        // Update in comments list
+
         setComments(prev => prev.map(comment => 
           comment.id === commentId ? updatedComment : comment
         ));
@@ -365,10 +346,7 @@ export const BlogProvider = ({ children }) => {
       const response = await blogAPI.deleteComment(commentId);
       
       if (response.data.success) {
-        // Optimistic update
         setComments(prev => prev.filter(comment => comment.id !== commentId));
-        
-        // Remove from replies
         setReplies(prev => {
           const newReplies = { ...prev };
           Object.keys(newReplies).forEach(key => {
@@ -376,8 +354,7 @@ export const BlogProvider = ({ children }) => {
           });
           return newReplies;
         });
-        
-        // Update pagination
+
         setCommentPagination(prev => ({
           ...prev,
           total_comments: Math.max(0, prev.total_comments - 1),
@@ -395,7 +372,6 @@ export const BlogProvider = ({ children }) => {
     }
   };
 
-  // Optimize fetchReplies with batch operations
   const fetchReplies = useCallback(async (commentId, page = 1, limit = 5) => {
     try {
       setRepliesLoading(true);
@@ -412,8 +388,7 @@ export const BlogProvider = ({ children }) => {
             [commentId]: [...(prev[commentId] || []), ...response.data.data.replies]
           }));
         }
-        
-        // Batch check reply likes for first page
+
         if (page === 1 && response.data.data.replies.length > 0) {
           const replyIds = response.data.data.replies.map(reply => reply.id);
           const likedReplies = await checkCommentLikesBatch(replyIds);
@@ -436,18 +411,15 @@ export const BlogProvider = ({ children }) => {
 
   const toggleCommentLike = async (commentId) => {
     try {
-      // Kiểm tra comment tồn tại
       const currentComment = comments.find(comment => comment.id === commentId) ||
                            Object.values(replies).flat().find(reply => reply.id === commentId);
       
       if (!currentComment) {
-        // Comment not found
         return;
       }
 
       const isCurrentlyLiked = commentLikes.has(commentId);
-      
-      // Optimistic update cho comments
+
       setComments(prev => prev.map(comment => {
         if (comment.id === commentId) {
           return {
@@ -460,7 +432,6 @@ export const BlogProvider = ({ children }) => {
         return comment;
       }));
 
-      // Optimistic update cho replies
       setReplies(prev => {
         const newReplies = { ...prev };
         Object.keys(newReplies).forEach(key => {
@@ -479,7 +450,6 @@ export const BlogProvider = ({ children }) => {
         return newReplies;
       });
 
-      // Optimistic update cho commentLikes
       setCommentLikes(prev => {
         const newLikes = new Set(prev);
         if (isCurrentlyLiked) {
@@ -490,11 +460,9 @@ export const BlogProvider = ({ children }) => {
         return newLikes;
       });
 
-      // Gọi API
       const response = await blogAPI.toggleCommentLike(commentId);
       
       if (response.data.success) {
-        // Cập nhật lại với dữ liệu chính xác từ server
         const newLikedState = response.data.liked;
         
         setComments(prev => prev.map(comment => {
@@ -527,7 +495,6 @@ export const BlogProvider = ({ children }) => {
           return newReplies;
         });
 
-        // Cập nhật commentLikes với response từ server
         setCommentLikes(prev => {
           const newLikes = new Set(prev);
           if (newLikedState) {
@@ -538,13 +505,9 @@ export const BlogProvider = ({ children }) => {
           return newLikes;
         });
       } else {
-        // Rollback optimistic update nếu API thất bại
         rollbackCommentLikeUpdate(commentId, currentComment, isCurrentlyLiked);
       }
     } catch (error) {
-      // Error toggling comment like
-      
-      // Rollback optimistic update khi có lỗi
       const currentComment = comments.find(comment => comment.id === commentId) ||
                            Object.values(replies).flat().find(reply => reply.id === commentId);
       const isCurrentlyLiked = commentLikes.has(commentId);
@@ -554,8 +517,6 @@ export const BlogProvider = ({ children }) => {
       }
     }
   };
-
-  // Helper function để rollback comment like update
   const rollbackCommentLikeUpdate = (commentId, originalComment, wasLiked) => {
     setComments(prev => prev.map(comment => {
       if (comment.id === commentId) {
@@ -612,12 +573,10 @@ export const BlogProvider = ({ children }) => {
     fetchFoodCategories();
     fetchBlogPosts();
   }, []);
-  
-  // Fetch categories for blog filtering
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        // You can fetch categories from API or use static categories
         const blogCategories = [
           'tất cả',
           'thực phẩm',
@@ -640,8 +599,6 @@ export const BlogProvider = ({ children }) => {
       fetchUserLikes();
     }
   }, [posts]);
-
-  // Filter posts based on selected category and search query
   const filteredPosts = useMemo(() => {
     return posts.filter(post => {
       const matchCategory = post.category === selectedCategory || selectedCategory === 'tất cả';
@@ -804,8 +761,6 @@ export const BlogProvider = ({ children }) => {
         )
       );
     } catch (error) {
-      // Silent fail for view count increment
-      // This is not critical for user experience
     }
   };
 

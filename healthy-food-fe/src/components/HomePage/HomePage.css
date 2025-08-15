@@ -19,14 +19,11 @@
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Carousel and Dynamic Styles */
 .homepage-carousel-cursor {
-  /* Cursor will be set dynamically via JavaScript */
   cursor: default;
 }
 
 .homepage-carousel-track-transformed {
-  /* Transform and transition will be set dynamically via JavaScript */
   transform: translateX(0);
   transition: transform 0.3s ease;
 }

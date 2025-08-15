@@ -37,7 +37,6 @@ export const VALIDATION = {
   MAX_QUANTITY: 1000,
 };
 
-// Local Storage Keys (Giữ nguyên keys cũ để đảm bảo backward compatibility)
 export const STORAGE_KEYS = {
   TOKEN: 'token',
   USER: 'user',
@@ -46,7 +45,6 @@ export const STORAGE_KEYS = {
   BLOG_MENUS: 'blogExpandedMenus',
 };
 
-// Error Messages
 export const ERROR_MESSAGES = {
   REGISTRATION_FAILED: 'Registration failed',
   UPDATE_FAILED: 'Update failed',

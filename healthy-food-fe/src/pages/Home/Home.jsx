@@ -9,7 +9,6 @@ import ScrollToTop from '../../components/ScrollToTop';
 
 import './home.css';
 
-// Import các component mới
 import Blog from '../../components/Blog';
 import BodyIndex from '../../components/BodyIndex';
 import CalorieIndex from '../../components/CalorieIndex';
@@ -18,7 +17,6 @@ import Dashboard from '../../components/Dashboard';
 import Profile from '../../components/Profile';
 import HomePage from '../../components/HomePage/HomePage';
 
-// Navigation tabs configuration
 const navTabs = [
   { label: 'Blog', path: '/home/blog', key: 'blog' },
   { label: 'Body Index', path: '/home/body-index', key: 'body' },
@@ -28,7 +26,6 @@ const navTabs = [
   { label: 'Dashboard', path: '/home/dashboard', key: 'dashboard' },
 ];
 
-// Custom NavLink component for better control
 const NavLink = ({ to, children, className, onClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -52,7 +49,6 @@ const NavLink = ({ to, children, className, onClick }) => {
   );
 };
 
-// Components
 const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -67,7 +63,6 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
     setShowUserDropdown(!showUserDropdown);
   };
 
-  // Đóng dropdown khi click ra ngoài
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest('.home-user-group')) {
@@ -81,7 +76,6 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
     };
   }, []);
 
-  // Đóng mobile menu khi click ra ngoài
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest('.home-header') && isMobileMenuOpen) {
@@ -98,13 +92,11 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   return (
     <header className="home-header">
       <div className="home-header-content">
-        {/* Logo Group */}
         <div className="home-logo-group">
           <img src={logo} alt="Healthy Food Logo" className="home-logo-img" />
           <span className="home-app-name">HEALTHY FOOD</span>
         </div>
         
-        {/* Desktop Navigation Container */}
         <div className="home-nav-container">
           <nav className="home-nav desktop-nav">
             {navTabs.map(tab => (
@@ -119,7 +111,6 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
           </nav>
         </div>
 
-        {/* Mobile Menu Button */}
         <button 
           className="mobile-menu-btn"
           onClick={toggleMobileMenu}
@@ -129,7 +120,6 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
           {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
 
-        {/* User Group */}
         <div className="home-user-group">
           <div className="user-link" onClick={toggleUserDropdown}>
             <User size={20} className="user-icon" />
@@ -166,7 +156,6 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
         </div>
       </div>
 
-      {/* Mobile Navigation Overlay */}
       <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'open' : ''}`}>
         <nav className="home-nav mobile-nav">
           <div className="mobile-nav-header">
@@ -217,34 +206,29 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
   const { foodItems, foodCategories, openFoodModal } = useBlogContext();
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter food items based on search
   const filteredFoodItems = foodItems.filter(food => 
     food.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     food.category_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Get food items by category
   const getFoodsByCategory = (categoryId) => {
     return foodItems.filter(food => food.category_id == categoryId);
   };
 
-  // Get popular foods (top 5 by calories)
   const getPopularFoods = () => {
     return foodItems
       .sort((a, b) => b.calories - a.calories)
       .slice(0, 5);
   };
 
-  // Get seasonal foods (random selection)
   const getSeasonalFoods = () => {
-    const seasonalCategories = [2, 3]; // Vegetables & Fruits
+    const seasonalCategories = [2, 3];
     return foodItems
       .filter(food => seasonalCategories.includes(food.category_id))
       .sort(() => Math.random() - 0.5)
       .slice(0, 3);
   };
 
-  // Get time-based menu
   const getTimeBasedMenu = (time) => {
     const timeMenus = {
       morning: ['Oatmeal (cooked)', 'Whole Milk', 'Bananas (raw)', 'Apples (raw)'],
@@ -257,7 +241,6 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
     );
   };
 
-  // Get weekday menu
   const getWeekdayMenu = (day) => {
     const dayMenus = {
       monday: ['Chicken (raw)', 'White Rice (cooked)', 'Broccoli (raw)'],
@@ -297,7 +280,6 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
       <div className="home-sidebar-section">
         <h3 className="home-sidebar-title">Menu</h3>
         
-        {/* Search Bar */}
         <div className="sidebar-search">
           <Search size={16} className="search-icon" />
           <input
@@ -310,7 +292,6 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
         </div>
 
         <div className="home-sidebar-menu">
-          {/* À la carte Menu */}
           <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('alacarte')}>
             {expandedMenus.alacarte ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Utensils size={16} />
@@ -323,7 +304,6 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
             </div>
           )}
 
-          {/* Seasonal Menu */}
           <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('seasonal')}>
             {expandedMenus.seasonal ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Calendar size={16} />
@@ -336,7 +316,6 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
             </div>
           )}
 
-          {/* Menu by Time */}
           <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('daily')}>
             {expandedMenus.daily ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Clock size={16} />
@@ -353,7 +332,6 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
             </div>
           )}
 
-          {/* Menu by Day */}
           <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('weekday')}>
             {expandedMenus.weekday ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Calendar size={16} />
@@ -370,7 +348,6 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
             </div>
           )}
 
-          {/* Popular Menu */}
           <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('popular')}>
             {expandedMenus.popular ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Star size={16} />
@@ -388,7 +365,6 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
   );
 };
 
-// BlogLayout: Header + Sidebar + Main
 const BlogLayout = ({ children, isMobileMenuOpen, toggleMobileMenu }) => {
   const [expandedMenus, setExpandedMenus] = useState({
     seasonal: false,
@@ -402,7 +378,6 @@ const BlogLayout = ({ children, isMobileMenuOpen, toggleMobileMenu }) => {
     setExpandedMenus(prev => ({ ...prev, [menu]: !prev[menu] }));
   };
   
-  // Load expanded menu state from localStorage
   useEffect(() => {
     try {
       const savedMenuState = localStorage.getItem(STORAGE_KEYS.BLOG_MENUS);
@@ -410,16 +385,13 @@ const BlogLayout = ({ children, isMobileMenuOpen, toggleMobileMenu }) => {
         setExpandedMenus(JSON.parse(savedMenuState));
       }
           } catch (e) {
-        // Silent fail for localStorage errors
       }
   }, []);
   
-  // Save expanded menu state to localStorage
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEYS.BLOG_MENUS, JSON.stringify(expandedMenus));
           } catch (e) {
-        // Silent fail for localStorage errors
       }
   }, [expandedMenus]);
   
@@ -438,7 +410,6 @@ const BlogLayout = ({ children, isMobileMenuOpen, toggleMobileMenu }) => {
   );
 };
 
-// PageLayout: Header + Main (không Sidebar)
 const PageLayout = ({ children, isMobileMenuOpen, toggleMobileMenu }) => (
   <div className="home-container">
     <Header isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />
@@ -450,7 +421,6 @@ const PageLayout = ({ children, isMobileMenuOpen, toggleMobileMenu }) => (
   </div>
 );
 
-// Page components sử dụng layout phù hợp
 const BlogPage = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   return (
     <BlogLayout isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu}>
@@ -531,7 +501,6 @@ const Home = () => {
   );
 };
 
-// Export các components để sử dụng trong App.jsx
 Home.HomePageComponent = HomePageComponent;
 Home.BlogPage = BlogPage;
 Home.BodyIndexPage = BodyIndexPage;

@@ -18,7 +18,6 @@ const MyBlogs = () => {
   });
 
   useEffect(() => {
-    // Chỉ fetch khi component được mount (tức là khi tab my-blogs được chọn)
     fetchMyBlogs();
   }, []);
 
@@ -30,7 +29,6 @@ const MyBlogs = () => {
         setBlogs(response.data.data);
       }
     } catch (error) {
-      // Error fetching my blogs
       setError('Lỗi khi tải bài viết của bạn');
     } finally {
       setLoading(false);
@@ -48,7 +46,6 @@ const MyBlogs = () => {
         setBlogs(blogs.filter(blog => blog.id !== blogId));
       }
     } catch (error) {
-      // Error deleting blog
       alert('Lỗi khi xóa bài viết');
     }
   };
@@ -60,7 +57,7 @@ const MyBlogs = () => {
       description: blog.description || '',
       content: blog.content,
       category: blog.category,
-      image_url: blog.image_url || null // Giữ nguyên ảnh
+      image_url: blog.image_url || null
     });
   };
 
@@ -83,7 +80,6 @@ const MyBlogs = () => {
         });
       }
     } catch (error) {
-      // Error updating blog
       alert('Lỗi khi cập nhật bài viết');
     }
   };

@@ -127,7 +127,6 @@ export const CalorieProvider = ({ children }) => {
     return { success: true, bmr: Math.round(bmr) };
   };
 
-  // Calculate TDEE based on BMR and activity level
   const calculateTDEE = (bmr, activityLevel) => {
     let activityMultiplier;
     

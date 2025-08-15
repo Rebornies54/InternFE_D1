@@ -11,6 +11,7 @@ const authRoutes = require('./src/routes/auth');
 const foodRoutes = require('./src/routes/food');
 const blogRoutes = require('./src/routes/blog');
 const { scheduleAutoDelete } = require('./src/services/autoDeleteService');
+const CleanupService = require('./src/services/cleanupService');
 
 const app = express();
 
@@ -94,6 +95,10 @@ app.listen(PORT, () => {
   // Khởi động auto-delete service
   scheduleAutoDelete();
   console.log('Auto-delete service started (runs daily at 2:00 AM)');
+  
+  // Khởi động cleanup service
+  CleanupService.init();
+  console.log('Cleanup service started');
 });
 
 module.exports = app; 

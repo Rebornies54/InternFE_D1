@@ -39,7 +39,6 @@ const FoodCard = ({ post, onClick, onLike, isLiked, likeCount }) => (
       >
         <span>Ảnh minh họa</span>
       </div>
-      {/* View count overlay */}
       <div className="blog-card-view-count">
         <Eye size={14} />
         <span>{post.views_count || 0}</span>
@@ -98,9 +97,10 @@ const FoodItem = ({ food, onClick }) => (
       <h3 className="food-item-title">{food.name}</h3>
       <p className="food-item-category">{food.category_name}</p>
       <div className="food-item-nutrition">
-        <span className="nutrition-item">{food.calories} cal</span>
-        <span className="nutrition-item">{food.protein}g protein</span>
-        <span className="nutrition-item">{food.carbs}g carbs</span>
+        <span className="food-item-calories">{food.calories} cal</span>
+        <span className="food-item-protein">{food.protein}g protein</span>
+        <span className="food-item-carbs">{food.carbs}g carbs</span>
+        <span className="food-item-fat">{food.fat}g fat</span>
       </div>
     </div>
   </AnimatedCard>

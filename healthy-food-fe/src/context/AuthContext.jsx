@@ -33,7 +33,6 @@ const AuthProvider = ({ children }) => {
         localStorage.removeItem(STORAGE_KEYS.CURRENT_BMI);
       }
     } catch (_) {
-      // Ignore BMI fetch errors
     }
   };
 

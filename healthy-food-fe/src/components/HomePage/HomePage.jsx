@@ -332,16 +332,12 @@ const originalMenuItems = [
     if (!isDragging) return;
     
     setIsDragging(false);
-    
-    // Determine if we should change slides based on drag distance
-    const dragThreshold = 100; // Minimum drag distance to trigger slide change
+    const dragThreshold = 100;
     
     if (Math.abs(dragOffset) > dragThreshold) {
       if (dragOffset > 0) {
-        // Dragged right - go to previous
         prevMenu();
       } else {
-        // Dragged left - go to next
         nextMenu();
       }
     }
@@ -349,7 +345,6 @@ const originalMenuItems = [
     setDragOffset(0);
   };
 
-  // Add event listeners with passive: false to prevent the warning
   useEffect(() => {
     const carouselElement = carouselRef.current;
     if (!carouselElement) return;
@@ -408,12 +403,11 @@ const originalMenuItems = [
     return `translateX(${baseTransform + dragTransform}%)`;
   };
 
-  // Handle seamless transitions for infinite loop
   useEffect(() => {
     if (isTransitioning) {
       const timer = setTimeout(() => {
         setIsTransitioning(false);
-      }, 50); // Short delay to ensure transition completes
+      }, 50);
       return () => clearTimeout(timer);
     }
   }, [isTransitioning]);

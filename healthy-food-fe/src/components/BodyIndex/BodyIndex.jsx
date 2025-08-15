@@ -16,15 +16,13 @@ const BodyIndex = () => {
   const [selectedFood, setSelectedFood] = useState(null);
   const [activeImg, setActiveImg] = useState(DEFAULTS.ACTIVE_IMG);
   const [dragStartX, setDragStartX] = useState(null);
-  
-  // Food data states
+
   const [categories, setCategories] = useState([]);
   const [foodItems, setFoodItems] = useState([]);
   const [recommendedFoods, setRecommendedFoods] = useState([]);
   const [loading, setLoading] = useState(false);
   const [bmiLoading, setBmiLoading] = useState(false);
-  
-  // Use FoodContext for food management
+
   const { 
     pendingFoods, 
     addToPendingFoods, 
@@ -33,12 +31,11 @@ const BodyIndex = () => {
     getPendingTotalCalories 
   } = useFoodContext();
   
-  // Fallback if CalorieContext is needed but not available
   const calorieContext = (() => {
     try {
       return useCalorieContext();
     } catch (error) {
-      // Fallback to empty functions
+
       return {
         pendingCalorieFoods: [],
         addToPendingCalorieFoods: () => {},
@@ -49,7 +46,6 @@ const BodyIndex = () => {
     }
   })();
 
-  // Load food data on component mount
   useEffect(() => {
     loadFoodData();
     loadBMIData();
@@ -66,7 +62,6 @@ const BodyIndex = () => {
       setCategories(categoriesRes.data.data);
       setFoodItems(itemsRes.data.data);
     } catch (error) {
-      // Error loading food data
     } finally {
       setLoading(false);
     }
@@ -83,11 +78,9 @@ const BodyIndex = () => {
         setBmi(bmiData.bmi.toString());
         setCurrentBmi(Number(bmiData.bmi));
         
-        // Generate recommendations based on saved BMI
         generateRecommendations(bmiData.bmi.toString());
       }
     } catch (error) {
-      // Error loading BMI data
     } finally {
       setBmiLoading(false);
     }
@@ -107,11 +100,9 @@ const BodyIndex = () => {
       const bmiCategory = getBMICategory(bmiValue).toLowerCase().replace(' ', '');
       
       setBmi(bmiValue);
-      
-      // Generate recommendations based on BMI
+
       generateRecommendations(bmiValue);
-      
-      // Save BMI data to database
+
       try {
         await authAPI.saveBMIData({
           height: parseFloat(height),
@@ -122,7 +113,6 @@ const BodyIndex = () => {
         setCurrentBmi(parseFloat(bmiValue));
 
       } catch (error) {
-        // Error saving BMI data
       }
     }
   };
@@ -132,25 +122,19 @@ const BodyIndex = () => {
     let recommendedCategories = [];
     
     if (bmi < 18.5) {
-      // Underweight - recommend high calorie foods
-      recommendedCategories = [1, 4, 5, 6]; // Meat, Grains, Dairy, Snacks
+      recommendedCategories = [1, 4, 5, 6]; 
     } else if (bmi >= 18.5 && bmi < 25) {
-      // Normal weight - balanced diet
-      recommendedCategories = [2, 3, 4, 5]; // Vegetables, Fruits, Grains, Dairy
+      recommendedCategories = [2, 3, 4, 5]; 
     } else if (bmi >= 25 && bmi < 30) {
-      // Overweight - low calorie, high fiber
-      recommendedCategories = [2, 3]; // Vegetables, Fruits
+      recommendedCategories = [2, 3]; 
     } else {
-      // Obese - very low calorie, high fiber
-      recommendedCategories = [2]; // Vegetables only
+      recommendedCategories = [2]; 
     }
-    
-    // Filter food items by recommended categories
+ 
     const recommended = foodItems.filter(item => 
       recommendedCategories.includes(item.category_id)
     );
-    
-    // Take first 8 items for display (2 rows of 4)
+
     setRecommendedFoods(recommended.slice(0, 8));
   };
 
@@ -176,60 +160,49 @@ const BodyIndex = () => {
   const getBMICategoryColor = (bmi) => {
     const bmiValue = parseFloat(bmi);
     if (bmiValue < 18.5) return '#4299E1'; // Blue
-    if (bmiValue >= 18.5 && bmiValue < 25) return '#48BB78'; // Green
-    if (bmiValue >= 25 && bmiValue < 30) return '#F6AD55'; // Orange
-    return '#F56565'; // Red
+    if (bmiValue >= 18.5 && bmiValue < 25) return '#48BB78'; 
+    if (bmiValue >= 25 && bmiValue < 30) return '#F6AD55';
+    return '#F56565'; 
   };
 
-  // Calculate BMI marker position on scale (0-100%)
   const getBMIMarkerPosition = (bmi) => {
     const bmiValue = parseFloat(bmi);
     if (bmiValue < 16) return 0;
     if (bmiValue > 35) return 100;
-    
-    // Map BMI value to percentage (16-35 range maps to 0-100%)
+
     return ((bmiValue - 16) / (35 - 16)) * 100;
   };
 
-  // Add food to calorie calculation
   const addToCalorieCalculation = (food) => {
     addToPendingFoods(food);
-    // Also add to calorie context if available
     if (calorieContext.addToPendingCalorieFoods) {
       calorieContext.addToPendingCalorieFoods(food);
     }
   };
 
-  // Remove food from calorie calculation
   const removeFromCalorieCalculation = (foodId) => {
     removeFromPendingFoods(foodId);
-    // Also remove from calorie context if available
     if (calorieContext.removeFromPendingCalorieFoods) {
       calorieContext.removeFromPendingCalorieFoods(foodId);
     }
   };
 
-  // Update food quantity
   const updateFoodQuantity = (foodId, quantity) => {
     updatePendingFoodQuantity(foodId, quantity);
-    // Also update in calorie context if available
     if (calorieContext.updatePendingCalorieFoodQuantity) {
       calorieContext.updatePendingCalorieFoodQuantity(foodId, quantity);
     }
   };
 
-  // Calculate total calories
   const calculateTotalCalories = () => {
     return getPendingTotalCalories();
   };
 
-  // Improved image handling function
   const getFoodImageUrl = (food) => {
     if (!food.image_url) {
       return null;
     }
-    
-    // Check if its a valid URL
+
     try {
       new URL(food.image_url);
       return food.image_url;
@@ -238,7 +211,6 @@ const BodyIndex = () => {
     }
   };
 
-  // Handle image error with fallback
   const handleImageError = (e, foodName) => {
     console.warn(`Failed to load image for ${foodName}:`, e.target.src);
     e.target.style.display = 'none';
@@ -247,7 +219,6 @@ const BodyIndex = () => {
     }
   };
 
-  // Get placeholder color based on food category
   const getPlaceholderColor = (categoryId) => {
     const colors = {
       1: '#f8f9fa', // Meat
@@ -260,7 +231,6 @@ const BodyIndex = () => {
     return colors[categoryId] || '#f8f9fa';
   };
 
-  // Table options mapping
   const getTableOptions = () => {
     const seen = new Set();
     return categories

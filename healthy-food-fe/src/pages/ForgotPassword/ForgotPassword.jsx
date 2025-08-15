@@ -29,12 +29,11 @@ const ForgotPassword = () => {
   const { isOpen: showSuccessModal, openModal, closeModal } = useModal();
   const { error, setError, clearError } = useError();
   
-  // State quản lý các bước
   const [currentStep, setCurrentStep] = useState(DEFAULTS.CURRENT_STEP); // 'email', 'otp', 'reset', 'success'
   const [userEmail, setUserEmail] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   
-  // OTP hook
+
   const {
     otp,
     countdown,
@@ -48,7 +47,6 @@ const ForgotPassword = () => {
     setIsVerifying
   } = useOTP(userEmail);
 
-  // Xử lý gửi email
   const handleSendEmail = async (values, { setSubmitting }) => {
     await withSubmitting(async () => {
       clearError();
@@ -57,15 +55,13 @@ const ForgotPassword = () => {
       if (result.success) {
         setUserEmail(values.email);
         setCurrentStep('otp');
-        startCountdown(60); // Bắt đầu countdown 60 giây
+        startCountdown(60); 
       } else {
-        // Xử lý rate limiting error
         handleRateLimitError(result.message);
       }
     });
   };
 
-  // Xử lý verify OTP
   const handleVerifyOTP = async () => {
     if (otp.length !== 6) {
       setError('Please enter a 6-digit OTP');
@@ -82,7 +78,6 @@ const ForgotPassword = () => {
     setIsVerifying(false);
   };
 
-  // Xử lý resend OTP
   const handleResendOTP = async () => {
     if (!canResend) return;
     
@@ -91,12 +86,10 @@ const ForgotPassword = () => {
     if (result.success) {
       startCountdown(60);
     } else {
-      // Xử lý rate limiting error
       handleRateLimitError(result.message);
     }
   };
 
-  // Xử lý reset password
   const handleResetPassword = async (values, { setSubmitting }) => {
     await withSubmitting(async () => {
       clearError();
@@ -153,7 +146,6 @@ const ForgotPassword = () => {
           </div>
         )}
 
-        {/* Step 1: Email Input */}
         {currentStep === 'email' && (
           <>
             <Formik
@@ -195,8 +187,6 @@ const ForgotPassword = () => {
             </div>
           </>
         )}
-
-        {/* Step 2: OTP Verification */}
         {currentStep === 'otp' && (
           <>
             <div className="otp-section">
@@ -257,7 +247,6 @@ const ForgotPassword = () => {
           </>
         )}
 
-        {/* Step 3: Reset Password */}
         {currentStep === 'reset' && (
           <>
             <Formik
@@ -320,7 +309,6 @@ const ForgotPassword = () => {
         )}
       </div>
 
-      {/* Success Modal */}
       {showSuccessModal && (
         <div className="success-modal-overlay">
           <div className="success-modal">

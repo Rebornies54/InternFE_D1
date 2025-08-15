@@ -6,14 +6,12 @@ export const API_CONFIG = {
   TIMEOUT: 10000,
 } as const;
 
-// Pagination
 export const PAGINATION = {
   DEFAULT_PAGE_SIZE: PaginationDefaults.DEFAULT_PAGE_SIZE,
   COMMENT_PAGE_SIZE: PaginationDefaults.COMMENT_PAGE_SIZE,
   REPLY_PAGE_SIZE: PaginationDefaults.REPLY_PAGE_SIZE,
 } as const;
 
-// Default values
 export const DEFAULTS = {
   CURRENT_PAGE: 1,
   SELECTED_CATEGORY: '',
@@ -23,7 +21,6 @@ export const DEFAULTS = {
   SORT_BY: 'newest' as const,
 } as const;
 
-// Storage keys
 export const STORAGE_KEYS = {
   TOKEN: StorageKeys.TOKEN,
   USER: StorageKeys.USER,
@@ -31,7 +28,6 @@ export const STORAGE_KEYS = {
   CALORIE_DATA: StorageKeys.CALORIE_DATA,
 } as const;
 
-// Error messages
 export const ERROR_MESSAGES = {
   NETWORK_ERROR: ErrorMessages.NETWORK_ERROR,
   FOOD_FETCH_FAILED: ErrorMessages.FOOD_FETCH_FAILED,
@@ -46,7 +42,6 @@ export const ERROR_MESSAGES = {
   LIKE_TOGGLE_FAILED: ErrorMessages.LIKE_TOGGLE_FAILED,
 } as const;
 
-// Time constants
 export const TIME = {
   LOGIN_DELAY: TimeConstants.LOGIN_DELAY,
   ERROR_TIMEOUT: TimeConstants.ERROR_TIMEOUT,
@@ -77,13 +72,11 @@ export const FORMULAS: readonly Formula[] = [
   'katch',
 ] as const;
 
-// Unit systems
 export const UNIT_SYSTEMS: readonly UnitSystem[] = [
   'metric',
   'imperial',
 ] as const;
 
-// Blog categories
 export const BLOG_CATEGORIES: readonly BlogCategory[] = [
   'nutrition',
   'recipes',
@@ -93,7 +86,6 @@ export const BLOG_CATEGORIES: readonly BlogCategory[] = [
   'news',
 ] as const;
 
-// BMI categories
 export const BMI_CATEGORIES = {
   UNDERWEIGHT: 'Underweight',
   NORMAL: 'Normal weight',
@@ -101,7 +93,6 @@ export const BMI_CATEGORIES = {
   OBESE: 'Obese',
 } as const;
 
-// BMI ranges
 export const BMI_RANGES = {
   UNDERWEIGHT: { min: 0, max: 18.4 },
   NORMAL: { min: 18.5, max: 24.9 },
@@ -109,7 +100,6 @@ export const BMI_RANGES = {
   OBESE: { min: 30.0, max: 100 },
 } as const;
 
-// Activity multipliers for TDEE calculation
 export const ACTIVITY_MULTIPLIERS: Record<ActivityLevel, number> = {
   'Sedentary: Little or no exercise': 1.2,
   'Lightly active: Light exercise/sports 1-3 days/week': 1.375,
@@ -118,7 +108,6 @@ export const ACTIVITY_MULTIPLIERS: Record<ActivityLevel, number> = {
   'Extra active: Very hard exercise/sports, physical job': 1.9,
 } as const;
 
-// Validation rules
 export const VALIDATION = {
   PASSWORD_MIN_LENGTH: 6,
   PASSWORD_MAX_LENGTH: 50,
@@ -129,10 +118,9 @@ export const VALIDATION = {
   COMMENT_MAX_LENGTH: 1000,
   POST_TITLE_MAX_LENGTH: 200,
   POST_CONTENT_MAX_LENGTH: 10000,
-  FILE_MAX_SIZE: 5 * 1024 * 1024, // 5MB
+  FILE_MAX_SIZE: 5 * 1024 * 1024, 
 } as const;
 
-// File types
 export const ALLOWED_FILE_TYPES = [
   'image/jpeg',
   'image/jpg',
@@ -140,14 +128,12 @@ export const ALLOWED_FILE_TYPES = [
   'image/webp',
 ] as const;
 
-// Sort options
 export const SORT_OPTIONS = [
   { value: 'newest', label: 'Mới nhất' },
   { value: 'oldest', label: 'Cũ nhất' },
   { value: 'most_liked', label: 'Nhiều like nhất' },
 ] as const;
 
-// Chart colors
 export const CHART_COLORS = {
   PRIMARY: '#2196f3',
   SECONDARY: '#9c27b0',
@@ -157,7 +143,6 @@ export const CHART_COLORS = {
   INFO: '#00bcd4',
 } as const;
 
-// Theme colors
 export const THEME_COLORS = {
   PRIMARY: '#2196f3',
   SECONDARY: '#9c27b0',
@@ -169,7 +154,6 @@ export const THEME_COLORS = {
   SHADOW: 'rgba(0, 0, 0, 0.1)',
 } as const;
 
-// Breakpoints
 export const BREAKPOINTS = {
   MOBILE: 480,
   TABLET: 768,
@@ -177,7 +161,6 @@ export const BREAKPOINTS = {
   LARGE_DESKTOP: 1200,
 } as const;
 
-// Z-index layers
 export const Z_INDEX = {
   MODAL: 1000,
   DROPDOWN: 100,
