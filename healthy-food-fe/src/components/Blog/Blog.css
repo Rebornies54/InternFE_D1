@@ -26,6 +26,10 @@
   display: none;
 }
 
+.blog-detail-placeholder-visible {
+  display: flex;
+}
+
 .blog-create-button-container {
   display: flex;
   justify-content: flex-end;

@@ -29,7 +29,8 @@ const FoodCard = ({ post, onClick, onLike, isLiked, likeCount }) => (
             e.target.style.display = 'none';
             const placeholder = e.target.parentNode.querySelector('.blog-image-placeholder');
             if (placeholder) {
-              placeholder.style.display = 'flex';
+              placeholder.classList.remove('blog-image-placeholder-hidden');
+              placeholder.classList.add('blog-image-placeholder-visible');
             }
           }}
         />
@@ -76,7 +77,8 @@ const FoodItem = ({ food, onClick }) => (
             e.target.style.display = 'none';
             const placeholder = e.target.parentNode.querySelector('.food-image-placeholder');
             if (placeholder) {
-              placeholder.style.display = 'flex';
+              placeholder.classList.remove('food-image-placeholder-hidden');
+              placeholder.classList.add('food-image-placeholder-visible');
             }
           }}
         />
@@ -217,7 +219,7 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
         </button>
       </div>
     </div>
-    {post.image_url && post.image_url.trim() !== '' && (
+    {post.image_url && post.image_url.trim() !== '' ? (
       <div className="blog-detail-image">
         <img 
           src={post.image_url} 
@@ -227,13 +229,25 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
             e.target.style.display = 'none';
             const placeholder = e.target.parentNode.querySelector('.blog-detail-placeholder');
             if (placeholder) {
-              placeholder.style.display = 'flex';
+              placeholder.classList.remove('blog-detail-placeholder-hidden');
+              placeholder.classList.add('blog-detail-placeholder-visible');
             }
           }}
         />
         <div 
           className="blog-detail-placeholder blog-detail-placeholder-hidden"
+          ref={(el) => {
+            if (el) {
+              el.placeholderRef = el;
+            }
+          }}
         >
+          <span>Ảnh minh họa</span>
+        </div>
+      </div>
+    ) : (
+      <div className="blog-detail-image">
+        <div className="blog-detail-placeholder blog-detail-placeholder-visible">
           <span>Ảnh minh họa</span>
         </div>
       </div>

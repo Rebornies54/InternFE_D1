@@ -752,7 +752,8 @@ const originalMenuItems = [
                       e.target.style.display = 'none';
                       const placeholder = e.target.parentNode.querySelector('.blog-placeholder');
                       if (placeholder) {
-                        placeholder.style.display = 'flex';
+                        placeholder.classList.remove('homepage-blog-placeholder-hidden');
+                        placeholder.classList.add('homepage-blog-placeholder-visible');
                       }
                     }}
                   />

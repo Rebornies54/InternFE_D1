@@ -58,14 +58,19 @@ const Comment = ({ postId }) => {
       const response = await blogAPI.getComments(postId, 1, PAGINATION.COMMENT_PAGE_SIZE, sortBy);
       
       if (response.data.success) {
-        setComments(response.data.data);
+        // Đảm bảo comments luôn là một mảng
+        const commentsData = Array.isArray(response.data.data) ? response.data.data : [];
+        setComments(commentsData);
         setCurrentPage(1);
-        setHasMore(response.data.data.length === PAGINATION.COMMENT_PAGE_SIZE);
+        setHasMore(commentsData.length === PAGINATION.COMMENT_PAGE_SIZE);
       } else {
         setError(ERROR_MESSAGES.COMMENTS_FETCH_FAILED);
+        setComments([]); // Đặt comments thành mảng rỗng nếu có lỗi
       }
     } catch (error) {
+      console.error('Error fetching comments:', error);
       setError(ERROR_MESSAGES.COMMENTS_FETCH_FAILED);
+      setComments([]); // Đặt comments thành mảng rỗng nếu có lỗi
     } finally {
       setLoading(false);
     }
@@ -80,9 +85,11 @@ const Comment = ({ postId }) => {
       const response = await blogAPI.getComments(postId, nextPage, PAGINATION.COMMENT_PAGE_SIZE, sortBy);
       
       if (response.data.success) {
-        setComments(prev => [...prev, ...response.data.data]);
+        // Đảm bảo response.data.data là một mảng
+        const newComments = Array.isArray(response.data.data) ? response.data.data : [];
+        setComments(prev => [...prev, ...newComments]);
         setCurrentPage(nextPage);
-        setHasMore(response.data.data.length === PAGINATION.COMMENT_PAGE_SIZE);
+        setHasMore(newComments.length === PAGINATION.COMMENT_PAGE_SIZE);
       }
     } catch (error) {
       console.error('Error loading more comments:', error);
@@ -100,12 +107,13 @@ const Comment = ({ postId }) => {
       const response = await blogAPI.createComment(postId, newComment.trim());
       
       if (response.data.success) {
-        setComments(prev => [response.data.data, ...prev]);
+        setComments(prev => [response.data.data, ...(Array.isArray(prev) ? prev : [])]);
         setNewComment('');
       } else {
         setError(ERROR_MESSAGES.COMMENT_CREATE_FAILED);
       }
     } catch (error) {
+      console.error('Error creating comment:', error);
       setError(ERROR_MESSAGES.COMMENT_CREATE_FAILED);
     } finally {
       setSubmitting(false);
@@ -123,7 +131,7 @@ const Comment = ({ postId }) => {
           if (comment.id === commentId) {
             return {
               ...comment,
-              replies: [...(comment.replies || []), response.data.data]
+              replies: [...(Array.isArray(comment.replies) ? comment.replies : []), response.data.data]
             };
           }
           return comment;
@@ -143,11 +151,11 @@ const Comment = ({ postId }) => {
       const response = await blogAPI.updateComment(editingComment.id, editText.trim());
       
       if (response.data.success) {
-        setComments(prev => prev.map(comment => 
+        setComments(prev => Array.isArray(prev) ? prev.map(comment => 
           comment.id === editingComment.id 
             ? { ...comment, content: editText.trim() }
             : comment
-        ));
+        ) : []);
         setEditingComment(null);
         setEditText('');
       }
@@ -163,7 +171,7 @@ const Comment = ({ postId }) => {
       const response = await blogAPI.deleteComment(commentId);
       
       if (response.data.success) {
-        setComments(prev => prev.filter(comment => comment.id !== commentId));
+        setComments(prev => Array.isArray(prev) ? prev.filter(comment => comment.id !== commentId) : []);
       }
     } catch (error) {
       console.error('Error deleting comment:', error);
@@ -175,7 +183,7 @@ const Comment = ({ postId }) => {
       const response = await blogAPI.toggleCommentLike(commentId);
       
       if (response.data.success) {
-        setComments(prev => prev.map(comment => {
+        setComments(prev => Array.isArray(prev) ? prev.map(comment => {
           if (comment.id === commentId) {
             return {
               ...comment,
@@ -184,7 +192,7 @@ const Comment = ({ postId }) => {
             };
           }
           return comment;
-        }));
+        }) : []);
       }
     } catch (error) {
       console.error('Error toggling comment like:', error);
@@ -196,9 +204,9 @@ const Comment = ({ postId }) => {
       const response = await blogAPI.toggleReplyLike(replyId);
       
       if (response.data.success) {
-        setComments(prev => prev.map(comment => ({
+        setComments(prev => Array.isArray(prev) ? prev.map(comment => ({
           ...comment,
-          replies: comment.replies?.map(reply => {
+          replies: Array.isArray(comment.replies) ? comment.replies.map(reply => {
             if (reply.id === replyId) {
               return {
                 ...reply,
@@ -207,8 +215,8 @@ const Comment = ({ postId }) => {
               };
             }
             return reply;
-          }) || []
-        })));
+          }) : []
+        })) : []);
       }
     } catch (error) {
       console.error('Error toggling reply like:', error);
@@ -413,7 +421,7 @@ const Comment = ({ postId }) => {
         </div>
       )}
 
-      {comment.replies && comment.replies.length > 0 && (
+      {Array.isArray(comment.replies) && comment.replies.length > 0 && (
         <div className="replies-section">
           <button 
             className="replies-toggle"
@@ -447,7 +455,7 @@ const Comment = ({ postId }) => {
     <div className="comments-section">
       <div className="comments-header">
         <h3 className="comments-title">
-          Bình luận ({comments.length})
+          Bình luận ({Array.isArray(comments) ? comments.length : 0})
         </h3>
         <SortComments 
           sortBy={sortBy} 
@@ -495,7 +503,7 @@ const Comment = ({ postId }) => {
 
       <div className="comments-list">
         <StaggeredList>
-          {comments.map((comment, index) => (
+          {Array.isArray(comments) && comments.map((comment, index) => (
             <StaggeredItem key={comment.id} index={index}>
               <FadeIn>
                 {renderComment(comment)}
