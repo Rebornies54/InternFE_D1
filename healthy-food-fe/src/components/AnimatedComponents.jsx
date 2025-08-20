@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { ANIMATION } from '../constants';
 
 // Page transition component
 export const PageTransition = ({ children, className = "" }) => (
@@ -14,7 +15,7 @@ export const PageTransition = ({ children, className = "" }) => (
 );
 
 // Fade in animation
-export const FadeIn = ({ children, delay = 0, duration = 0.5 }) => (
+export const FadeIn = ({ children, delay = ANIMATION.DEFAULT_DELAY, duration = ANIMATION.DEFAULT_DURATION }) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -25,7 +26,7 @@ export const FadeIn = ({ children, delay = 0, duration = 0.5 }) => (
 );
 
 // Slide in from left
-export const SlideInLeft = ({ children, delay = 0 }) => (
+export const SlideInLeft = ({ children, delay = ANIMATION.DEFAULT_DELAY }) => (
   <motion.div
     initial={{ opacity: 0, x: -50 }}
     animate={{ opacity: 1, x: 0 }}
@@ -36,7 +37,7 @@ export const SlideInLeft = ({ children, delay = 0 }) => (
 );
 
 // Slide in from right
-export const SlideInRight = ({ children, delay = 0 }) => (
+export const SlideInRight = ({ children, delay = ANIMATION.DEFAULT_DELAY }) => (
   <motion.div
     initial={{ opacity: 0, x: 50 }}
     animate={{ opacity: 1, x: 0 }}
@@ -47,7 +48,7 @@ export const SlideInRight = ({ children, delay = 0 }) => (
 );
 
 // Scale in animation
-export const ScaleIn = ({ children, delay = 0 }) => (
+export const ScaleIn = ({ children, delay = ANIMATION.DEFAULT_DELAY }) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
@@ -86,7 +87,7 @@ export const AnimatedCard = ({ children, className = "" }) => (
 );
 
 // Loading spinner
-export const LoadingSpinner = ({ size = 40, color = "#2C7BE5" }) => (
+export const LoadingSpinner = ({ size = ANIMATION.LOADING_SPINNER_SIZE, color = ANIMATION.PRIMARY_COLOR }) => (
   <motion.div
     animate={{ rotate: 360 }}
     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -101,7 +102,7 @@ export const LoadingSpinner = ({ size = 40, color = "#2C7BE5" }) => (
 );
 
 // Staggered list animation
-export const StaggeredList = ({ children, staggerDelay = 0.1 }) => (
+export const StaggeredList = ({ children, staggerDelay = ANIMATION.STAGGER_DELAY }) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -160,7 +161,7 @@ export const AnimatedModal = ({ isOpen, onClose, children }) => (
 );
 
 // Progress bar
-export const AnimatedProgressBar = ({ progress, color = "#2C7BE5" }) => (
+export const AnimatedProgressBar = ({ progress, color = ANIMATION.PROGRESS_BAR_COLOR }) => (
   <motion.div
     style={{
       width: "100%",

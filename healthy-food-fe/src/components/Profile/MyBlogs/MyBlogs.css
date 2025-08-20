@@ -7,6 +7,17 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Image Styles */
+.my-blogs-current-image {
+  max-width: 200px;
+  max-height: 150px;
+}
+
+.my-blogs-preview-image {
+  max-width: 200px;
+  max-height: 150px;
+}
+
 .my-blogs-header {
   margin-bottom: var(--spacing-lg);
   display: flex;

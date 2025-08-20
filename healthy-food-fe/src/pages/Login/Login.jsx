@@ -21,7 +21,7 @@ const LoginSchema = Yup.object().shape({
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const scrollToTop = useScrollToTop();
+  const { scrollToTop } = useScrollToTop();
   const { isSubmitting, withSubmitting } = useForm();
   const { isOpen: showErrorModal, openModal, closeModal } = useModal();
   const [errorMessage, setErrorMessage] = useState('');
@@ -37,7 +37,6 @@ const Login = () => {
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     await withSubmitting(async () => {
-      // Check if all required fields are filled
       const errors = {};
       if (!values.email) errors.email = 'Email is required';
       if (!values.password) errors.password = 'Password is required';
@@ -51,7 +50,7 @@ const Login = () => {
 
       const result = await login(values);
       if (result.success) {
-        // Save credentials if remember password is checked
+
         if (rememberPassword) {
           saveCredentials(values.email, values.password);
         } else {
@@ -83,7 +82,6 @@ const Login = () => {
     }
   };
 
-  // Set initial values from saved credentials
   const getInitialValues = () => {
     if (savedCredentials) {
       return {
@@ -124,7 +122,7 @@ const Login = () => {
                       autoComplete="email" 
                     />
                     {errors.email && touched.email && (
-                      <div style={{ color: 'red', fontSize: '0.95rem' }}>
+                      <div className="login-error-message">
                         {errors.email}
                       </div>
                     )}
@@ -160,7 +158,7 @@ const Login = () => {
                       </button>
                     </div>
                     {errors.password && touched.password && (
-                      <div style={{ color: 'red', fontSize: '0.95rem' }}>
+                      <div className="login-error-message">
                         {errors.password}
                       </div>
                     )}

@@ -2,29 +2,21 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
 COPY healthy-food-be/package*.json ./
 
-# Install dependencies
 RUN npm ci --only=production
 
-# Copy source code
 COPY healthy-food-be/ .
 
-# Create uploads directory
 RUN mkdir -p uploads
 
-# Expose port
 EXPOSE 5000
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:5000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
 
-# Copy entrypoint scripts
 COPY healthy-food-be/docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY healthy-food-be/init-db.sh /app/init-db.sh
 RUN chmod +x /app/docker-entrypoint.sh /app/init-db.sh
 
-# Start the application
 CMD ["/app/docker-entrypoint.sh"]

@@ -97,6 +97,12 @@
   border: 1px solid #2196f3;
 }
 
+/* Chart Legend Styles */
+.dashboard-chart-legend {
+  font-size: 12px;
+  color: #555;
+}
+
 /* Loading and Error States */
 .dashboard-loading {
   display: flex;

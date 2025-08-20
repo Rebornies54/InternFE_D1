@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useBlogContext } from '../../context/BlogContext';
 import { blogAPI } from '../../services/api';
+import { PAGINATION, DEFAULTS, ERROR_MESSAGES } from '../../constants';
 import { Heart, Eye } from 'lucide-react';
 import { 
   AnimatedCard, 
@@ -12,6 +13,7 @@ import {
   AnimatedModal,
   LoadingSpinner
 } from '../AnimatedComponents';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import './Blog.css';
 import CreateBlog from './CreateBlog';
 import Comment from './Comment';
@@ -28,20 +30,17 @@ const FoodCard = ({ post, onClick, onLike, isLiked, likeCount }) => (
             e.target.style.display = 'none';
             const placeholder = e.target.parentNode.querySelector('.blog-image-placeholder');
             if (placeholder) {
-              placeholder.style.display = 'flex';
+              placeholder.classList.remove('blog-image-placeholder-hidden');
+              placeholder.classList.add('blog-image-placeholder-visible');
             }
           }}
         />
       ) : null}
       <div 
-        className="blog-image-placeholder" 
-        style={{ 
-          display: (post.image_url && post.image_url.trim() !== '') ? 'none' : 'flex'
-        }}
+        className={`blog-image-placeholder ${(post.image_url && post.image_url.trim() !== '') ? 'blog-image-placeholder-hidden' : 'blog-image-placeholder-visible'}`}
       >
         <span>Ảnh minh họa</span>
       </div>
-      {/* View count overlay */}
       <div className="blog-card-view-count">
         <Eye size={14} />
         <span>{post.views_count || 0}</span>
@@ -79,16 +78,14 @@ const FoodItem = ({ food, onClick }) => (
             e.target.style.display = 'none';
             const placeholder = e.target.parentNode.querySelector('.food-image-placeholder');
             if (placeholder) {
-              placeholder.style.display = 'flex';
+              placeholder.classList.remove('food-image-placeholder-hidden');
+              placeholder.classList.add('food-image-placeholder-visible');
             }
           }}
         />
       ) : null}
       <div 
-        className="food-image-placeholder" 
-        style={{ 
-          display: (food.image_url && food.image_url.trim() !== '') ? 'none' : 'flex'
-        }}
+        className={`food-image-placeholder ${(food.image_url && food.image_url.trim() !== '') ? 'food-image-placeholder-hidden' : 'food-image-placeholder-visible'}`}
       >
         <div className="food-placeholder-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -103,9 +100,10 @@ const FoodItem = ({ food, onClick }) => (
       <h3 className="food-item-title">{food.name}</h3>
       <p className="food-item-category">{food.category_name}</p>
       <div className="food-item-nutrition">
-        <span className="nutrition-item">{food.calories} cal</span>
-        <span className="nutrition-item">{food.protein}g protein</span>
-        <span className="nutrition-item">{food.carbs}g carbs</span>
+        <span className="food-item-calories">{food.calories} cal</span>
+        <span className="food-item-protein">{food.protein}g protein</span>
+        <span className="food-item-carbs">{food.carbs}g carbs</span>
+        <span className="food-item-fat">{food.fat}g fat</span>
       </div>
     </div>
   </AnimatedCard>
@@ -222,7 +220,7 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
         </button>
       </div>
     </div>
-    {post.image_url && post.image_url.trim() !== '' && (
+    {post.image_url && post.image_url.trim() !== '' ? (
       <div className="blog-detail-image">
         <img 
           src={post.image_url} 
@@ -232,14 +230,25 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
             e.target.style.display = 'none';
             const placeholder = e.target.parentNode.querySelector('.blog-detail-placeholder');
             if (placeholder) {
-              placeholder.style.display = 'flex';
+              placeholder.classList.remove('blog-detail-placeholder-hidden');
+              placeholder.classList.add('blog-detail-placeholder-visible');
             }
           }}
         />
         <div 
-          className="blog-detail-placeholder" 
-          style={{ display: 'none' }}
+          className="blog-detail-placeholder blog-detail-placeholder-hidden"
+          ref={(el) => {
+            if (el) {
+              el.placeholderRef = el;
+            }
+          }}
         >
+          <span>Ảnh minh họa</span>
+        </div>
+      </div>
+    ) : (
+      <div className="blog-detail-image">
+        <div className="blog-detail-placeholder blog-detail-placeholder-visible">
           <span>Ảnh minh họa</span>
         </div>
       </div>
@@ -259,7 +268,6 @@ const CategoryFilter = ({ categories, selected, onChange }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -357,7 +365,6 @@ const FoodList = ({ foods, onFoodClick, loading, currentPage, itemsPerPage, tota
     );
   }
 
-  // Get current items for pagination
   const getCurrentItems = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -428,45 +435,73 @@ const Blog = () => {
   } = useBlogContext();
   
   const [selectedPost, setSelectedPost] = useState(null);
-  const [activeTab, setActiveTab] = useState('blog'); // 'blog' or 'menu'
+  const [activeTab, setActiveTab] = useState('blog');
   
-  // Food filtering state
   const [selectedFoodCategory, setSelectedFoodCategory] = useState('');
   const [foodSearchQuery, setFoodSearchQuery] = useState('');
   
-  // Pagination state for food list
-  const [currentFoodPage, setCurrentFoodPage] = useState(1);
-  const itemsPerPage = 8; // 8-10 items per page
+  const [currentFoodPage, setCurrentFoodPage] = useState(DEFAULTS.CURRENT_PAGE);
+  const itemsPerPage = PAGINATION.BLOG_PAGE_SIZE;
 
   const [showCreate, setShowCreate] = useState(false);
 
-  // Handle tab change
+  // Add refs for DOM elements
+  const blogContainerRef = useRef(null);
+
+  // State for image loading
+  const [imageStates, setImageStates] = useState({});
+
+  // Use improved scroll to top hook
+  const { scrollToTop, scrollModalToTop, scrollToTopWithRetry } = useScrollToTop();
+
+  // Handle image load success
+  const handleImageLoad = useCallback((postId, type = 'blog') => {
+    setImageStates(prev => ({
+      ...prev,
+      [`${type}_${postId}`]: 'loaded'
+    }));
+  }, []);
+
+  // Handle image load error
+  const handleImageError = useCallback((postId, type = 'blog') => {
+    setImageStates(prev => ({
+      ...prev,
+      [`${type}_${postId}`]: 'error'
+    }));
+  }, []);
+
+  // Check if image should be shown
+  const shouldShowImage = useCallback((postId, imageUrl, type = 'blog') => {
+    const state = imageStates[`${type}_${postId}`];
+    return imageUrl && imageUrl.trim() !== '' && state !== 'error';
+  }, [imageStates]);
+
+  // Check if placeholder should be shown
+  const shouldShowPlaceholder = useCallback((postId, imageUrl, type = 'blog') => {
+    const state = imageStates[`${type}_${postId}`];
+    return !imageUrl || imageUrl.trim() === '' || state === 'error';
+  }, [imageStates]);
+
   const handleTabChange = (newTab) => {
     setActiveTab(newTab);
     
-    // Scroll to top when switching tabs
+    // Scroll both window and container
     setTimeout(() => {
-      try {
-        // Try to scroll the blog container first
-        const blogContainer = document.querySelector('.blog-container');
-        if (blogContainer && blogContainer.scrollTop > 0) {
-          blogContainer.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'smooth'
-          });
-        } else {
-          // Fallback to document.body
-          document.body.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'smooth'
-          });
-        }
-      } catch (error) {
-        console.error('Error scrolling to top:', error);
-        // Fallback to instant scroll
-        document.body.scrollTo(0, 0);
+      // Scroll window
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+      
+      // Scroll container if exists
+      const container = document.querySelector('.home-container');
+      if (container && container.scrollTo) {
+        container.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
       }
     }, 100);
   };
@@ -474,54 +509,30 @@ const Blog = () => {
   const handleShowCreate = () => {
     setShowCreate(true);
     
-    // Scroll to top when opening create blog modal
-    setTimeout(() => {
-      try {
-        document.body.scrollTo({
-          top: 0,
-          left: 0,
-          behavior: 'smooth'
-        });
-      } catch (error) {
-        console.error('Error scrolling to top:', error);
-        document.body.scrollTo(0, 0);
-      }
-    }, 100);
+    // Use improved scroll to top with retry logic
+    scrollToTopWithRetry(100, 3);
   };
 
   const handlePostClick = async (post) => {
     try {
-      // Fetch blog detail từ API để có dữ liệu mới nhất
       const response = await blogAPI.getPostById(post.id);
       if (response.data.success) {
         setSelectedPost(response.data.data);
       } else {
-        setSelectedPost(post); // Fallback to local data
+        setSelectedPost(post);
       }
     } catch (error) {
-      console.error('Error fetching blog detail:', error);
-      setSelectedPost(post); // Fallback to local data
+      // Fallback to existing post data on error
+      setSelectedPost(post);
     }
-    // Tăng view count khi click vào bài viết
     incrementViewCount(post.id);
   };
 
   const handleBackClick = () => {
     setSelectedPost(null);
     
-    // Scroll to top when returning from blog detail
-    setTimeout(() => {
-      try {
-        document.body.scrollTo({
-          top: 0,
-          left: 0,
-          behavior: 'smooth'
-        });
-      } catch (error) {
-        console.error('Error scrolling to top:', error);
-        document.body.scrollTo(0, 0);
-      }
-    }, 100);
+    // Use improved scroll to top with retry logic
+    scrollToTopWithRetry(100, 3);
   };
 
   const handleFoodClick = (food) => {
@@ -530,19 +541,18 @@ const Blog = () => {
 
   const handleFoodCategoryChange = (categoryId) => {
     setSelectedFoodCategory(categoryId);
-    setCurrentFoodPage(1); // Reset to first page when filter changes
+    setCurrentFoodPage(1);
   };
 
   const handleFoodSearchChange = (query) => {
     setFoodSearchQuery(query);
-    setCurrentFoodPage(1); // Reset to first page when search changes
+    setCurrentFoodPage(1);
   };
 
   const handleFoodPageChange = (page) => {
     setCurrentFoodPage(page);
   };
 
-  // Filter food items based on category and search
   const filteredFoodItems = foodItems.filter(food => {
     const matchCategory = !selectedFoodCategory || food.category_id == selectedFoodCategory;
     const matchSearch = food.name.toLowerCase().includes(foodSearchQuery.toLowerCase()) ||
@@ -550,13 +560,65 @@ const Blog = () => {
     return matchCategory && matchSearch;
   });
 
-  // Calculate total pages for food list
   const totalFoodPages = Math.max(1, Math.ceil(filteredFoodItems.length / itemsPerPage));
 
   const foodVariations = selectedFood ? getFoodVariations(selectedFood) : [];
 
+  // Replace direct DOM manipulation in image rendering
+  const renderBlogImage = (post) => {
+    const imageKey = `blog_${post.id}`;
+    const showImage = shouldShowImage(post.id, post.image_url, 'blog');
+    const showPlaceholder = shouldShowPlaceholder(post.id, post.image_url, 'blog');
+
+    return (
+      <div className="blog-image-container">
+        {showImage ? (
+          <img
+            src={post.image_url}
+            alt={post.title}
+            className="blog-image"
+            onLoad={() => handleImageLoad(post.id, 'blog')}
+            onError={() => handleImageError(post.id, 'blog')}
+          />
+        ) : null}
+        {showPlaceholder && (
+          <div className="blog-image-placeholder">
+            <span>Ảnh minh họa</span>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderFoodImage = (food) => {
+    const imageKey = `food_${food.id}`;
+    const showImage = shouldShowImage(food.id, food.image_url, 'food');
+    const showPlaceholder = shouldShowPlaceholder(food.id, food.image_url, 'food');
+
+    return (
+      <div className="food-image-container">
+        {showImage ? (
+          <img
+            src={food.image_url}
+            alt={food.name}
+            className="food-image"
+            onLoad={() => handleImageLoad(food.id, 'food')}
+            onError={() => handleImageError(food.id, 'food')}
+          />
+        ) : null}
+        {showPlaceholder && (
+          <div className="food-image-placeholder">
+            <div className="food-placeholder-icon">
+              <span>🍽️</span>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="blog-container">
+    <div className="blog-container" ref={blogContainerRef}>
       {selectedPost ? (
         <BlogDetail 
           post={selectedPost} 
@@ -584,7 +646,7 @@ const Blog = () => {
 
           {activeTab === 'blog' ? (
             <>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+              <div className="blog-create-button-container">
                 <button 
                   className="create-blog-btn" 
                   onClick={handleShowCreate}

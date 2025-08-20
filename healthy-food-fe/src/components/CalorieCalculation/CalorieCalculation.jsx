@@ -1,41 +1,36 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { foodAPI } from '../../services/api';
 import { useFoodContext } from '../../context/FoodContext';
+import { PAGINATION, DEFAULTS, VALIDATION } from '../../constants';
 import DatePicker from '../DatePicker';
 import './CalorieCalculation.css';
 
 const CalorieCalculation = () => {
-  // State for food database
   const [foodCategories, setFoodCategories] = useState([]);
   const [foodItems, setFoodItems] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState(DEFAULTS.SELECTED_CATEGORY);
   const [selectedFood, setSelectedFood] = useState('');
-  const [quantity, setQuantity] = useState(100);
+  const [quantity, setQuantity] = useState(DEFAULTS.QUANTITY);
   const [dailyFoodLog, setDailyFoodLog] = useState([]);
   const [loading, setLoading] = useState(false);
-  
-  // State for statistics
+
   const [dailyStats, setDailyStats] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  
-  // State for pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+ 
+  const [currentPage, setCurrentPage] = useState(DEFAULTS.CURRENT_PAGE);
+  const itemsPerPage = PAGINATION.DEFAULT_PAGE_SIZE;
   const totalPages = Math.max(1, Math.ceil(dailyFoodLog.length / itemsPerPage));
 
-  // State for edit functionality
   const [editingLog, setEditingLog] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editQuantity, setEditQuantity] = useState(100);
-  const [editCalories, setEditCalories] = useState(0);
+  const [editQuantity, setEditQuantity] = useState(DEFAULTS.EDIT_QUANTITY);
+  const [editCalories, setEditCalories] = useState(DEFAULTS.EDIT_CALORIES);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
 
-  // Mobile menu state
   const [activeMobileMenu, setActiveMobileMenu] = useState(null);
 
-  // Use FoodContext for pending foods
   const { 
     pendingFoods = [], 
     removeFromPendingFoods, 
@@ -44,19 +39,16 @@ const CalorieCalculation = () => {
     getPendingTotalCalories 
   } = useFoodContext();
 
-  // Load food categories on component mount
   useEffect(() => {
     loadFoodCategories();
   }, []);
 
-  // Load food items when category changes
   useEffect(() => {
     if (selectedCategory) {
       loadFoodItems(selectedCategory);
     }
   }, [selectedCategory]);
 
-  // Debounced function to avoid too many API calls
   const debouncedLoadData = useCallback(
     (() => {
       let timeoutId;
@@ -67,27 +59,22 @@ const CalorieCalculation = () => {
             loadUserFoodLogs(),
             loadDailyStatistics()
           ]);
-        }, 300); // Delay 300ms
+        }, 300); 
       };
     })(),
     [selectedDate]
   );
 
-  // Load user's food logs and statistics with debouncing
   useEffect(() => {
     debouncedLoadData();
   }, [selectedDate, debouncedLoadData]);
 
-  // Load weekly and monthly statistics on mount
   useEffect(() => {
-    // Batch load weekly and monthly statistics
     Promise.all([
       loadWeeklyStatistics(),
       loadMonthlyStatistics()
     ]);
   }, []);
-
-  // Clear message after 3 seconds
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
@@ -98,7 +85,6 @@ const CalorieCalculation = () => {
     }
   }, [message]);
 
-  // Close mobile menu when clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (activeMobileMenu && !event.target.closest('.mobile-actions-container')) {
@@ -121,7 +107,6 @@ const CalorieCalculation = () => {
         }
       }
     } catch (error) {
-      // Error loading food categories
     } finally {
       setLoading(false);
     }
@@ -138,7 +123,6 @@ const CalorieCalculation = () => {
         }
       }
     } catch (error) {
-      // Error loading food items
     } finally {
       setLoading(false);
     }
@@ -151,7 +135,6 @@ const CalorieCalculation = () => {
         setDailyFoodLog(response.data.data);
       }
     } catch (error) {
-      // Error loading food logs
     }
   };
 
@@ -162,7 +145,6 @@ const CalorieCalculation = () => {
         setDailyStats(response.data.data);
       }
     } catch (error) {
-      // Error loading daily statistics
     }
   };
 
@@ -170,10 +152,8 @@ const CalorieCalculation = () => {
     try {
       const response = await foodAPI.getWeeklyStatistics();
       if (response.data.success) {
-        // Weekly stats loaded successfully
       }
     } catch (error) {
-      // Error loading weekly statistics
     }
   };
 
@@ -185,10 +165,8 @@ const CalorieCalculation = () => {
         currentDate.getMonth() + 1
       );
       if (response.data.success) {
-        // Monthly stats loaded successfully
       }
     } catch (error) {
-      // Error loading monthly statistics
     }
   };
 
@@ -199,13 +177,11 @@ const CalorieCalculation = () => {
     const caloriesPer100g = food.calories;
     return Math.round(caloriesPer100g * qty / 100);
   };
-  
-  // Handle adding food to log
+
   const addFoodToLog = async () => {
     if (!selectedFood) return;
 
     try {
-      // Save current scroll position
       const currentScrollPosition = window.scrollY;
 
       const food = foodItems.find(item => item.id === parseInt(selectedFood));
@@ -221,7 +197,6 @@ const CalorieCalculation = () => {
 
       const response = await foodAPI.addFoodLog(logData);
       if (response.data.success) {
-        // Show appropriate message based on action
         if (response.data.data.action === 'updated') {
           setMessage(`Đã cập nhật ${food.name}: ${response.data.data.newQuantity}g (${response.data.data.newCalories} cal)`);
           setMessageType('success');
@@ -229,14 +204,11 @@ const CalorieCalculation = () => {
           setMessage(`Đã thêm ${food.name} vào nhật ký hàng ngày`);
           setMessageType('success');
         }
-        
-        // Batch reload - only reload what's necessary
+
         await Promise.all([
           loadUserFoodLogs(),
           loadDailyStatistics()
         ]);
-        
-        // Reset form
         setQuantity(100);
         
         // Restore scroll position after reload
@@ -245,23 +217,19 @@ const CalorieCalculation = () => {
         }, 100);
       }
     } catch (error) {
-      // Error adding food log
       setMessage('Lỗi khi thêm thực phẩm vào nhật ký');
       setMessageType('error');
     }
   };
 
-  // Handle editing food entry
   const editFoodEntry = (log) => {
     setEditingLog(log);
-    // Display current quantity and calories (already summed)
     setEditQuantity(Math.round(log.quantity));
     setEditCalories(Math.round(log.calories));
     setShowEditModal(true);
-    setActiveMobileMenu(null); // Close mobile menu if open
+    setActiveMobileMenu(null);
   };
 
-  // Calculate calories for edit mode
   const calculateEditCalories = (qty) => {
     if (!editingLog) return 0;
     const food = foodItems.find(item => item.id === editingLog.food_item_id);
@@ -271,7 +239,6 @@ const CalorieCalculation = () => {
     return Math.round(caloriesPer100g * qty / 100);
   };
 
-  // Handle updating food entry
   const updateFoodEntry = async () => {
     if (!editingLog) return;
 
@@ -286,43 +253,34 @@ const CalorieCalculation = () => {
         setMessageType('success');
         setShowEditModal(false);
         setEditingLog(null);
-        
-        // Batch reload to update both logs and statistics
+
         await Promise.all([
           loadUserFoodLogs(),
           loadDailyStatistics()
         ]);
-        
-        // Reset to page 1 if needed
         setCurrentPage(1);
       }
     } catch (error) {
-      // Error updating food log
       setMessage('Lỗi khi cập nhật thực phẩm');
       setMessageType('error');
     }
   };
-
-  // Handle deleting food entry
   const deleteFoodEntry = async (id) => {
     try {
       const response = await foodAPI.deleteFoodLog(id);
       if (response.data.success) {
         setMessage('Đã xóa thực phẩm thành công');
         setMessageType('success');
-        
-        // Batch reload to update both logs and statistics
+
         await Promise.all([
           loadUserFoodLogs(),
           loadDailyStatistics()
         ]);
-        
-        // Reset to page 1 if needed
+
         setCurrentPage(1);
       }
-      setActiveMobileMenu(null); // Close mobile menu if open
+      setActiveMobileMenu(null); 
     } catch (error) {
-      // Error deleting food log
       setMessage('Lỗi khi xóa thực phẩm');
       setMessageType('error');
     }
@@ -383,56 +341,73 @@ const CalorieCalculation = () => {
       });
   };
 
-  // Add pending foods to Daily Food Tracking
-  const addPendingFoodsToTracking = async () => {
+  const addPendingFoodsToTracking = useCallback(async () => {
     if (pendingFoods.length === 0) return;
 
     try {
       setLoading(true);
-      let successCount = 0;
 
-      for (const food of pendingFoods) {
-        const calories = Math.round(food.calories * food.quantity / 100);
-        const logData = {
-          food_item_id: food.id,
-          quantity: food.quantity,
-          calories: calories,
-          log_date: selectedDate
-        };
+      const batchData = pendingFoods.map(food => ({
+        food_item_id: food.id,
+        quantity: food.quantity,
+        calories: Math.round(food.calories * food.quantity / 100),
+        log_date: selectedDate
+      }));
 
-        try {
-          const response = await foodAPI.addFoodLog(logData);
-          if (response.data.success) {
-            successCount++;
+      try {
+        const response = await foodAPI.addFoodLogsBatch(batchData);
+        if (response.data.success) {
+          setMessage(`Đã thêm ${pendingFoods.length} sản phẩm vào Daily Food Tracking`);
+          setMessageType('success');
+
+          await Promise.all([
+            loadUserFoodLogs(),
+            loadDailyStatistics()
+          ]);
+          
+          clearPendingFoods();
+        }
+      } catch (batchError) {
+        let successCount = 0;
+        const promises = pendingFoods.map(async (food) => {
+          const calories = Math.round(food.calories * food.quantity / 100);
+          const logData = {
+            food_item_id: food.id,
+            quantity: food.quantity,
+            calories: calories,
+            log_date: selectedDate
+          };
+
+          try {
+            const response = await foodAPI.addFoodLog(logData);
+            if (response.data.success) {
+              successCount++;
+            }
+          } catch (error) {
           }
-        } catch (error) {
-          // Error adding food to pending
+        });
+
+        await Promise.all(promises);
+
+        if (successCount > 0) {
+          setMessage(`Đã thêm ${successCount} sản phẩm vào Daily Food Tracking`);
+          setMessageType('success');
+
+          await Promise.all([
+            loadUserFoodLogs(),
+            loadDailyStatistics()
+          ]);
+          clearPendingFoods();
         }
       }
-
-      if (successCount > 0) {
-        setMessage(`Đã thêm ${successCount} sản phẩm vào Daily Food Tracking`);
-        setMessageType('success');
-        
-        // Reload data
-        await Promise.all([
-          loadUserFoodLogs(),
-          loadDailyStatistics()
-        ]);
-        
-        // Clear pending foods
-        clearPendingFoods();
-      }
     } catch (error) {
-      // Error adding pending foods
       setMessage('Lỗi khi thêm sản phẩm vào Daily Food Tracking');
       setMessageType('error');
     } finally {
       setLoading(false);
     }
-  };
+  }, [pendingFoods, selectedDate, loadUserFoodLogs, loadDailyStatistics, clearPendingFoods]);
 
-  // Format date for display
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -440,7 +415,6 @@ const CalorieCalculation = () => {
 
   return (
     <div className="calorie-calculation-container">
-      {/* Message Display */}
       {message && (
         <div className={`message-display ${messageType}`}>
           {message}

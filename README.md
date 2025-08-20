@@ -103,7 +103,7 @@ npm run dev:frontend
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:5000
 
-## 📁 Cấu trúc Project
+## Cấu trúc Project
 
 ```
 InternFE_D1/
@@ -151,7 +151,7 @@ npm install                  # Cài đặt dependencies
 npm run dev                  # Chạy development server
 ```
 
-## 🐳 Docker Configuration
+## Docker Configuration
 
 ### Services
 - **mysql**: MySQL 8.0 database
@@ -184,7 +184,7 @@ PORT=5000
 NODE_ENV=production
 CORS_ORIGIN=http://localhost:5173
 ```
-## 📊 API Documentation
+## API Documentation
 
 ### Base URL
 - **Docker**: http://localhost:5000

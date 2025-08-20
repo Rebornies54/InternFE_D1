@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '../services/api';
+import { STORAGE_KEYS, ERROR_MESSAGES, TIME } from '../constants';
 
 export const AuthContext = createContext();
 
@@ -16,7 +17,7 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentBmi, setCurrentBmi] = useState(() => {
-    const stored = localStorage.getItem('currentBmi');
+    const stored = localStorage.getItem(STORAGE_KEYS.CURRENT_BMI);
     return stored ? Number(stored) : null;
   });
 
@@ -26,28 +27,27 @@ const AuthProvider = ({ children }) => {
       if (res.data?.success && res.data?.data) {
         const bmiVal = Number(res.data.data.bmi);
         setCurrentBmi(bmiVal);
-        localStorage.setItem('currentBmi', String(bmiVal));
+        localStorage.setItem(STORAGE_KEYS.CURRENT_BMI, String(bmiVal));
       } else {
         setCurrentBmi(null);
-        localStorage.removeItem('currentBmi');
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_BMI);
       }
     } catch (_) {
-      // ignore
     }
   };
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
       if (token) {
         try {
           const response = await authAPI.getCurrentUser();
           setUser(response.data.data);
           await refreshCurrentBmi();
         } catch (error) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          localStorage.removeItem('currentBmi');
+          localStorage.removeItem(STORAGE_KEYS.TOKEN);
+          localStorage.removeItem(STORAGE_KEYS.USER);
+          localStorage.removeItem(STORAGE_KEYS.CURRENT_BMI);
         }
       }
       setLoading(false);
@@ -62,11 +62,11 @@ const AuthProvider = ({ children }) => {
       const response = await authAPI.login(credentials);
       const { user, token } = response.data.data;
       
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
       setUser(user);
       
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, TIME.LOGIN_DELAY));
       await refreshCurrentBmi();
       
       return { success: true };
@@ -94,8 +94,8 @@ const AuthProvider = ({ children }) => {
       const response = await authAPI.register(userData);
       const { user, token } = response.data.data;
       
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
       setUser(user);
       
       return { success: true };
@@ -107,9 +107,9 @@ const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('currentBmi');
+    localStorage.removeItem(STORAGE_KEYS.TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.USER);
+    localStorage.removeItem(STORAGE_KEYS.CURRENT_BMI);
     setUser(null);
     setError(null);
     setCurrentBmi(null);
@@ -121,7 +121,7 @@ const AuthProvider = ({ children }) => {
       const response = await authAPI.updateProfile(userData);
       const updatedUser = response.data.data;
       
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
       setUser(updatedUser);
       
       return { success: true, user: updatedUser };
@@ -189,15 +189,15 @@ const AuthProvider = ({ children }) => {
     loading,
     error,
     currentBmi,
-    setCurrentBmi: (bmiVal) => {
-      if (typeof bmiVal === 'number' && !Number.isNaN(bmiVal)) {
-        setCurrentBmi(bmiVal);
-        localStorage.setItem('currentBmi', String(bmiVal));
-      } else {
-        setCurrentBmi(null);
-        localStorage.removeItem('currentBmi');
-      }
-    },
+          setCurrentBmi: (bmiVal) => {
+        if (typeof bmiVal === 'number' && !Number.isNaN(bmiVal)) {
+          setCurrentBmi(bmiVal);
+          localStorage.setItem(STORAGE_KEYS.CURRENT_BMI, String(bmiVal));
+        } else {
+          setCurrentBmi(null);
+          localStorage.removeItem(STORAGE_KEYS.CURRENT_BMI);
+        }
+      },
     login,
     register,
     logout,

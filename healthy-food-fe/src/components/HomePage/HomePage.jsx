@@ -27,6 +27,28 @@ const HomePage = () => {
   const navigate = useNavigate();
   const latestPosts = posts.slice(0, 3);
   const [currentBmi, setCurrentBmi] = useState(null);
+  
+  // Helper function to navigate and scroll to top
+  const navigateToPage = (path) => {
+    navigate(path);
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+      
+      // Also scroll container if exists
+      const container = document.querySelector('.home-container');
+      if (container && container.scrollTo) {
+        container.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  };
 
   // Carousel drag state
   const [isDragging, setIsDragging] = useState(false);
@@ -110,21 +132,9 @@ const HomePage = () => {
     }
   };
 
-  // Reset body height on mount
+  // Cleanup body styles on mount
   useEffect(() => {
-    // Reset any forced height from previous debugging
-    document.body.style.height = '';
-    document.body.style.minHeight = '';
-    document.documentElement.style.height = '';
-    document.documentElement.style.minHeight = '';
-    
-    // Remove any force scroll elements
-    const forceElement = document.getElementById('force-scroll-element');
-    if (forceElement) {
-      forceElement.remove();
-    }
-    
-    // Reset any inline styles that might have been set
+    // Reset any inline styles
     document.body.removeAttribute('style');
     document.documentElement.removeAttribute('style');
   }, []);
@@ -247,44 +257,17 @@ const originalMenuItems = [
           setIsTransitioning(true);
           setTimeout(() => {
             setCurrentMenuIndex(originalMenuItems.length);
-          }, 50);
+            setIsTransitioning(false);
+          }, 100);
           return originalMenuItems.length * 2 - 1; // Stay at the end temporarily
         }
         return nextIndex;
       });
-    }, 5000); // Change every 5 seconds
+    }, 6000); // Change every 6 seconds for smoother experience
     return () => clearInterval(menuInterval);
   }, [originalMenuItems.length]);
 
-  const nextMenu = () => {
-    setCurrentMenuIndex((prev) => {
-      const nextIndex = prev + 1;
-      // If we reach the end of the tripled array, jump back to the middle set seamlessly
-      if (nextIndex >= originalMenuItems.length * 2) {
-        setIsTransitioning(true);
-        setTimeout(() => {
-          setCurrentMenuIndex(originalMenuItems.length);
-        }, 50);
-        return originalMenuItems.length * 2 - 1; // Stay at the end temporarily
-      }
-      return nextIndex;
-    });
-  };
-
-  const prevMenu = () => {
-    setCurrentMenuIndex((prev) => {
-      const prevIndex = prev - 1;
-      // If we go below the middle set, jump to the end of the middle set seamlessly
-      if (prevIndex < originalMenuItems.length) {
-        setIsTransitioning(true);
-        setTimeout(() => {
-          setCurrentMenuIndex(originalMenuItems.length * 2 - 1);
-        }, 50);
-        return originalMenuItems.length; // Stay at the beginning temporarily
-      }
-      return prevIndex;
-    });
-  };
+  // Removed navigation functions - carousel now only supports drag/swipe
 
   // Drag handlers
   const handleDragStart = (e) => {
@@ -313,32 +296,48 @@ const originalMenuItems = [
     if (!isDragging) return;
     
     setIsDragging(false);
-    
-    // Determine if we should change slides based on drag distance
-    const dragThreshold = 100; // Minimum drag distance to trigger slide change
+    const dragThreshold = 80; // Reduced threshold for more responsive drag
     
     if (Math.abs(dragOffset) > dragThreshold) {
       if (dragOffset > 0) {
-        // Dragged right - go to previous
-        prevMenu();
+        // Move to previous item
+        setCurrentMenuIndex((prev) => {
+          const prevIndex = prev - 1;
+          if (prevIndex < originalMenuItems.length) {
+            setIsTransitioning(true);
+            setTimeout(() => {
+              setCurrentMenuIndex(originalMenuItems.length * 2 - 1);
+              setIsTransitioning(false);
+            }, 100);
+            return originalMenuItems.length;
+          }
+          return prevIndex;
+        });
       } else {
-        // Dragged left - go to next
-        nextMenu();
+        // Move to next item
+        setCurrentMenuIndex((prev) => {
+          const nextIndex = prev + 1;
+          if (nextIndex >= originalMenuItems.length * 2) {
+            setIsTransitioning(true);
+            setTimeout(() => {
+              setCurrentMenuIndex(originalMenuItems.length);
+              setIsTransitioning(false);
+            }, 100);
+            return originalMenuItems.length * 2 - 1;
+          }
+          return nextIndex;
+        });
       }
     }
     
     setDragOffset(0);
   };
 
-  // Add event listeners with passive: false to prevent the warning
   useEffect(() => {
     const carouselElement = carouselRef.current;
     if (!carouselElement) return;
 
     const handleTouchStart = (e) => {
-      if (e.target.closest('.carousel-nav-btn')) {
-        return;
-      }
       setIsDragging(true);
       const clientX = e.touches[0].clientX;
       setStartX(clientX);
@@ -362,9 +361,33 @@ const originalMenuItems = [
       const dragThreshold = 100;
       if (Math.abs(dragOffset) > dragThreshold) {
         if (dragOffset > 0) {
-          prevMenu();
+          // Move to previous item
+          setCurrentMenuIndex((prev) => {
+            const prevIndex = prev - 1;
+            if (prevIndex < originalMenuItems.length) {
+              setIsTransitioning(true);
+              setTimeout(() => {
+                setCurrentMenuIndex(originalMenuItems.length * 2 - 1);
+                setIsTransitioning(false);
+              }, 100);
+              return originalMenuItems.length;
+            }
+            return prevIndex;
+          });
         } else {
-          nextMenu();
+          // Move to next item
+          setCurrentMenuIndex((prev) => {
+            const nextIndex = prev + 1;
+            if (nextIndex >= originalMenuItems.length * 2) {
+              setIsTransitioning(true);
+              setTimeout(() => {
+                setCurrentMenuIndex(originalMenuItems.length);
+                setIsTransitioning(false);
+              }, 100);
+              return originalMenuItems.length * 2 - 1;
+            }
+            return nextIndex;
+          });
         }
       }
       setDragOffset(0);
@@ -389,19 +412,18 @@ const originalMenuItems = [
     return `translateX(${baseTransform + dragTransform}%)`;
   };
 
-  // Handle seamless transitions for infinite loop
   useEffect(() => {
     if (isTransitioning) {
       const timer = setTimeout(() => {
         setIsTransitioning(false);
-      }, 50); // Short delay to ensure transition completes
+      }, 50);
       return () => clearTimeout(timer);
     }
   }, [isTransitioning]);
 
   return (
-    <div className="homepage-container">
-      {/* Simplified Banner - No animations */}
+    <>
+      {/* Banner Section - Outside container for full width */}
       <section className="banner-section">
         <div className="banner-content">
           <div className="banner-text">
@@ -435,6 +457,8 @@ const originalMenuItems = [
         </div>
       </section>
 
+      <div className="homepage-container">
+
       {/* Suggested Menu Carousel */}
       <motion.section 
         className="suggested-menu-section"
@@ -463,7 +487,7 @@ const originalMenuItems = [
             </motion.h2>
           </motion.div>
           <motion.button 
-            onClick={() => navigate('/home/calorie-calculation')} 
+            onClick={() => navigateToPage('/home/calorie-calculation')} 
             className="view-more-link"
             variants={slideInRight}
             whileHover={{ scale: 1.05 }}
@@ -474,36 +498,27 @@ const originalMenuItems = [
         </motion.div>
         
         <div 
-          className={`menu-carousel-container ${isDragging ? 'dragging' : ''}`}
+          className={`menu-carousel-container ${isDragging ? 'dragging' : ''} homepage-carousel-cursor`}
           ref={carouselRef}
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
           onMouseUp={handleDragEnd}
           onMouseLeave={handleDragEnd}
-          style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
         >
-          <button 
-            className="carousel-nav-btn carousel-prev"
-            onClick={prevMenu}
-            aria-label="Previous menu item"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          
           <div className="menu-carousel">
-                         <div 
-               className="menu-carousel-track"
-               ref={trackRef}
-               style={{
-                 transform: getTrackTransform(),
-                 transition: isDragging || isTransitioning ? 'none' : 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
-               }}
-             >
-                             {menuItems.map((item, index) => (
-                 <div 
-                   key={item.uniqueId} 
-                   className={`menu-carousel-card ${index === currentMenuIndex ? 'active' : ''}`}
-                 >
+            <div 
+              className="menu-carousel-track homepage-carousel-track-transformed"
+              ref={trackRef}
+              style={{
+                transform: getTrackTransform(),
+                transition: isDragging || isTransitioning ? 'none' : 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)'
+              }}
+            >
+              {menuItems.map((item, index) => (
+                <div 
+                  key={item.uniqueId} 
+                  className={`menu-carousel-card ${index === currentMenuIndex ? 'active' : ''}`}
+                >
                   <div className="menu-card-image">
                     {item.image && item.image.trim() !== '' && (
                       <img src={item.image} alt={item.title} />
@@ -529,7 +544,7 @@ const originalMenuItems = [
                     </div>
                     <p className="menu-card-description">{item.description}</p>
                     <button 
-                      onClick={() => navigate('/home/calorie-calculation')}
+                      onClick={() => navigateToPage('/home/calorie-calculation')}
                       className="menu-card-link"
                     >
                       Xem chi tiết <ChevronRight size={14} />
@@ -539,14 +554,6 @@ const originalMenuItems = [
               ))}
             </div>
           </div>
-          
-          <button 
-            className="carousel-nav-btn carousel-next"
-            onClick={nextMenu}
-            aria-label="Next menu item"
-          >
-            <ChevronRight size={20} />
-          </button>
         </div>
         
 
@@ -599,7 +606,7 @@ const originalMenuItems = [
               <p>Theo dõi chỉ số BMI và nhận lời khuyên dinh dưỡng được cá nhân hóa</p>
             </div>
             <motion.button 
-              onClick={() => navigate('/home/body-index')}
+              onClick={() => navigateToPage('/home/body-index')}
               className="feature-link"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -624,7 +631,7 @@ const originalMenuItems = [
               <p>Ghi chép và theo dõi lượng calo tiêu thụ hàng ngày dễ dàng</p>
             </div>
             <motion.button 
-              onClick={() => navigate('/home/calorie-index')}
+              onClick={() => navigateToPage('/home/calorie-index')}
               className="feature-link"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -649,7 +656,7 @@ const originalMenuItems = [
               <p>Lưu trữ lịch sử ăn uống và phân tích dinh dưỡng chi tiết</p>
             </div>
             <motion.button 
-              onClick={() => navigate('/home/calorie-calculation')}
+              onClick={() => navigateToPage('/home/calorie-calculation')}
               className="feature-link"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -674,7 +681,7 @@ const originalMenuItems = [
               <p>Chia sẻ kiến thức và kinh nghiệm về dinh dưỡng cùng cộng đồng</p>
             </div>
             <motion.button 
-              onClick={() => navigate('/home/blog')}
+              onClick={() => navigateToPage('/home/blog')}
               className="feature-link"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -740,16 +747,14 @@ const originalMenuItems = [
                       e.target.style.display = 'none';
                       const placeholder = e.target.parentNode.querySelector('.blog-placeholder');
                       if (placeholder) {
-                        placeholder.style.display = 'flex';
+                        placeholder.classList.remove('homepage-blog-placeholder-hidden');
+                        placeholder.classList.add('homepage-blog-placeholder-visible');
                       }
                     }}
                   />
                 ) : null}
                 <div 
-                  className="blog-placeholder" 
-                  style={{ 
-                    display: (post.image_url && post.image_url.trim() !== '') ? 'none' : 'flex'
-                  }}
+                  className={`blog-placeholder ${(post.image_url && post.image_url.trim() !== '') ? 'homepage-blog-placeholder-hidden' : 'homepage-blog-placeholder-visible'}`}
                 >
                   <Coffee size={24} />
                 </div>
@@ -769,7 +774,7 @@ const originalMenuItems = [
                   {post.description || post.content.substring(0, 100)}...
                 </p>
                 <button 
-                  onClick={() => navigate(`/home/blog`)}
+                  onClick={() => navigateToPage(`/home/blog`)}
                   className="blog-read-more"
                 >
                   Đọc tiếp <ChevronRight size={14} />
@@ -880,7 +885,7 @@ const originalMenuItems = [
               </motion.div>
               <motion.div variants={fadeInUp}>
                 <button 
-                  onClick={() => navigate('/home/calorie-calculation')}
+                  onClick={() => navigateToPage('/home/calorie-calculation')}
                   className="btn-outline"
                 >
                   <Coffee size={16} /> Ghi chép bữa ăn
@@ -890,7 +895,8 @@ const originalMenuItems = [
           </motion.div>
         </motion.section>
       )}
-    </div>
+      </div>
+    </>
   );
 };
 

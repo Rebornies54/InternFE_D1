@@ -53,6 +53,11 @@
   border-radius: 0;
 }
 
+/* Error Messages */
+.login-error-message {
+  color: red;
+  font-size: 0.95rem;
+}
 
 /* Form */
 .login-form {

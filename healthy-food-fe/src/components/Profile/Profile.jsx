@@ -30,9 +30,8 @@ const menuList = [
 const Profile = () => {
   const { user } = useAuth();
   const [tab, setTab] = useState('profile');
-  const scrollToTop = useScrollToTop();
+  const { scrollToTop } = useScrollToTop();
 
-  // Handle tab change with scroll to top
   const handleTabChange = (newTab) => {
     setTab(newTab);
     scrollToTop();
@@ -46,10 +45,8 @@ const Profile = () => {
     avatar: null,
   });
 
-  // Update profileData when user data changes
   useEffect(() => {
     if (user) {
-      // Parse birthday from database format (YYYY-MM-DD) to separate parts
       let birthdayDay = '';
       let birthdayMonth = '';
       let birthdayYear = '';

@@ -5,6 +5,37 @@
   padding: 0;
 }
 
+/* Dynamic Display Styles */
+.blog-image-placeholder-hidden {
+  display: none;
+}
+
+.blog-image-placeholder-visible {
+  display: flex;
+}
+
+.food-image-placeholder-hidden {
+  display: none;
+}
+
+.food-image-placeholder-visible {
+  display: flex;
+}
+
+.blog-detail-placeholder-hidden {
+  display: none;
+}
+
+.blog-detail-placeholder-visible {
+  display: flex;
+}
+
+.blog-create-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
 body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: #f7f8fa;
@@ -17,6 +48,8 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
+  overflow-y: auto;
+  min-height: 100vh;
 }
 
 /* Typography */

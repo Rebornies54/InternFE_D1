@@ -468,6 +468,28 @@
   font-size: var(--font-size-sm);
 }
 
+/* Fix date-picker-input background issue */
+.date-input .date-picker-input,
+.calorie-calculation-container .date-picker-input {
+  background: var(--color-background) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+/* Ensure text color is visible */
+.date-input .date-picker-text,
+.calorie-calculation-container .date-picker-text {
+  color: var(--color-text) !important;
+}
+
+/* Fix for dark mode scenarios */
+.date-input .date-picker-input:focus,
+.calorie-calculation-container .date-picker-input:focus {
+  background: var(--color-background) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-primary) !important;
+}
+
 /* Food Tracking Section */
 .food-tracking-section {
   margin-top: 30px;
@@ -1185,6 +1207,21 @@
     padding: 0 10px;
     height: 28px;
     font-size: 11px;
+  }
+}
+
+/* Override any dark mode that might affect date picker */
+@media (prefers-color-scheme: dark) {
+  .date-input .date-picker-input,
+  .calorie-calculation-container .date-picker-input {
+    background: #fff !important;
+    color: #333 !important;
+    border: 1px solid #ddd !important;
+  }
+  
+  .date-input .date-picker-text,
+  .calorie-calculation-container .date-picker-text {
+    color: #333 !important;
   }
 }
 

@@ -1,11 +1,12 @@
 import axios from 'axios';
+import { API_CONFIG } from '../constants';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: `${API_CONFIG.BASE_URL}${API_CONFIG.API_ENDPOINT}`,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: API_CONFIG.TIMEOUT,
 });
 
 api.interceptors.request.use(
@@ -74,6 +75,9 @@ export const foodAPI = {
   
   addFoodLog: (logData) => api.post('/food/log', logData),
   
+  // Batch API for adding multiple food logs
+  addFoodLogsBatch: (logDataArray) => api.post('/food/logs/batch', { logs: logDataArray }),
+  
   updateFoodLog: (logId, logData) => api.put(`/food/log/${logId}`, logData),
   
   getFoodLogs: (date) => api.get('/food/log', { params: { date } }),
@@ -94,56 +98,57 @@ export const foodAPI = {
 export const blogAPI = {
   getAllPosts: () => api.get('/blog/posts'),
   
-  getPostById: (id) => api.get(`/blog/posts/${id}`),
+  getPostById: (postId) => api.get(`/blog/posts/${postId}`),
   
   createPost: (postData) => api.post('/blog/posts', postData),
   
-  updatePost: (id, postData) => api.put(`/blog/posts/${id}`, postData),
+  updatePost: (postId, postData) => api.put(`/blog/posts/${postId}`, postData),
   
-  deletePost: (id) => api.delete(`/blog/posts/${id}`),
+  deletePost: (postId) => api.delete(`/blog/posts/${postId}`),
   
-  toggleLike: (id) => api.post(`/blog/posts/${id}/like`),
-  
-  checkLiked: (id) => api.get(`/blog/posts/${id}/liked`),
-  
-  getPostsByCategory: (category) => api.get(`/blog/posts/category/${category}`),
-  
-  searchPosts: (query) => api.get(`/blog/posts/search/${query}`),
-  
-  getMyBlogs: () => api.get('/blog/my-blogs'),
-
-  uploadImage: (formData) => api.post('/blog/upload-image', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  }),
-
-  syncLikesCount: () => api.post('/blog/sync-likes-count'),
-
-  // View count API
-  incrementViewCount: (id) => api.post(`/blog/posts/${id}/view`),
-
-  // Comment APIs
   getComments: (postId, page = 1, limit = 10, sortBy = 'newest') => 
-    api.get(`/blog/posts/${postId}/comments`, { params: { page, limit, sort: sortBy } }),
+    api.get(`/blog/posts/${postId}/comments`, { 
+      params: { page, limit, sort_by: sortBy } 
+    }),
   
-  createComment: (postId, commentData) => 
-    api.post(`/blog/posts/${postId}/comments`, commentData),
+  createComment: (postId, commentData) => api.post(`/blog/posts/${postId}/comments`, commentData),
   
-  updateComment: (commentId, commentData) => 
-    api.put(`/blog/comments/${commentId}`, commentData),
+  updateComment: (commentId, commentData) => api.put(`/blog/comments/${commentId}`, commentData),
   
-  deleteComment: (commentId) => 
-    api.delete(`/blog/comments/${commentId}`),
+  deleteComment: (commentId) => api.delete(`/blog/comments/${commentId}`),
   
   getReplies: (commentId, page = 1, limit = 5) => 
     api.get(`/blog/comments/${commentId}/replies`, { params: { page, limit } }),
   
-  toggleCommentLike: (commentId) => 
-    api.post(`/blog/comments/${commentId}/like`),
+  createReply: (commentId, replyData) => api.post(`/blog/comments/${commentId}/replies`, replyData),
   
-  checkCommentLiked: (commentId) => 
-    api.get(`/blog/comments/${commentId}/liked`),
+  updateReply: (replyId, replyData) => api.put(`/blog/replies/${replyId}`, replyData),
   
-  syncCommentLikesCount: () => api.post('/blog/sync-comment-likes-count'),
+  deleteReply: (replyId) => api.delete(`/blog/replies/${replyId}`),
+  
+  likeComment: (commentId) => api.post(`/blog/comments/${commentId}/like`),
+  
+  unlikeComment: (commentId) => api.delete(`/blog/comments/${commentId}/like`),
+  
+  toggleCommentLike: (commentId) => api.post(`/blog/comments/${commentId}/like`),
+  
+  checkCommentLiked: (commentId) => api.get(`/blog/comments/${commentId}/like`),
+  
+  // Batch API for checking multiple comment likes
+  checkCommentLikesBatch: (commentIds) => api.post('/blog/comments/likes/batch', { comment_ids: commentIds }),
+  
+  likePost: (postId) => api.post(`/blog/posts/${postId}/like`),
+  
+  unlikePost: (postId) => api.delete(`/blog/posts/${postId}/like`),
+  
+  checkPostLiked: (postId) => api.get(`/blog/posts/${postId}/like`),
+  
+  incrementViewCount: (postId) => api.post(`/blog/posts/${postId}/view`),
+  
+  getMyPosts: () => api.get('/blog/posts/my'),
+  
+  getMyPostsPaginated: (page = 1, limit = 10) => 
+    api.get('/blog/posts/my', { params: { page, limit } }),
 };
 
 export default api; 

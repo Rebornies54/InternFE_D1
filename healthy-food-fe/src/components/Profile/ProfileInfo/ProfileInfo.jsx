@@ -3,8 +3,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { useLoading, useError } from '../../../hooks';
 import './ProfileInfo.css';
 import { authAPI } from '../../../services/api';
-
-const API_BASE_URL = 'http://localhost:5000';
+import { API_CONFIG } from '../../../constants';
 
 const ProfileInfo = ({ profileData, setProfileData }) => {
   const { updateProfile } = useAuth();
@@ -17,7 +16,6 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
   const { loading: isUploading, withLoading: withUploading } = useLoading();
   const { error, setError, clearError } = useError();
 
-  // Sync tempData when profileData changes
   useEffect(() => {
     setTempData({ 
       ...profileData,
@@ -31,19 +29,16 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
       await withUploading(async () => {
         clearError();
         
-        // Check file size (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
           setError('File size must be less than 5MB');
           return;
         }
         
-        // Check file type
         if (!file.type.startsWith('image/')) {
           setError('Please select an image file');
           return;
         }
 
-        // Create FormData for file upload
         const formData = new FormData();
         formData.append('avatar', file);
         
@@ -51,12 +46,10 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         
         if (res.data && res.data.success && res.data.avatarUrl) {
           let avatarUrl = res.data.avatarUrl;
-          // Ensure the URL is complete
           if (avatarUrl && avatarUrl.startsWith('/')) {
-            avatarUrl = API_BASE_URL + avatarUrl;
+            avatarUrl = API_CONFIG.BASE_URL + avatarUrl;
           }
           
-          // Update both tempData and profileData
           setTempData(prev => ({ ...prev, avatar: avatarUrl }));
           setProfileData(prev => ({ ...prev, avatar_url: avatarUrl }));
           
@@ -65,7 +58,6 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           throw new Error('Invalid response from server');
         }
       }).catch(error => {
-        // Upload avatar error
         let errorMessage = 'Upload image failed! Please try again.';
         
         if (error.response?.data?.message) {
@@ -79,9 +71,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
     }
   };
 
-  // Handle saving profile
   const handleSave = async () => {
-    // Validation
     if (!tempData.name || !tempData.name.trim()) {
       alert('Full name is required');
       return;
@@ -113,7 +103,6 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         };
         const result = await updateProfile(updateData);
         if (result.success) {
-          // Update local state with the result from updateProfile
           setProfileData(result.user);
           setIsEditing(false);
           alert('Profile updated successfully!');
@@ -121,7 +110,6 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           throw new Error(result.message || 'Failed to update profile');
         }
       } catch (error) {
-        // Error updating profile
         let errorMessage = 'Failed to update profile. Please try again.';
         
         if (error.response?.data?.message) {
@@ -131,34 +119,27 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         }
         
         alert(errorMessage);
-        throw error; // Re-throw để withSaving có thể xử lý
+        throw error;
       }
     });
   };
 
-  // Handle cancel editing
   const handleCancel = () => {
     setTempData({ ...profileData });
     setIsEditing(false);
   };
 
-  // Create options for day/month/year
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
   const years = Array.from({ length: 100 }, (_, i) => 2024 - i);
 
-  // Function to check if avatar URL is valid
   const isValidAvatarUrl = (url) => {
     if (!url) return false;
-    // Kiểm tra xem URL có phải là avatar không
     return url.includes('/uploads/avatar_');
   };
 
-
-
   return (
     <form className="profile-info-form-row">
-      {/* Left column: Avatar */}
       <div className="profile-info-avatar-col">
         <label className="profile-info-avatar-label">
           <span className="required">*</span>Profile Image
@@ -169,15 +150,12 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
             alt="Avatar"
             className="profile-info-avatar-img"
             onError={(e) => {
-              // Image load error
               e.target.style.display = 'none';
               const emptyDiv = e.target.parentNode.querySelector('.profile-info-avatar-empty');
               if (emptyDiv) {
                 emptyDiv.style.display = 'block';
               }
-              // Hiển thị thông báo lỗi
               console.warn('Avatar image failed to load. This might be due to server issues or file not found.');
-              // Xóa avatar_url khỏi profileData nếu file không tồn tại
               if (profileData.avatar_url) {
                 setProfileData(prev => ({ ...prev, avatar_url: null }));
               }
@@ -200,12 +178,11 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
             type="file"
             accept="image/*"
             onChange={handleAvatarChange}
-            style={{ display: 'none' }}
+            className="profile-info-file-input-hidden"
             disabled={!isEditing || isSaving || isUploading}
           />
         </label>
       </div>
-      {/* Right column: Form fields */}
       <div className="profile-info-fields-col">
         <div className="profile-info-form-group">
           <label className="profile-info-label">
@@ -226,11 +203,10 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           </label>
           <input
             type="email"
-            className="profile-info-input"
+            className="profile-info-input-disabled"
             value={profileData.email}
             disabled
             placeholder="Email"
-            style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
           />
         </div>
         <div className="profile-info-form-group">
@@ -320,7 +296,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           <div className="profile-info-actions-divider"></div>
           <div className="profile-info-actions-placeholder"></div>
           {isEditing ? (
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div className="profile-info-actions-buttons">
               <button 
                 type="button" 
                 className="profile-info-btn-cancel" 

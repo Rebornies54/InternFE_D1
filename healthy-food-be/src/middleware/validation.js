@@ -16,8 +16,10 @@ const registerValidation = [
     .withMessage('Password must be at least 6 characters long'),
   
   body('phone')
-    .optional()
-    .isMobilePhone()
+    .trim()
+    .notEmpty()
+    .withMessage('Phone number is required')
+    .matches(/^[0-9+\-\s()]+$/)
     .withMessage('Please provide a valid phone number'),
   
   body('gender')
@@ -31,14 +33,16 @@ const registerValidation = [
     .withMessage('Please provide a valid date'),
   
   body('province')
-    .optional()
     .trim()
+    .notEmpty()
+    .withMessage('Province is required')
     .isLength({ max: 100 })
     .withMessage('Province must be less than 100 characters'),
   
   body('district')
-    .optional()
     .trim()
+    .notEmpty()
+    .withMessage('District is required')
     .isLength({ max: 100 })
     .withMessage('District must be less than 100 characters'),
   

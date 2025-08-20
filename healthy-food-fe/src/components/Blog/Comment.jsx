@@ -1,455 +1,541 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useBlogContext } from '../../context/BlogContext';
-import { Heart, MessageCircle, Edit, Trash2, Reply, MoreVertical } from 'lucide-react';
-import SortComments from './SortComments';
+import { blogAPI } from '../../services/api';
+import { PAGINATION, ERROR_MESSAGES } from '../../constants';
+import { Heart, MessageCircle, MoreVertical, Edit, Trash, Reply } from 'lucide-react';
+import { 
+  AnimatedButton, 
+  FadeIn, 
+  SlideInLeft, 
+  StaggeredList, 
+  StaggeredItem,
+  LoadingSpinner
+} from '../AnimatedComponents';
 import './Comment.css';
-
-const CommentItem = ({ comment, onReply, onEdit, onDelete, onLike, isLiked, showReplies = false, currentUser, fetchReplies, replies, repliesLoading, commentLikes }) => {
-  const [showReplyForm, setShowReplyForm] = useState(false);
-  const [replyContent, setReplyContent] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
-  const [showRepliesState, setShowRepliesState] = useState(false);
-
-
-
-  const isAuthor = currentUser?.id === comment?.user_id;
-  const commentReplies = replies[comment?.id] || [];
-  const hasReplies = comment?.replies_count > 0;
-
-  const handleReply = async () => {
-    if (!replyContent.trim()) return;
-    
-    setIsSubmitting(true);
-    try {
-      const result = await onReply(comment.id, replyContent);
-      if (result && result.success) {
-        setReplyContent('');
-        setShowReplyForm(false);
-        // Refresh replies
-        if (fetchReplies) {
-          fetchReplies(comment.id);
-        }
-      }
-    } catch (error) {
-      // Error creating reply
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleLike = async () => {
-    if (!currentUser) return; // Chỉ cho phép like nếu đã login
-    try {
-      await onLike(comment.id);
-    } catch (error) {
-      // Error toggling comment like
-    }
-  };
-
-  const handleShowReplies = () => {
-    if (!showRepliesState && hasReplies && fetchReplies) {
-      setShowRepliesState(true);
-      fetchReplies(comment.id);
-    } else if (showRepliesState) {
-      setShowRepliesState(false);
-    }
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return 'Vừa xong';
-    
-    try {
-      const date = new Date(dateString);
-      const now = new Date();
-      const diffInHours = (now - date) / (1000 * 60 * 60);
-      
-      if (diffInHours < 1) {
-        return 'Vừa xong';
-      } else if (diffInHours < 24) {
-        return `${Math.floor(diffInHours)} giờ trước`;
-      } else {
-        return date.toLocaleDateString('vi-VN');
-      }
-    } catch (error) {
-      // Error formatting date
-      return 'Vừa xong';
-    }
-  };
-
-  return (
-    <div className="comment-item">
-      <div className="comment-header">
-        <div className="comment-author">
-          <div className="comment-avatar">
-            {comment.author_avatar && comment.author_avatar.trim() !== '' ? (
-              <img src={comment.author_avatar} alt={comment.author_name} />
-            ) : (
-              <div className="avatar-placeholder">
-                {comment.author_name?.charAt(0).toUpperCase()}
-              </div>
-            )}
-          </div>
-          <div className="comment-info">
-            <span className="comment-author-name">{comment.author_name}</span>
-            <span className="comment-date">{formatDate(comment.created_at)}</span>
-          </div>
-        </div>
-        
-        {isAuthor && (
-          <div className="comment-options">
-            <button 
-              className="options-toggle"
-              onClick={() => setShowOptions(!showOptions)}
-            >
-              <MoreVertical size={16} />
-            </button>
-            {showOptions && (
-              <div className="options-menu">
-                <button onClick={() => onEdit(comment)}>
-                  <Edit size={14} />
-                  Chỉnh sửa
-                </button>
-                <button onClick={() => onDelete(comment.id)}>
-                  <Trash2 size={14} />
-                  Xóa
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="comment-content">
-        {comment.content}
-      </div>
-
-      <div className="comment-actions">
-        <button 
-          className={`action-btn like-btn ${commentLikes && commentLikes.has ? commentLikes.has(comment.id) : false ? 'liked' : ''}`}
-          onClick={handleLike}
-          disabled={!currentUser}
-        >
-          <Heart size={16} />
-          <span>{comment.likes_count || 0}</span>
-        </button>
-        
-        {currentUser && (
-          <button 
-            className="action-btn reply-btn"
-            onClick={() => setShowReplyForm(!showReplyForm)}
-          >
-            <Reply size={16} />
-            Trả lời
-          </button>
-        )}
-
-        {hasReplies && (
-          <button 
-            className="action-btn replies-btn"
-            onClick={handleShowReplies}
-          >
-            <MessageCircle size={16} />
-            {comment.replies_count} trả lời
-          </button>
-        )}
-      </div>
-
-      {showReplyForm && currentUser && (
-        <div className="reply-form">
-          <textarea
-            value={replyContent}
-            onChange={(e) => setReplyContent(e.target.value)}
-            placeholder="Viết trả lời..."
-            rows={3}
-          />
-          <div className="reply-actions">
-            <button 
-              className="btn-cancel"
-              onClick={() => setShowReplyForm(false)}
-            >
-              Hủy
-            </button>
-            <button 
-              className="btn-submit"
-              onClick={handleReply}
-              disabled={isSubmitting || !replyContent.trim()}
-            >
-              {isSubmitting ? 'Đang gửi...' : 'Gửi'}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {showRepliesState && commentReplies.length > 0 && (
-        <div className="replies-container">
-          {repliesLoading[comment.id] ? (
-            <div className="loading-replies">Đang tải trả lời...</div>
-          ) : (
-            commentReplies.map(reply => (
-              <CommentItem
-                key={reply.id}
-                comment={reply}
-                onReply={onReply}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                onLike={onLike}
-                isLiked={commentLikes && commentLikes.has ? commentLikes.has(reply.id) : false}
-                showReplies={false}
-                currentUser={currentUser}
-                fetchReplies={fetchReplies}
-                replies={replies}
-                repliesLoading={repliesLoading}
-                commentLikes={commentLikes}
-              />
-            ))
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const CommentForm = ({ onSubmit, placeholder = "Viết bình luận..." }) => {
-  const [content, setContent] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async () => {
-    if (!content.trim()) return;
-    
-    setIsSubmitting(true);
-    try {
-      const result = await onSubmit(content);
-      if (result.success) {
-        setContent('');
-      }
-    } catch (error) {
-      // Error creating comment
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="comment-form">
-      <textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder={placeholder}
-        rows={4}
-        className="comment-textarea"
-      />
-      <div className="form-actions">
-        <button 
-          className="btn-submit"
-          onClick={handleSubmit}
-          disabled={isSubmitting || !content.trim()}
-        >
-          {isSubmitting ? 'Đang gửi...' : 'Gửi bình luận'}
-        </button>
-      </div>
-    </div>
-  );
-};
+import SortComments from './SortComments';
 
 const Comment = ({ postId }) => {
   const { user } = useAuth();
-  const { 
-    comments, 
-    commentsLoading, 
-    commentPagination,
-    fetchComments, 
-    createComment, 
-    updateComment, 
-    deleteComment,
-    clearComments,
-    fetchReplies,
-    replies,
-    repliesLoading,
-    toggleCommentLike,
-    commentLikes
-  } = useBlogContext();
-
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [newComment, setNewComment] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const [editingComment, setEditingComment] = useState(null);
-  const [editContent, setEditContent] = useState('');
-  const [currentSort, setCurrentSort] = useState('newest');
+  const [editText, setEditText] = useState('');
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [replyText, setReplyText] = useState('');
+  const [showReplies, setShowReplies] = useState({});
+  const [sortBy, setSortBy] = useState('newest');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [showOptions, setShowOptions] = useState({});
+
+  const commentEndRef = useRef(null);
+  const observerRef = useRef(null);
 
   useEffect(() => {
-    if (postId && fetchComments) {
-      fetchComments(postId, 1, currentSort);
+    fetchComments();
+  }, [postId, sortBy]);
+
+  useEffect(() => {
+    if (editingComment) {
+      setEditText(editingComment.content);
     }
-    
-    return () => {
-      if (clearComments) {
-        clearComments();
+  }, [editingComment]);
+
+  useEffect(() => {
+    if (replyingTo) {
+      setReplyText('');
+    }
+  }, [replyingTo]);
+
+  const fetchComments = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const response = await blogAPI.getComments(postId, 1, PAGINATION.COMMENT_PAGE_SIZE, sortBy);
+      
+      if (response.data.success) {
+        // Đảm bảo comments luôn là một mảng
+        const commentsData = Array.isArray(response.data.data) ? response.data.data : [];
+        setComments(commentsData);
+        setCurrentPage(1);
+        setHasMore(commentsData.length === PAGINATION.COMMENT_PAGE_SIZE);
+      } else {
+        setError(ERROR_MESSAGES.COMMENTS_FETCH_FAILED);
+        setComments([]); // Đặt comments thành mảng rỗng nếu có lỗi
       }
-    };
-  }, [postId, fetchComments, clearComments, currentSort]);
-
-  const handleCreateComment = async (content) => {
-    if (!user) return { success: false, message: 'Vui lòng đăng nhập' };
-    if (!createComment) return { success: false, message: 'Lỗi hệ thống' };
-    
-    try {
-      return await createComment(postId, { content });
     } catch (error) {
-      // Error creating comment
-      return { success: false, message: 'Lỗi khi tạo comment' };
+      console.error('Error fetching comments:', error);
+      setError(ERROR_MESSAGES.COMMENTS_FETCH_FAILED);
+      setComments([]); // Đặt comments thành mảng rỗng nếu có lỗi
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleReply = async (parentId, content) => {
-    if (!user) return { success: false, message: 'Vui lòng đăng nhập' };
-    if (!createComment) return { success: false, message: 'Lỗi hệ thống' };
-    
+  const loadMoreComments = async () => {
+    if (loadingMore || !hasMore) return;
+
     try {
-      return await createComment(postId, { content, parent_id: parentId });
+      setLoadingMore(true);
+      const nextPage = currentPage + 1;
+      const response = await blogAPI.getComments(postId, nextPage, PAGINATION.COMMENT_PAGE_SIZE, sortBy);
+      
+      if (response.data.success) {
+        // Đảm bảo response.data.data là một mảng
+        const newComments = Array.isArray(response.data.data) ? response.data.data : [];
+        setComments(prev => [...prev, ...newComments]);
+        setCurrentPage(nextPage);
+        setHasMore(newComments.length === PAGINATION.COMMENT_PAGE_SIZE);
+      }
     } catch (error) {
-      // Error creating reply
-      return { success: false, message: 'Lỗi khi tạo reply' };
+      console.error('Error loading more comments:', error);
+    } finally {
+      setLoadingMore(false);
     }
   };
 
-  const handleEdit = (comment) => {
-    if (!user || !comment) return;
-    setEditingComment(comment);
-    setEditContent(comment.content || '');
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim() || submitting) return;
+
+    try {
+      setSubmitting(true);
+      const response = await blogAPI.createComment(postId, { content: newComment.trim() });
+      
+      if (response.data.success) {
+        setComments(prev => [response.data.data, ...(Array.isArray(prev) ? prev : [])]);
+        setNewComment('');
+      } else {
+        setError(ERROR_MESSAGES.COMMENT_CREATE_FAILED);
+      }
+    } catch (error) {
+      console.error('Error creating comment:', error);
+      setError(ERROR_MESSAGES.COMMENT_CREATE_FAILED);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleUpdateComment = async () => {
-    if (!editContent.trim() || !user || !editingComment || !updateComment) return;
-    
+  const handleReply = async (commentId, replyContent) => {
+    if (!replyContent.trim()) return;
+
     try {
-      const result = await updateComment(editingComment.id, editContent);
-      if (result && result.success) {
+      const response = await blogAPI.createReply(commentId, { content: replyContent.trim() });
+      
+      if (response.data.success) {
+        setComments(prev => prev.map(comment => {
+          if (comment.id === commentId) {
+            return {
+              ...comment,
+              replies: [...(Array.isArray(comment.replies) ? comment.replies : []), response.data.data]
+            };
+          }
+          return comment;
+        }));
+        setReplyingTo(null);
+        setReplyText('');
+      }
+    } catch (error) {
+      console.error('Error creating reply:', error);
+    }
+  };
+
+  const handleEditComment = async () => {
+    if (!editText.trim() || !editingComment) return;
+
+    try {
+      const response = await blogAPI.updateComment(editingComment.id, { content: editText.trim() });
+      
+      if (response.data.success) {
+        setComments(prev => Array.isArray(prev) ? prev.map(comment => 
+          comment.id === editingComment.id 
+            ? { ...comment, content: editText.trim() }
+            : comment
+        ) : []);
         setEditingComment(null);
-        setEditContent('');
+        setEditText('');
       }
     } catch (error) {
-      // Error updating comment
+      console.error('Error updating comment:', error);
     }
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!user || !deleteComment) return;
-    if (window.confirm('Bạn có chắc muốn xóa bình luận này?')) {
-      try {
-        await deleteComment(commentId);
-      } catch (error) {
-        // Error deleting comment
+    if (!window.confirm('Bạn có chắc chắn muốn xóa bình luận này?')) return;
+
+    try {
+      const response = await blogAPI.deleteComment(commentId);
+      
+      if (response.data.success) {
+        setComments(prev => Array.isArray(prev) ? prev.filter(comment => comment.id !== commentId) : []);
       }
+    } catch (error) {
+      console.error('Error deleting comment:', error);
     }
   };
 
-  const handleLoadMore = () => {
-    if (commentPagination && commentPagination.has_next && fetchComments) {
-      fetchComments(postId, commentPagination.current_page + 1, currentSort);
+  const handleLikeComment = async (commentId) => {
+    try {
+      const response = await blogAPI.toggleCommentLike(commentId);
+      
+      if (response.data.success) {
+        setComments(prev => Array.isArray(prev) ? prev.map(comment => {
+          if (comment.id === commentId) {
+            return {
+              ...comment,
+              is_liked: !comment.is_liked,
+              likes_count: comment.is_liked ? comment.likes_count - 1 : comment.likes_count + 1
+            };
+          }
+          return comment;
+        }) : []);
+      }
+    } catch (error) {
+      console.error('Error toggling comment like:', error);
     }
   };
 
-  const handleSortChange = (newSort) => {
-    setCurrentSort(newSort);
-    // Reset to page 1 when changing sort
-    if (fetchComments) {
-      fetchComments(postId, 1, newSort);
+  const handleLikeReply = async (replyId) => {
+    try {
+      const response = await blogAPI.toggleReplyLike(replyId);
+      
+      if (response.data.success) {
+        setComments(prev => Array.isArray(prev) ? prev.map(comment => ({
+          ...comment,
+          replies: Array.isArray(comment.replies) ? comment.replies.map(reply => {
+            if (reply.id === replyId) {
+              return {
+                ...reply,
+                is_liked: !reply.is_liked,
+                likes_count: reply.is_liked ? reply.likes_count - 1 : reply.likes_count + 1
+              };
+            }
+            return reply;
+          }) : []
+        })) : []);
+      }
+    } catch (error) {
+      console.error('Error toggling reply like:', error);
     }
   };
 
-  // Kiểm tra nếu không có postId
-  if (!postId) {
-    return <div className="comments-section">Không tìm thấy bài viết</div>;
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      return dateString;
+    }
+  };
+
+  const toggleReplies = (commentId) => {
+    setShowReplies(prev => ({
+      ...prev,
+      [commentId]: !prev[commentId]
+    }));
+  };
+
+  const toggleOptions = (commentId) => {
+    setShowOptions(prev => ({
+      ...prev,
+      [commentId]: !prev[commentId]
+    }));
+  };
+
+  const canEditComment = (comment) => {
+    return user && comment.user_id === user.id;
+  };
+
+  const canDeleteComment = (comment) => {
+    return user && (comment.user_id === user.id || user.role === 'admin');
+  };
+
+  const renderReply = (reply, commentId) => (
+    <div key={reply.id} className="reply-item">
+      <div className="reply-header">
+        <div className="reply-user-info">
+          <img 
+            src={reply.user_avatar || '/default-avatar.png'} 
+            alt={reply.user_name}
+            className="reply-avatar"
+            onError={(e) => {
+              e.target.src = '/default-avatar.png';
+            }}
+          />
+          <div className="reply-user-details">
+            <span className="reply-user-name">{reply.user_name}</span>
+            <span className="reply-date">{formatDate(reply.created_at)}</span>
+          </div>
+        </div>
+        <div className="reply-actions">
+          <AnimatedButton
+            className={`reply-like-btn ${reply.is_liked ? 'liked' : ''}`}
+            onClick={() => handleLikeReply(reply.id)}
+          >
+            <Heart size={12} />
+            <span>{reply.likes_count || 0}</span>
+          </AnimatedButton>
+        </div>
+      </div>
+      <div className="reply-content">
+        <p>{reply.content}</p>
+      </div>
+    </div>
+  );
+
+  const renderComment = (comment) => (
+    <div key={comment.id} className="comment-item">
+      <div className="comment-header">
+        <div className="comment-user-info">
+          <img 
+            src={comment.user_avatar || '/default-avatar.png'} 
+            alt={comment.user_name}
+            className="comment-avatar"
+            onError={(e) => {
+              e.target.src = '/default-avatar.png';
+            }}
+          />
+          <div className="comment-user-details">
+            <span className="comment-user-name">{comment.user_name}</span>
+            <span className="comment-date">{formatDate(comment.created_at)}</span>
+          </div>
+        </div>
+        <div className="comment-actions">
+          <AnimatedButton
+            className={`comment-like-btn ${comment.is_liked ? 'liked' : ''}`}
+            onClick={() => handleLikeComment(comment.id)}
+          >
+            <Heart size={14} />
+            <span>{comment.likes_count || 0}</span>
+          </AnimatedButton>
+          <AnimatedButton
+            className="comment-reply-btn"
+            onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+          >
+            <Reply size={14} />
+            <span>Trả lời</span>
+          </AnimatedButton>
+          {(canEditComment(comment) || canDeleteComment(comment)) && (
+            <div className="comment-options">
+              <AnimatedButton
+                className="comment-options-btn"
+                onClick={() => toggleOptions(comment.id)}
+              >
+                <MoreVertical size={14} />
+              </AnimatedButton>
+              {showOptions[comment.id] && (
+                <div className="comment-options-dropdown">
+                  {canEditComment(comment) && (
+                    <button 
+                      type="button"
+                      className="comment-option-btn"
+                      onClick={() => {
+                        setEditingComment(comment);
+                        toggleOptions(comment.id);
+                      }}
+                    >
+                      <Edit size={14} />
+                      <span>Chỉnh sửa</span>
+                    </button>
+                  )}
+                  {canDeleteComment(comment) && (
+                    <button 
+                      type="button"
+                      className="comment-option-btn delete"
+                      onClick={() => {
+                        handleDeleteComment(comment.id);
+                        toggleOptions(comment.id);
+                      }}
+                    >
+                      <Trash size={14} />
+                      <span>Xóa</span>
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {editingComment?.id === comment.id ? (
+        <div className="comment-edit-form">
+          <textarea
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            placeholder="Chỉnh sửa bình luận..."
+            className="comment-edit-textarea"
+          />
+          <div className="comment-edit-actions">
+            <button 
+              type="button"
+              className="comment-edit-cancel"
+              onClick={() => setEditingComment(null)}
+            >
+              Hủy
+            </button>
+            <button 
+              type="button"
+              className="comment-edit-save"
+              onClick={handleEditComment}
+            >
+              Lưu
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="comment-content">
+          <p>{comment.content}</p>
+        </div>
+      )}
+
+      {replyingTo === comment.id && (
+        <div className="reply-form">
+          <textarea
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            placeholder="Viết trả lời..."
+            className="reply-textarea"
+          />
+          <div className="reply-actions">
+            <button 
+              type="button"
+              className="reply-cancel"
+              onClick={() => setReplyingTo(null)}
+            >
+              Hủy
+            </button>
+            <button 
+              type="button"
+              className="reply-submit"
+              onClick={() => handleReply(comment.id, replyText)}
+              disabled={!replyText.trim()}
+            >
+              Trả lời
+            </button>
+          </div>
+        </div>
+      )}
+
+      {Array.isArray(comment.replies) && comment.replies.length > 0 && (
+        <div className="replies-section">
+          <button 
+            type="button"
+            className="replies-toggle"
+            onClick={() => toggleReplies(comment.id)}
+          >
+            <MessageCircle size={12} />
+            <span>
+              {showReplies[comment.id] ? 'Ẩn' : 'Hiển thị'} {comment.replies.length} trả lời
+            </span>
+          </button>
+          {showReplies[comment.id] && (
+            <div className="replies-list">
+              {comment.replies.map(reply => renderReply(reply, comment.id))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="comments-loading">
+        <LoadingSpinner />
+        <p>Đang tải bình luận...</p>
+      </div>
+    );
   }
 
   return (
     <div className="comments-section">
-      <h3 className="comments-title">
-        Bình luận ({commentPagination?.total_comments || 0})
-      </h3>
-
-      {!user ? (
-        <div className="login-required">
-          Vui lòng <a href="/login">đăng nhập</a> để bình luận
-        </div>
-      ) : (
-        <CommentForm onSubmit={handleCreateComment} />
-      )}
-
-      {comments.length > 0 && (
+      <div className="comments-header">
+        <h3 className="comments-title">
+          Bình luận ({Array.isArray(comments) ? comments.length : 0})
+        </h3>
         <SortComments 
-          currentSort={currentSort} 
-          onSortChange={handleSortChange} 
+          sortBy={sortBy} 
+          onSortChange={setSortBy} 
         />
+      </div>
+
+      {error && (
+        <div className="comments-error">
+          <p>{error}</p>
+          <button type="button" onClick={fetchComments}>Thử lại</button>
+        </div>
       )}
 
-      {commentsLoading && comments.length === 0 ? (
-        <div className="loading-comments">Đang tải bình luận...</div>
-      ) : comments.length > 0 ? (
-        <div className="comments-list">
-          {comments.map(comment => (
-            <CommentItem
-              key={comment.id}
-              comment={comment}
-              onReply={handleReply}
-              onEdit={handleEdit}
-              onDelete={handleDeleteComment}
-              onLike={toggleCommentLike}
-              isLiked={commentLikes.has(comment.id)}
-              currentUser={user}
-              fetchReplies={fetchReplies}
-              replies={replies[comment.id] || []}
-              repliesLoading={repliesLoading[comment.id] || false}
-              commentLikes={commentLikes}
+      {user && (
+        <form className="comment-form" onSubmit={handleSubmitComment}>
+          <div className="comment-form-header">
+            <img 
+              src={user.avatar_url || '/default-avatar.png'} 
+              alt={user.name}
+              className="comment-form-avatar"
+              onError={(e) => {
+                e.target.src = '/default-avatar.png';
+              }}
             />
-          ))}
-          
-          {commentPagination && commentPagination.has_next && (
-            <div className="load-more-container">
-              <button 
-                className="load-more-btn"
-                onClick={handleLoadMore}
-                disabled={commentsLoading}
-              >
-                {commentsLoading ? 'Đang tải...' : 'Tải thêm bình luận'}
-              </button>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="no-comments">
-          Chưa có bình luận nào. Hãy là người đầu tiên bình luận!
-        </div>
-      )}
-
-      {editingComment && user && (
-        <div className="edit-modal">
-          <div className="edit-modal-content">
-            <h4>Chỉnh sửa bình luận</h4>
             <textarea
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              rows={4}
-              className="edit-textarea"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Viết bình luận..."
+              className="comment-form-textarea"
+              disabled={submitting}
             />
-            <div className="edit-actions">
-              <button 
-                className="btn-cancel"
-                onClick={() => {
-                  setEditingComment(null);
-                  setEditContent('');
-                }}
-              >
-                Hủy
-              </button>
-              <button 
-                className="btn-submit"
-                onClick={handleUpdateComment}
-                disabled={!editContent.trim()}
-              >
-                Cập nhật
-              </button>
-            </div>
           </div>
+          <div className="comment-form-actions">
+            <button 
+              type="submit" 
+              className="comment-form-submit"
+              disabled={!newComment.trim() || submitting}
+            >
+              {submitting ? 'Đang gửi...' : 'Gửi bình luận'}
+            </button>
+          </div>
+        </form>
+      )}
+
+      <div className="comments-list">
+        <StaggeredList>
+          {Array.isArray(comments) && comments.map((comment, index) => (
+            <StaggeredItem key={comment.id} index={index}>
+              <FadeIn>
+                {renderComment(comment)}
+              </FadeIn>
+            </StaggeredItem>
+          ))}
+        </StaggeredList>
+      </div>
+
+      {hasMore && (
+        <div className="comments-load-more">
+          <button 
+            type="button"
+            className="load-more-btn"
+            onClick={loadMoreComments}
+            disabled={loadingMore}
+          >
+            {loadingMore ? 'Đang tải...' : 'Tải thêm bình luận'}
+          </button>
+        </div>
+      )}
+
+      {!user && (
+        <div className="comments-login-prompt">
+          <p>Vui lòng đăng nhập để bình luận</p>
         </div>
       )}
     </div>

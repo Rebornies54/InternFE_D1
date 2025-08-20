@@ -1,5 +1,6 @@
 const express = require('express');
 const AuthService = require('../services/authService');
+const OTPService = require('../services/otpService');
 const { registerValidation, loginValidation, validate } = require('../middleware/validation');
 const auth = require('../middleware/auth');
 const { pool } = require('../config/connection');
@@ -26,9 +27,11 @@ const router = express.Router();
 
 router.post('/register', registerValidation, validate, async (req, res) => {
   try {
+    console.log('Registration request body:', req.body);
     const result = await AuthService.register(req.body);
     res.status(201).json(result);
   } catch (error) {
+    console.error('Registration error:', error);
     res.status(400).json({
       success: false,
       message: error.message
@@ -204,47 +207,154 @@ router.post('/forgot-password', async (req, res) => {
       });
     }
 
-    const [users] = await pool.execute(
-      'SELECT id, name, email FROM users WHERE email = ?',
-      [email]
-    );
+    // Sử dụng OTPService để tạo OTP với rate limiting
+    const result = await OTPService.createOTP(email);
 
-    if (users.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Email không tồn tại trong hệ thống'
-      });
-    }
-
-    const user = users[0];
-    
-    // Tạo mật khẩu mới ngẫu nhiên
-    const newPassword = Math.random().toString(36).slice(-8);
-    const bcrypt = require('bcryptjs');
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
-
-    // Cập nhật mật khẩu mới
-    await pool.execute(
-      'UPDATE users SET password = ? WHERE id = ?',
-      [hashedPassword, user.id]
-    );
-
-    // Trong thực tế, bạn sẽ gửi email với mật khẩu mới
-    // Ở đây tôi sẽ trả về mật khẩu mới để test
+    // Trong thực tế, bạn sẽ gửi email với OTP
+    // Ở đây tôi sẽ trả về OTP để test
     res.json({
       success: true,
-      message: 'Mật khẩu mới đã được tạo và gửi qua email',
+      message: result.message,
       data: {
-        newPassword: newPassword, // Chỉ trả về trong môi trường development
-        message: `Mật khẩu mới của bạn là: ${newPassword}`
+        otp: result.otp, // Chỉ trả về trong môi trường development
+        expiresAt: result.expiresAt,
+        message: `OTP của bạn là: ${result.otp}`
       }
     });
 
   } catch (error) {
     console.error('Error in forgot password:', error);
+    
+    // Xử lý các loại lỗi khác nhau
+    if (error.message.includes('Vui lòng đợi') || 
+        error.message.includes('quá nhiều OTP')) {
+      return res.status(429).json({
+        success: false,
+        message: error.message
+      });
+    }
+    
+    if (error.message.includes('không tồn tại')) {
+      return res.status(404).json({
+        success: false,
+        message: error.message
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: 'Lỗi khi xử lý yêu cầu quên mật khẩu'
+    });
+  }
+});
+
+router.post('/verify-otp', async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email và OTP là bắt buộc'
+      });
+    }
+
+    // Sử dụng OTPService để xác thực OTP
+    const result = await OTPService.verifyOTP(email, otp);
+
+    res.json({
+      success: true,
+      message: result.message
+    });
+
+  } catch (error) {
+    console.error('Error in verify OTP:', error);
+    
+    if (error.message.includes('quá nhiều lần')) {
+      return res.status(429).json({
+        success: false,
+        message: error.message
+      });
+    }
+
+    res.status(400).json({
+      success: false,
+      message: error.message || 'Lỗi khi xác thực OTP'
+    });
+  }
+});
+
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email, OTP và mật khẩu mới là bắt buộc'
+      });
+    }
+
+    // Sử dụng OTPService để reset password
+    const result = await OTPService.resetPassword(email, otp, newPassword);
+
+    res.json({
+      success: true,
+      message: result.message
+    });
+
+  } catch (error) {
+    console.error('Error in reset password:', error);
+    
+    if (error.message.includes('không hợp lệ')) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi đặt lại mật khẩu'
+    });
+  }
+});
+
+// Admin API để xem thống kê OTP (chỉ dành cho admin)
+router.get('/otp-stats', auth, async (req, res) => {
+  try {
+    // Kiểm tra quyền admin (bạn có thể thêm logic kiểm tra role)
+    const { email } = req.query;
+    const stats = await OTPService.getOTPStats(email);
+    
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    console.error('Error getting OTP stats:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi lấy thống kê OTP'
+    });
+  }
+});
+
+// API để chạy cleanup thủ công (chỉ dành cho admin)
+router.post('/cleanup-otp', auth, async (req, res) => {
+  try {
+    const CleanupService = require('../services/cleanupService');
+    await CleanupService.manualCleanup();
+    
+    res.json({
+      success: true,
+      message: 'Cleanup hoàn thành'
+    });
+  } catch (error) {
+    console.error('Error in manual cleanup:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi cleanup'
     });
   }
 });

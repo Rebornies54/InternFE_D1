@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { UI } from '../../constants';
 import './DatePicker.css';
 
 const DatePicker = ({ 
@@ -15,13 +16,11 @@ const DatePicker = ({
   const [tempSelectedDate, setTempSelectedDate] = useState(null);
   const datePickerRef = useRef(null);
 
-  // Vietnamese month names
   const monthNames = [
     'Tháng Một', 'Tháng Hai', 'Tháng Ba', 'Tháng Tư', 'Tháng Năm', 'Tháng Sáu',
     'Tháng Bảy', 'Tháng Tám', 'Tháng Chín', 'Tháng Mười', 'Tháng Mười Một', 'Tháng Mười Hai'
   ];
 
-  // Vietnamese day names
   const dayNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
   useEffect(() => {
@@ -44,8 +43,8 @@ const DatePicker = ({
 
   const formatDate = (date) => {
     if (!date) return '';
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(UI.DATE_FORMAT_PADDING, '0');
+    const month = (date.getMonth() + 1).toString().padStart(UI.DATE_FORMAT_PADDING, '0');
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
@@ -58,7 +57,6 @@ const DatePicker = ({
     
     const days = [];
     
-    // Add days from previous month
     const prevMonth = new Date(year, month, 0);
     const daysInPrevMonth = prevMonth.getDate();
     for (let i = firstDayOfMonth - 1; i >= 0; i--) {
@@ -70,7 +68,6 @@ const DatePicker = ({
       });
     }
     
-    // Add days from current month
     for (let i = 1; i <= daysInMonth; i++) {
       const dayDate = new Date(year, month, i);
       days.push({
@@ -81,8 +78,7 @@ const DatePicker = ({
       });
     }
     
-    // Add days from next month
-    const remainingDays = 42 - days.length; // 6 rows * 7 days
+    const remainingDays = UI.CALENDAR_DAYS_IN_VIEW - days.length;
     for (let i = 1; i <= remainingDays; i++) {
       days.push({
         date: new Date(year, month + 1, i),

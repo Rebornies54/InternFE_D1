@@ -32,7 +32,6 @@ const AddressInfo = () => {
       {showModal && (
         <div className="address-modal-overlay" onClick={() => setShowModal(false)}>
           <div className="address-modal" onClick={e => e.stopPropagation()}>
-            {/* Modal form content here */}
             <div className="address-modal-header">
               <div className="address-modal-title">Address</div>
               <button className="address-modal-close" onClick={() => setShowModal(false)}>×</button>
@@ -53,7 +52,6 @@ const AddressInfo = () => {
                 <label><span className="required">*</span> Province</label>
                 <select defaultValue="">
                   <option value="" disabled>Select</option>
-                  {/* Add options if needed */}
                 </select>
               </div>
               <div className="address-modal-field">

@@ -28,7 +28,9 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "multer": "^2.0.1",
-    "mysql2": "^3.6.5"
+    "mysql2": "^3.6.5",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.5"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

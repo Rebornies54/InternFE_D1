@@ -1,10 +1,5 @@
-# 🎨 Framer Motion Integration - HealthyFood
+# Framer Motion Integration - HealthyFood
 
-## 📋 Tổng quan
-
-Dự án HealthyFood đã được tích hợp **Framer Motion** để tạo ra các animation mượt mà và tương tác tốt hơn cho người dùng.
-
-## 🚀 Cài đặt
 
 ```bash
 npm install framer-motion

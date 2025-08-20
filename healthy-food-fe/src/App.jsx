@@ -14,23 +14,11 @@ const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword/ForgotPas
 const Home = React.lazy(() => import('./pages/Home/Home'));
 
 function App() {
-  // Reset body height on app mount
   React.useEffect(() => {
-    // Reset any forced height from previous debugging
-    document.body.style.height = '';
-    document.body.style.minHeight = '';
-    document.documentElement.style.height = '';
-    document.documentElement.style.minHeight = '';
-    
-    // Remove any force scroll elements
-    const forceElement = document.getElementById('force-scroll-element');
-    if (forceElement) {
-      forceElement.remove();
+    // Disable React Router's scroll restoration
+    if (window.history.scrollRestoration) {
+      window.history.scrollRestoration = 'manual';
     }
-    
-    // Reset any inline styles that might have been set
-    document.body.removeAttribute('style');
-    document.documentElement.removeAttribute('style');
   }, []);
 
   return (

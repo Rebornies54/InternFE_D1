@@ -1,15 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { blogAPI } from '../../services/api';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
+import { BLOG_CATEGORIES } from '../../constants';
 import './Blog.css';
-
-const BLOG_CATEGORIES = [
-  { value: 'thực phẩm', label: 'Thực phẩm' },
-  { value: 'thực đơn', label: 'Thực đơn' },
-  { value: 'bí quyết', label: 'Bí quyết' },
-  { value: 'câu chuyện', label: 'Câu chuyện' },
-  { value: 'công thức', label: 'Công thức' },
-];
 
 const CreateBlog = ({ onClose, onCreated }) => {
   const [title, setTitle] = useState('');
@@ -22,14 +15,12 @@ const CreateBlog = ({ onClose, onCreated }) => {
   const [error, setError] = useState('');
   const [charCount, setCharCount] = useState({ title: 0, description: 0, content: 0 });
   const fileInputRef = useRef(null);
-  const scrollToTop = useScrollToTop();
+  const { scrollToTop } = useScrollToTop();
 
-  // Scroll to top when modal opens
   useEffect(() => {
     scrollToTop();
   }, [scrollToTop]);
 
-  // Update character count
   useEffect(() => {
     setCharCount({
       title: title.length,
@@ -75,7 +66,6 @@ const CreateBlog = ({ onClose, onCreated }) => {
     try {
       let imageUrl = '';
       
-      // Upload image if any
       if (image) {
         const formData = new FormData();
         formData.append('image', image);
@@ -85,7 +75,6 @@ const CreateBlog = ({ onClose, onCreated }) => {
         }
       }
       
-      // Create post
       await blogAPI.createPost({
         title,
         description: description || null,

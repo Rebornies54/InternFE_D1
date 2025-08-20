@@ -6,7 +6,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useScrollToTop, useForm, useModal } from '../../hooks';
 import './register.css';
 
-// Validation schema
 const RegisterSchema = Yup.object().shape({
   name: Yup.string().required('Full name is required'),
   birthday: Yup.string(),
@@ -19,7 +18,6 @@ const RegisterSchema = Yup.object().shape({
   address: Yup.string()
 });
 
-// Form field component for consistent styling
 const FormField = ({ label, name, type = "text", as, placeholder, required, children, className, groupClassName }) => (
   <div className={`register-form-group ${groupClassName || ''}`}>
     <label htmlFor={name} className="register-label">
@@ -55,7 +53,7 @@ const FormField = ({ label, name, type = "text", as, placeholder, required, chil
 const Register = () => {
   const navigate = useNavigate();
   const { register, error } = useAuth();
-  const scrollToTop = useScrollToTop();
+  const { scrollToTop } = useScrollToTop();
   const { isSubmitting, withSubmitting } = useForm();
   const { isOpen: showSuccessModal, openModal, closeModal } = useModal();
   const { isOpen: showErrorModal, openModal: openErrorModal, closeModal: closeErrorModal } = useModal();
@@ -75,7 +73,6 @@ const Register = () => {
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     await withSubmitting(async () => {
-      // Check if all required fields are filled
       const errors = {};
       if (!values.name) errors.name = 'Full name is required';
       if (!values.email) errors.email = 'Email is required';
@@ -136,7 +133,6 @@ const Register = () => {
           {({ isSubmitting, errors, touched }) => (
             <Form className="register-form">
               <div className="register-form-wrapper">
-                {/* Full Name */}
                 <FormField
                   label="Full Name"
                   name="name"
@@ -146,8 +142,6 @@ const Register = () => {
                 {errors.name && touched.name && (
                   <div className="register-error">{errors.name}</div>
                 )}
-                
-                {/* Birthday and Email */}
                 <div className="register-form-row">
                   <FormField
                     label="Birthday"
@@ -170,8 +164,6 @@ const Register = () => {
                 {errors.email && touched.email && (
                   <div className="register-error">{errors.email}</div>
                 )}
-                
-                {/* Password and Phone */}
                 <div className="register-form-row">
                   <FormField
                     label="Password"
@@ -198,8 +190,7 @@ const Register = () => {
                 {(errors.phone && touched.phone) && (
                   <div className="register-error">{errors.phone}</div>
                 )}
-                
-                {/* Gender */}
+              
                 <FormField
                   label="Gender"
                   name="gender"
@@ -211,8 +202,7 @@ const Register = () => {
                   <option value="female">Female</option>
                   <option value="other">Other</option>
                 </FormField>
-                
-                {/* Province */}
+
                 <FormField
                   label="Province"
                   name="province"
@@ -228,8 +218,7 @@ const Register = () => {
                 {errors.province && touched.province && (
                   <div className="register-error">{errors.province}</div>
                 )}
-                
-                {/* District */}
+
                 <FormField
                   label="District"
                   name="district"
@@ -247,8 +236,7 @@ const Register = () => {
                 {errors.district && touched.district && (
                   <div className="register-error">{errors.district}</div>
                 )}
-                
-                {/* Address */}
+
                 <FormField
                   label="Address"
                   name="address"
@@ -274,7 +262,6 @@ const Register = () => {
         </div>
       </div>
 
-      {/* Success Modal */}
       {showSuccessModal && (
         <div className="success-modal-overlay">
           <div className="success-modal">
@@ -310,7 +297,6 @@ const Register = () => {
         </div>
       )}
 
-      {/* Error Modal */}
       {showErrorModal && (
         <div className="error-modal-overlay">
           <div className="error-modal">

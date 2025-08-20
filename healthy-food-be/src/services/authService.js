@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { pool } = require('../config/connection');
+const EmailService = require('./emailService');
 
 class AuthService {
   static async register(userData) {
@@ -19,10 +20,15 @@ class AuthService {
       const saltRounds = 12;
       const hashedPassword = await bcrypt.hash(password, saltRounds);
       
+      // Xử lý các giá trị optional để tránh undefined
+      const cleanGender = gender || null;
+      const cleanBirthday = birthday || null;
+      const cleanAddress = address || null;
+      
       const [result] = await pool.execute(
         `INSERT INTO users (name, email, password, phone, gender, birthday, province, district, address) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [name, email, hashedPassword, phone, gender, birthday, province, district, address]
+        [name, email, hashedPassword, phone, cleanGender, cleanBirthday, province, district, cleanAddress]
       );
       
       const [newUser] = await pool.execute(
@@ -35,6 +41,14 @@ class AuthService {
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES_IN }
       );
+      
+      // Gửi email chào mừng
+      try {
+        await EmailService.sendWelcomeEmail(email, newUser[0].name);
+      } catch (emailError) {
+        console.error('❌ Lỗi khi gửi email chào mừng:', emailError.message);
+        // Không ảnh hưởng đến quá trình đăng ký
+      }
       
       return {
         success: true,

@@ -13,7 +13,6 @@ export const useFoodContext = () => {
 export const FoodProvider = ({ children }) => {
   const [pendingFoods, setPendingFoods] = useState([]);
 
-  // Add food to pending list (from BodyIndex)
   const addToPendingFoods = (food) => {
     const existingFood = pendingFoods.find(item => item.id === food.id);
     if (existingFood) {
@@ -27,12 +26,10 @@ export const FoodProvider = ({ children }) => {
     }
   };
 
-  // Remove food from pending list
   const removeFromPendingFoods = (foodId) => {
     setPendingFoods(pendingFoods.filter(item => item.id !== foodId));
   };
 
-  // Update food quantity in pending list
   const updatePendingFoodQuantity = (foodId, quantity) => {
     if (quantity <= 0) {
       removeFromPendingFoods(foodId);
@@ -43,12 +40,10 @@ export const FoodProvider = ({ children }) => {
     }
   };
 
-  // Clear all pending foods
   const clearPendingFoods = () => {
     setPendingFoods([]);
   };
 
-  // Get total calories from pending foods
   const getPendingTotalCalories = () => {
     if (!pendingFoods || pendingFoods.length === 0) return 0;
     return pendingFoods.reduce((total, food) => {
