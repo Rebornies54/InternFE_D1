@@ -302,16 +302,27 @@ export interface AuthContextType {
   loading: boolean;
   error: string | null;
   currentBmi: number | null;
+  setCurrentBmi: (bmiVal: number | null) => void;
   login: (credentials: LoginCredentials) => Promise<{ success: boolean; message?: string }>;
-  register: (userData: RegisterData) => Promise<{ success: boolean; message?: string }>;
+  register: (userData: RegisterData) => Promise<{ success: boolean; message?: string; user?: User }>;
   logout: () => void;
   updateProfile: (userData: Partial<UserProfile>) => Promise<{ success: boolean; user?: User; message?: string }>;
+  changePassword: (passwordData: { currentPassword: string; newPassword: string; confirmPassword: string }) => Promise<{ success: boolean; message?: string }>;
+  forgotPassword: (email: string) => Promise<{ success: boolean; message?: string }>;
+  verifyOTP: (email: string, otp: string) => Promise<{ success: boolean; message?: string }>;
+  resetPassword: (email: string, otp: string, newPassword: string) => Promise<{ success: boolean; message?: string }>;
   refreshCurrentBmi: () => Promise<void>;
+  isAuthenticated: boolean;
+}
+
+// Pending Food Item (FoodItem với quantity)
+export interface PendingFoodItem extends FoodItem {
+  quantity: number;
 }
 
 export interface FoodContextType {
-  pendingFoods: FoodItem[];
-  addToPendingFoods: (food: FoodItem, quantity: number) => void;
+  pendingFoods: PendingFoodItem[];
+  addToPendingFoods: (food: FoodItem, quantity?: number) => void;
   removeFromPendingFoods: (foodId: number) => void;
   updatePendingFoodQuantity: (foodId: number, quantity: number) => void;
   clearPendingFoods: () => void;
@@ -348,29 +359,39 @@ export interface BlogContextType {
 export interface CalorieContextType {
   calorieData: {
     age: number;
-    gender: string;
+    gender: Gender;
     height: number;
     weight: number;
-    activityLevel: string;
+    activityLevel: ActivityLevel;
     bodyFat: string;
-    formula: string;
-    unitSystem: string;
+    formula: Formula;
+    unitSystem: UnitSystem;
     tdee: number;
     bmr: number;
     showResults: boolean;
     calculatedDate: string | null;
     history: Array<{
       date: string;
+      weight: number;
+      height: number;
+      age: number;
+      gender: Gender;
+      activityLevel: ActivityLevel;
       bmr: number;
       tdee: number;
     }>;
   };
   updateCalorieData: (newData: Partial<CalorieContextType['calorieData']>) => void;
   resetCalorieData: () => void;
-  calculateMifflinStJeor: (weight: number, height: number, age: number, gender: string) => number;
-  calculateHarrisBenedict: (weight: number, height: number, age: number, gender: string) => number;
-  calculateKatchMcArdle: (weight: number, bodyFat: number, gender: string) => number;
-  calculateTDEE: (bmr: number, activityLevel: string) => number;
+  performCalculation: () => { success: boolean; bmr?: number; tdee?: number; message?: string };
+  getCalorieGoals: (tdee: number) => {
+    maintenance: number;
+    weightLoss: { mild: number; moderate: number; aggressive: number };
+    weightGain: { mild: number; moderate: number; aggressive: number };
+  };
+  calculateBMR: (data: CalorieContextType['calorieData']) => { success: boolean; bmr?: number; message?: string };
+  calculateTDEE: (bmr: number, activityLevel: ActivityLevel) => number;
+  convertUnits: (unitSystem: UnitSystem) => void;
 }
 
 // Event Types

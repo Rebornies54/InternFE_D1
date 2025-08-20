@@ -15,18 +15,10 @@ const Home = React.lazy(() => import('./pages/Home/Home'));
 
 function App() {
   React.useEffect(() => {
-    document.body.style.height = '';
-    document.body.style.minHeight = '';
-    document.documentElement.style.height = '';
-    document.documentElement.style.minHeight = '';
-
-    const forceElement = document.getElementById('force-scroll-element');
-    if (forceElement) {
-      forceElement.remove();
+    // Disable React Router's scroll restoration
+    if (window.history.scrollRestoration) {
+      window.history.scrollRestoration = 'manual';
     }
-
-    document.body.removeAttribute('style');
-    document.documentElement.removeAttribute('style');
   }, []);
 
   return (

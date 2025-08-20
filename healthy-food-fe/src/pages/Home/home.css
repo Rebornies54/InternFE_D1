@@ -78,7 +78,8 @@ body {
   align-items: stretch;
   justify-content: flex-start;
   background: var(--color-background);
-  padding-top: var(--header-height-desktop);
+  margin-top: 40px;
+  padding-top: 0;
 }
 
 .home-layout {
@@ -86,7 +87,7 @@ body {
   width: 100%;
   max-width: var(--max-width-content);
   margin: 0 auto;
-  padding-top: 80px;
+  padding-top: 0;
 }
 
 /* ========== Header & Navigation ========== */

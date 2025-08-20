@@ -53,7 +53,7 @@ const FormField = ({ label, name, type = "text", as, placeholder, required, chil
 const Register = () => {
   const navigate = useNavigate();
   const { register, error } = useAuth();
-  const scrollToTop = useScrollToTop();
+  const { scrollToTop } = useScrollToTop();
   const { isSubmitting, withSubmitting } = useForm();
   const { isOpen: showSuccessModal, openModal, closeModal } = useModal();
   const { isOpen: showErrorModal, openModal: openErrorModal, closeModal: closeErrorModal } = useModal();

@@ -30,7 +30,7 @@ const menuList = [
 const Profile = () => {
   const { user } = useAuth();
   const [tab, setTab] = useState('profile');
-  const scrollToTop = useScrollToTop();
+  const { scrollToTop } = useScrollToTop();
 
   const handleTabChange = (newTab) => {
     setTab(newTab);

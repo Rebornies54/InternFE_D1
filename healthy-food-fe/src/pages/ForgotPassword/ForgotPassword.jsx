@@ -24,7 +24,7 @@ const ResetPasswordSchema = Yup.object().shape({
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const { forgotPassword, verifyOTP, resetPassword } = useAuth();
-  const scrollToTop = useScrollToTop();
+  const { scrollToTop } = useScrollToTop();
   const { isSubmitting, withSubmitting } = useForm();
   const { isOpen: showSuccessModal, openModal, closeModal } = useModal();
   const { error, setError, clearError } = useError();

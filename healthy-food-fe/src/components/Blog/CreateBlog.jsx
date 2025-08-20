@@ -15,7 +15,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
   const [error, setError] = useState('');
   const [charCount, setCharCount] = useState({ title: 0, description: 0, content: 0 });
   const fileInputRef = useRef(null);
-  const scrollToTop = useScrollToTop();
+  const { scrollToTop } = useScrollToTop();
 
   useEffect(() => {
     scrollToTop();

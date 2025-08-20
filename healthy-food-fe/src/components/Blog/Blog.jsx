@@ -13,6 +13,7 @@ import {
   AnimatedModal,
   LoadingSpinner
 } from '../AnimatedComponents';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import './Blog.css';
 import CreateBlog from './CreateBlog';
 import Comment from './Comment';
@@ -446,10 +447,12 @@ const Blog = () => {
 
   // Add refs for DOM elements
   const blogContainerRef = useRef(null);
-  const bodyRef = useRef(document.body);
 
   // State for image loading
   const [imageStates, setImageStates] = useState({});
+
+  // Use improved scroll to top hook
+  const { scrollToTop, scrollModalToTop, scrollToTopWithRetry } = useScrollToTop();
 
   // Handle image load success
   const handleImageLoad = useCallback((postId, type = 'blog') => {
@@ -482,27 +485,23 @@ const Blog = () => {
   const handleTabChange = (newTab) => {
     setActiveTab(newTab);
     
+    // Scroll both window and container
     setTimeout(() => {
-      try {
-        // Use refs instead of direct DOM access
-        if (blogContainerRef.current && blogContainerRef.current.scrollTop > 0) {
-          blogContainerRef.current.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'smooth'
-          });
-        } else {
-          bodyRef.current.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'smooth'
-          });
-        }
-      } catch (error) {
-        if (import.meta.env.MODE === 'development') {
-          console.error('Error scrolling to top:', error);
-        }
-        bodyRef.current.scrollTo(0, 0);
+      // Scroll window
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+      
+      // Scroll container if exists
+      const container = document.querySelector('.home-container');
+      if (container && container.scrollTo) {
+        container.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
       }
     }, 100);
   };
@@ -510,17 +509,8 @@ const Blog = () => {
   const handleShowCreate = () => {
     setShowCreate(true);
     
-    setTimeout(() => {
-      try {
-        bodyRef.current.scrollTo({
-          top: 0,
-          left: 0,
-          behavior: 'smooth'
-        });
-      } catch (error) {
-        bodyRef.current.scrollTo(0, 0);
-      }
-    }, 100);
+    // Use improved scroll to top with retry logic
+    scrollToTopWithRetry(100, 3);
   };
 
   const handlePostClick = async (post) => {
@@ -541,17 +531,8 @@ const Blog = () => {
   const handleBackClick = () => {
     setSelectedPost(null);
     
-    setTimeout(() => {
-      try {
-        bodyRef.current.scrollTo({
-          top: 0,
-          left: 0,
-          behavior: 'smooth'
-        });
-      } catch (error) {
-        bodyRef.current.scrollTo(0, 0);
-      }
-    }, 100);
+    // Use improved scroll to top with retry logic
+    scrollToTopWithRetry(100, 3);
   };
 
   const handleFoodClick = (food) => {

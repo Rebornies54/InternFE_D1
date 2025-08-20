@@ -104,7 +104,7 @@ const Comment = ({ postId }) => {
 
     try {
       setSubmitting(true);
-      const response = await blogAPI.createComment(postId, newComment.trim());
+      const response = await blogAPI.createComment(postId, { content: newComment.trim() });
       
       if (response.data.success) {
         setComments(prev => [response.data.data, ...(Array.isArray(prev) ? prev : [])]);
@@ -124,7 +124,7 @@ const Comment = ({ postId }) => {
     if (!replyContent.trim()) return;
 
     try {
-      const response = await blogAPI.createReply(commentId, replyContent.trim());
+      const response = await blogAPI.createReply(commentId, { content: replyContent.trim() });
       
       if (response.data.success) {
         setComments(prev => prev.map(comment => {
@@ -148,7 +148,7 @@ const Comment = ({ postId }) => {
     if (!editText.trim() || !editingComment) return;
 
     try {
-      const response = await blogAPI.updateComment(editingComment.id, editText.trim());
+      const response = await blogAPI.updateComment(editingComment.id, { content: editText.trim() });
       
       if (response.data.success) {
         setComments(prev => Array.isArray(prev) ? prev.map(comment => 
@@ -337,6 +337,7 @@ const Comment = ({ postId }) => {
                 <div className="comment-options-dropdown">
                   {canEditComment(comment) && (
                     <button 
+                      type="button"
                       className="comment-option-btn"
                       onClick={() => {
                         setEditingComment(comment);
@@ -349,6 +350,7 @@ const Comment = ({ postId }) => {
                   )}
                   {canDeleteComment(comment) && (
                     <button 
+                      type="button"
                       className="comment-option-btn delete"
                       onClick={() => {
                         handleDeleteComment(comment.id);
@@ -376,12 +378,14 @@ const Comment = ({ postId }) => {
           />
           <div className="comment-edit-actions">
             <button 
+              type="button"
               className="comment-edit-cancel"
               onClick={() => setEditingComment(null)}
             >
               Hủy
             </button>
             <button 
+              type="button"
               className="comment-edit-save"
               onClick={handleEditComment}
             >
@@ -405,12 +409,14 @@ const Comment = ({ postId }) => {
           />
           <div className="reply-actions">
             <button 
+              type="button"
               className="reply-cancel"
               onClick={() => setReplyingTo(null)}
             >
               Hủy
             </button>
             <button 
+              type="button"
               className="reply-submit"
               onClick={() => handleReply(comment.id, replyText)}
               disabled={!replyText.trim()}
@@ -424,6 +430,7 @@ const Comment = ({ postId }) => {
       {Array.isArray(comment.replies) && comment.replies.length > 0 && (
         <div className="replies-section">
           <button 
+            type="button"
             className="replies-toggle"
             onClick={() => toggleReplies(comment.id)}
           >
@@ -466,7 +473,7 @@ const Comment = ({ postId }) => {
       {error && (
         <div className="comments-error">
           <p>{error}</p>
-          <button onClick={fetchComments}>Thử lại</button>
+          <button type="button" onClick={fetchComments}>Thử lại</button>
         </div>
       )}
 
@@ -516,6 +523,7 @@ const Comment = ({ postId }) => {
       {hasMore && (
         <div className="comments-load-more">
           <button 
+            type="button"
             className="load-more-btn"
             onClick={loadMoreComments}
             disabled={loadingMore}

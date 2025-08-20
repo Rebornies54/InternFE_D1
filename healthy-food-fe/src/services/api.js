@@ -130,6 +130,8 @@ export const blogAPI = {
   
   unlikeComment: (commentId) => api.delete(`/blog/comments/${commentId}/like`),
   
+  toggleCommentLike: (commentId) => api.post(`/blog/comments/${commentId}/like`),
+  
   checkCommentLiked: (commentId) => api.get(`/blog/comments/${commentId}/like`),
   
   // Batch API for checking multiple comment likes

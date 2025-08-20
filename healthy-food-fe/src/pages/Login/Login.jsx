@@ -21,7 +21,7 @@ const LoginSchema = Yup.object().shape({
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const scrollToTop = useScrollToTop();
+  const { scrollToTop } = useScrollToTop();
   const { isSubmitting, withSubmitting } = useForm();
   const { isOpen: showErrorModal, openModal, closeModal } = useModal();
   const [errorMessage, setErrorMessage] = useState('');

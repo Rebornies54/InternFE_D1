@@ -12,11 +12,11 @@
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  background: #fff;
+  background: #fff !important;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 14px;
-  color: #333;
+  color: #333 !important;
 }
 
 .date-picker-input:hover {
@@ -30,7 +30,7 @@
 
 .date-picker-text {
   flex: 1;
-  color: #333;
+  color: #333 !important;
 }
 
 .date-picker-text:empty::before {
@@ -300,12 +300,16 @@
   }
 }
 
-/* Dark mode support */
+/* Dark mode support - Override to force light mode for consistency */
 @media (prefers-color-scheme: dark) {
   .date-picker-input {
-    background: #2d2d2d;
-    border-color: #444;
-    color: #fff;
+    background: #fff !important;
+    border-color: #ddd !important;
+    color: #333 !important;
+  }
+  
+  .date-picker-text {
+    color: #333 !important;
   }
 
   .date-picker-dropdown {

@@ -7,6 +7,7 @@ import { useBlogContext } from '../../context/BlogContext';
 import { STORAGE_KEYS } from '../../constants';
 import ScrollToTop from '../../components/ScrollToTop';
 
+
 import './home.css';
 
 import Blog from '../../components/Blog';
@@ -32,7 +33,10 @@ const NavLink = ({ to, children, className, onClick }) => {
   
   const handleClick = (e) => {
     e.preventDefault();
+    
+    // Navigate immediately - let React Router handle scroll naturally
     navigate(to);
+    
     if (onClick) onClick();
   };
   
