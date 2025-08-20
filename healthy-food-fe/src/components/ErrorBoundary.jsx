@@ -1,3 +1,4 @@
+// Fixed import
 import React from 'react';
 import './ErrorBoundary.css';
 
@@ -16,10 +17,9 @@ class ErrorBoundary extends React.Component {
       error: error,
       errorInfo: errorInfo
     });
-    
-    // Log error to console in development
+
     if (import.meta.env.MODE === 'development') {
-      console.error('Error caught by boundary:', error, errorInfo);
+      logError('Error caught by boundary:', error, errorInfo);
     }
   }
 

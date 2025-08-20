@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { authAPI } from '../services/api';
 import { STORAGE_KEYS, TIME } from '../constants';
+import { logWarning } from '../utils/errorHandler';
 import { 
   AuthContextType, 
   User, 
@@ -43,7 +44,7 @@ interface ApiError {
   };
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +65,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.removeItem(STORAGE_KEYS.CURRENT_BMI);
       }
     } catch (error) {
-      console.warn('Failed to refresh BMI:', error);
+      logWarning('Failed to refresh BMI:', error instanceof Error ? error.message : String(error));
     }
   };
 

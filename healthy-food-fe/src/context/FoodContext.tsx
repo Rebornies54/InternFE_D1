@@ -1,10 +1,8 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import { FoodItem, FoodContextType, PendingFoodItem } from '../types';
 
-// Tạo context với type safety
 const FoodContext = createContext<FoodContextType | undefined>(undefined);
 
-// Custom hook với type checking
 export const useFoodContext = (): FoodContextType => {
   const context = useContext(FoodContext);
   if (!context) {
@@ -13,18 +11,17 @@ export const useFoodContext = (): FoodContextType => {
   return context;
 };
 
-// Interface cho props của FoodProvider
 interface FoodProviderProps {
   children: ReactNode;
 }
 
-export const FoodProvider: React.FC<FoodProviderProps> = ({ children }) => {
+export const FoodProvider: React.FC<FoodProviderProps> = ({ children }: { children: ReactNode }) => {
   const [pendingFoods, setPendingFoods] = useState<PendingFoodItem[]>([]);
 
   const addToPendingFoods = (food: FoodItem, quantity: number = 1): void => {
-    const existingFood = pendingFoods.find(item => item.id === food.id);
+    const existingFood = pendingFoods.find((item: PendingFoodItem) => item.id === food.id);
     if (existingFood) {
-      setPendingFoods(pendingFoods.map(item => 
+      setPendingFoods(pendingFoods.map((item: PendingFoodItem) => 
         item.id === food.id 
           ? { ...item, quantity: item.quantity + quantity }
           : item
@@ -35,14 +32,14 @@ export const FoodProvider: React.FC<FoodProviderProps> = ({ children }) => {
   };
 
   const removeFromPendingFoods = (foodId: number): void => {
-    setPendingFoods(pendingFoods.filter(item => item.id !== foodId));
+    setPendingFoods(pendingFoods.filter((item: PendingFoodItem) => item.id !== foodId));
   };
 
   const updatePendingFoodQuantity = (foodId: number, quantity: number): void => {
     if (quantity <= 0) {
       removeFromPendingFoods(foodId);
     } else {
-      setPendingFoods(pendingFoods.map(item => 
+      setPendingFoods(pendingFoods.map((item: PendingFoodItem) => 
         item.id === foodId ? { ...item, quantity } : item
       ));
     }

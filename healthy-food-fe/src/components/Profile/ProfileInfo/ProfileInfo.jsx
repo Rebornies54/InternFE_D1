@@ -1,3 +1,5 @@
+import { UI_TEXT, VALIDATION, ERROR_MESSAGES } from '../../../constants';
+// Fixed import
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { useLoading, useError } from '../../../hooks';
@@ -57,7 +59,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         } else {
           throw new Error('Invalid response from server');
         }
-      }).catch(error => {
+      }).catch(_error => {
         let errorMessage = 'Upload image failed! Please try again.';
         
         if (error.response?.data?.message) {
@@ -155,7 +157,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
               if (emptyDiv) {
                 emptyDiv.style.display = 'block';
               }
-              console.warn('Avatar image failed to load. This might be due to server issues or file not found.');
+              logWarning('Avatar image failed to load. This might be due to server issues or file not found.');
               if (profileData.avatar_url) {
                 setProfileData(prev => ({ ...prev, avatar_url: null }));
               }
@@ -173,7 +175,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           </div>
         )}
         <label className={`profile-info-avatar-upload ${isUploading ? 'uploading' : ''}`}>
-          {isUploading ? 'Uploading...' : 'Select Image'}
+                      {isUploading ? UI_TEXT.UPLOADING : UI_TEXT.SELECT_IMAGE}
           <input
             type="file"
             accept="image/*"
@@ -192,7 +194,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
             type="text"
             className="profile-info-input"
             value={isEditing ? tempData.name : profileData.name}
-            onChange={e => setTempData(prev => ({ ...prev, name: e.target.value }))}
+            onChange={_e => setTempData(prev => ({ ...prev, name: _e.target.value }))}
             placeholder="Full Name"
             disabled={!isEditing || isSaving}
           />
@@ -217,7 +219,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
             type="tel"
             className="profile-info-input"
             value={isEditing ? tempData.phone : profileData.phone}
-            onChange={e => setTempData(prev => ({ ...prev, phone: e.target.value }))}
+            onChange={_e => setTempData(prev => ({ ...prev, phone: _e.target.value }))}
             placeholder="Phone Number"
             disabled={!isEditing || isSaving}
           />
@@ -230,7 +232,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
             <select
               className="profile-info-select"
               value={isEditing ? tempData.gender : profileData.gender}
-              onChange={e => setTempData(prev => ({ ...prev, gender: e.target.value }))}
+              onChange={_e => setTempData(prev => ({ ...prev, gender: _e.target.value }))}
               disabled={!isEditing || isSaving}
             >
               <option value="">Select Gender</option>
@@ -251,7 +253,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                 <select
                   className="profile-info-birthday-select"
                   value={isEditing ? tempData.birthdayDay || '' : ''}
-                  onChange={e => setTempData(prev => ({ ...prev, birthdayDay: e.target.value }))}
+                  onChange={_e => setTempData(prev => ({ ...prev, birthdayDay: _e.target.value }))}
                   disabled={!isEditing || isSaving}
                 >
                   <option value="">Day</option>
@@ -265,7 +267,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                 <select
                   className="profile-info-birthday-select"
                   value={isEditing ? tempData.birthdayMonth || '' : ''}
-                  onChange={e => setTempData(prev => ({ ...prev, birthdayMonth: e.target.value }))}
+                  onChange={_e => setTempData(prev => ({ ...prev, birthdayMonth: _e.target.value }))}
                   disabled={!isEditing || isSaving}
                 >
                   <option value="">Month</option>
@@ -279,7 +281,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                 <select
                   className="profile-info-birthday-select"
                   value={isEditing ? tempData.birthdayYear || '' : ''}
-                  onChange={e => setTempData(prev => ({ ...prev, birthdayYear: e.target.value }))}
+                  onChange={_e => setTempData(prev => ({ ...prev, birthdayYear: _e.target.value }))}
                   disabled={!isEditing || isSaving}
                 >
                   <option value="">Year</option>

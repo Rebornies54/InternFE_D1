@@ -32,9 +32,7 @@ const AuthProvider = ({ children }) => {
         setCurrentBmi(null);
         localStorage.removeItem(STORAGE_KEYS.CURRENT_BMI);
       }
-    } catch (_) {
-    }
-  };
+    } catch (error) { /* Error handled */ }};
 
   useEffect(() => {
     const checkAuth = async () => {

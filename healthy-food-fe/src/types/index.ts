@@ -1,4 +1,19 @@
-// User Types
+
+// Branded types for better type safety
+export type UserId = number & { readonly brand: unique symbol };
+export type FoodId = number & { readonly brand: unique symbol };
+export type BlogId = number & { readonly brand: unique symbol };
+
+// Strict null types
+export type NonNullableString = string & { readonly brand: unique symbol };
+export type NonNullableNumber = number & { readonly brand: unique symbol };
+
+// Domain-specific types
+export type Email = string & { readonly brand: unique symbol };
+export type Password = string & { readonly brand: unique symbol };
+export type PhoneNumber = string & { readonly brand: unique symbol };
+export type DateString = string & { readonly brand: unique symbol };
+
 export interface User {
   id: number;
   name: string;
@@ -18,7 +33,6 @@ export interface UserProfile extends User {
   birthdayYear?: string;
 }
 
-// Authentication Types
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -42,7 +56,6 @@ export interface AuthResponse {
   message?: string;
 }
 
-// Food Types
 export interface FoodCategory {
   id: number;
   name: string;
@@ -90,7 +103,6 @@ export interface FoodLogBatchData {
   logs: FoodLogData[];
 }
 
-// BMI Types
 export interface BMIData {
   id: number;
   user_id: number;
@@ -109,7 +121,6 @@ export interface BMICalculationData {
   bmi_category: string;
 }
 
-// Blog Types
 export interface BlogPost {
   id: number;
   user_id: number;
@@ -175,7 +186,6 @@ export interface ReplyData {
   content: string;
 }
 
-// Statistics Types
 export interface DailyStatistics {
   total_calories: number;
   total_protein: number;
@@ -214,7 +224,6 @@ export interface MonthlyStatistics {
   }>;
 }
 
-// Pagination Types
 export interface Pagination {
   current_page: number;
   total_pages: number;
@@ -232,7 +241,6 @@ export interface ReplyPagination extends Pagination {
   total_replies: number;
 }
 
-// API Response Types
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -253,7 +261,6 @@ export interface RepliesResponse extends ApiResponse<{
   pagination: ReplyPagination;
 }> {}
 
-// Like Types
 export interface LikeResponse {
   success: boolean;
   liked: boolean;
@@ -268,7 +275,6 @@ export interface BatchLikeResponse {
   message?: string;
 }
 
-// Form Types
 export interface FormErrors {
   [key: string]: string;
 }
@@ -277,7 +283,6 @@ export interface FormTouched {
   [key: string]: boolean;
 }
 
-// UI Types
 export interface LoadingState {
   loading: boolean;
   withLoading: <T>(asyncFn: () => Promise<T>) => Promise<T>;
@@ -296,7 +301,6 @@ export interface ModalState {
   toggle: () => void;
 }
 
-// Context Types
 export interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -315,7 +319,6 @@ export interface AuthContextType {
   isAuthenticated: boolean;
 }
 
-// Pending Food Item (FoodItem với quantity)
 export interface PendingFoodItem extends FoodItem {
   quantity: number;
 }
@@ -394,7 +397,6 @@ export interface CalorieContextType {
   convertUnits: (unitSystem: UnitSystem) => void;
 }
 
-// Event Types
 export interface FormEvent {
   target: {
     value: string;
@@ -414,7 +416,6 @@ export interface MouseEvent {
   stopPropagation: () => void;
 }
 
-// Utility Types
 export type Gender = 'male' | 'female' | 'other';
 
 export type ActivityLevel = 
@@ -438,7 +439,6 @@ export type BlogCategory =
   | 'tips'
   | 'news';
 
-// Enums
 export enum ErrorMessages {
   NETWORK_ERROR = 'Network error. Please check your connection.',
   FOOD_FETCH_FAILED = 'Failed to fetch food data.',

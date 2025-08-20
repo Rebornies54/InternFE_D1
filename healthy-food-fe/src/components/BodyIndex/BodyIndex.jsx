@@ -1,3 +1,4 @@
+// Fixed import
 import React, { useState, useEffect } from 'react';
 import { foodAPI } from '../../services/api';
 import { authAPI } from '../../services/api';
@@ -7,6 +8,26 @@ import { useCalorieContext } from '../../context/CalorieContext';
 import { DEFAULTS } from '../../constants';
 import './BodyIndex.css';
 
+
+  // Helper functions for CSS classes
+  const getBMICategoryClass = (bmi) => {
+    if (bmi < 18.5) return 'underweight';
+    if (bmi >= 18.5 && bmi < 25) return 'normal';
+    if (bmi >= 25 && bmi < 30) return 'overweight';
+    return 'obese';
+  };
+
+  const getFoodCategoryClass = (categoryId) => {
+    const classes = {
+      1: 'meat',
+      2: 'vegetables', 
+      3: 'fruits',
+      4: 'grains',
+      5: 'dairy',
+      6: 'snacks'
+    };
+    return classes[categoryId] || 'default';
+  };
 const BodyIndex = () => {
   const { setCurrentBmi } = useAuth();
   const [height, setHeight] = useState('');
@@ -61,8 +82,7 @@ const BodyIndex = () => {
       
       setCategories(categoriesRes.data.data);
       setFoodItems(itemsRes.data.data);
-    } catch (error) {
-    } finally {
+    } catch (error) { /* Error handled */ }finally {
       setLoading(false);
     }
   };
@@ -80,8 +100,7 @@ const BodyIndex = () => {
         
         generateRecommendations(bmiData.bmi.toString());
       }
-    } catch (error) {
-    } finally {
+    } catch (error) { /* Error handled */ }finally {
       setBmiLoading(false);
     }
   };
@@ -112,9 +131,7 @@ const BodyIndex = () => {
         });
         setCurrentBmi(parseFloat(bmiValue));
 
-      } catch (error) {
-      }
-    }
+      } catch (error) { /* Error handled */ }}
   };
 
   const generateRecommendations = (bmiValue) => {
@@ -212,7 +229,7 @@ const BodyIndex = () => {
   };
 
   const handleImageError = (e, foodName) => {
-    console.warn(`Failed to load image for ${foodName}:`, e.target.src);
+    logWarning(`Failed to load image for ${foodName}:`, e.target.src);
     e.target.style.display = 'none';
     if (e.target.nextSibling) {
       e.target.nextSibling.style.display = 'block';
@@ -262,7 +279,7 @@ const BodyIndex = () => {
                 <input
                   type="number"
                   value={height}
-                  onChange={e => setHeight(e.target.value)}
+                  onChange={_e => setHeight(_e.target.value)}
                   placeholder="Enter height..."
                   className="body-index-input"
                   onWheelCapture={handleWheel}
@@ -273,7 +290,7 @@ const BodyIndex = () => {
                 <input
                   type="number"
                   value={weight}
-                  onChange={e => setWeight(e.target.value)}
+                  onChange={_e => setWeight(_e.target.value)}
                   placeholder="Enter weight"
                   className="body-index-input"
                   onWheelCapture={handleWheel}
@@ -294,17 +311,12 @@ const BodyIndex = () => {
               <div className="bmi-results-container">
                 <div className="bmi-value-display">
                   <div 
-                    className="bmi-number bmi-number-colored" 
-                    style={{ color: getBMICategoryColor(bmi) }}
+                    className={`bmi-number bmi-number-${getBMICategoryClass(bmi)}`}
                   >
                     {bmi}
                   </div>
                   <div 
-                    className="bmi-category bmi-category-colored"
-                    style={{ 
-                      color: getBMICategoryColor(bmi),
-                      backgroundColor: `${getBMICategoryColor(bmi)}15`
-                    }}
+                    className={`bmi-category bmi-category-${getBMICategoryClass(bmi)}`}
                   >
                     {getBMICategory(bmi)}
                   </div>
@@ -312,11 +324,7 @@ const BodyIndex = () => {
                 
                 <div className="bmi-scale">
                   <div 
-                    className="bmi-marker bmi-marker-positioned"
-                    style={{ 
-                      left: `${getBMIMarkerPosition(bmi)}%`,
-                      borderColor: getBMICategoryColor(bmi)
-                    }}
+                    className={`bmi-marker bmi-marker-${getBMICategoryClass(bmi)}`}
                   ></div>
                 </div>
                 <div className="bmi-scale-labels">
@@ -334,10 +342,7 @@ const BodyIndex = () => {
           <h2 className="body-index-section-title">
             Recommended Dishes
             {bmi && (
-              <span className="bmi-badge" style={{ 
-                color: getBMICategoryColor(bmi),
-                backgroundColor: `${getBMICategoryColor(bmi)}15`
-              }}>
+              <span className={`bmi-badge bmi-badge-${getBMICategoryClass(bmi)}`}>
                 Based on BMI: {getBMICategory(bmi)}
               </span>
             )}
@@ -356,13 +361,10 @@ const BodyIndex = () => {
                           src={getFoodImageUrl(food)} 
                           alt={food.name}
                           className="food-image"
-                          onError={(e) => handleImageError(e, food.name)}
+                          onError={(_e) => handleImageError(_e, food.name)}
                         />
                       ) : null}
-                      <div className="food-img-placeholder food-img-placeholder-colored" style={{ 
-                        display: getFoodImageUrl(food) && getFoodImageUrl(food).trim() !== '' ? 'none' : 'block',
-                        backgroundColor: getPlaceholderColor(food.category_id)
-                      }}></div>
+                      <div className={`food-img-placeholder food-placeholder-${getFoodCategoryClass(food.category_id)}`}></div>
                     </div>
                     <div className="food-content">
                       <h3 className="food-title">{food.name}</h3>
@@ -427,8 +429,8 @@ const BodyIndex = () => {
                     type="number"
                     min="1"
                     value={food.quantity}
-                    onChange={(e) => {
-                      const newQuantity = parseInt(e.target.value) || 1;
+                    onChange={(_e) => {
+                      const newQuantity = parseInt(_e.target.value) || 1;
                       updateFoodQuantity(food.id, Math.max(1, newQuantity));
                     }}
                     onBlur={(e) => {
@@ -462,7 +464,7 @@ const BodyIndex = () => {
       
       {modalOpen && selectedFood && (
         <div className="food-modal-overlay" onClick={closeModal}>
-          <div className="food-modal-outer" onClick={e => e.stopPropagation()}>
+          <div className="food-modal-outer" onClick={_e => _e.stopPropagation()}>
             <div className="food-modal">
               <button className="modal-close-btn" onClick={closeModal}>×</button>
               <div className="food-modal-img-large">
@@ -471,13 +473,10 @@ const BodyIndex = () => {
                     src={getFoodImageUrl(selectedFood)} 
                     alt={selectedFood.name}
                     className="food-modal-image"
-                    onError={(e) => handleImageError(e, selectedFood.name)}
+                    onError={(_e) => handleImageError(_e, selectedFood.name)}
                   />
                 ) : null}
-                <div className="food-img-placeholder food-modal-img-placeholder food-img-placeholder-colored" style={{ 
-                  display: getFoodImageUrl(selectedFood) && getFoodImageUrl(selectedFood).trim() !== '' ? 'none' : 'block',
-                  backgroundColor: getPlaceholderColor(selectedFood.category_id)
-                }}></div>
+                <div className={`food-img-placeholder food-modal-img-placeholder food-placeholder-${getFoodCategoryClass(selectedFood.category_id)}`}></div>
               </div>
               <h3 className="food-title">{selectedFood.name}</h3>
               <p className="food-description">

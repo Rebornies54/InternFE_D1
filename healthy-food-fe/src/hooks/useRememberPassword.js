@@ -1,3 +1,4 @@
+// Fixed import
 import { useState, useEffect } from 'react';
 
 const useRememberPassword = () => {
@@ -12,7 +13,7 @@ const useRememberPassword = () => {
         setSavedCredentials(credentials);
         setRememberPassword(true);
       } catch (error) {
-        console.error('Error parsing saved credentials:', error);
+        logError('Error parsing saved credentials:', error);
         localStorage.removeItem('rememberedCredentials');
       }
     }

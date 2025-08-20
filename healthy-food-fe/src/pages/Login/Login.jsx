@@ -1,3 +1,4 @@
+import { UI_TEXT, VALIDATION, ERROR_MESSAGES } from '../../constants';
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -117,7 +118,7 @@ const Login = () => {
                       id="email" 
                       name="email" 
                       type="email" 
-                      placeholder="Enter your email" 
+                      placeholder={UI_TEXT.ENTER_EMAIL} 
                       className="login-input"
                       autoComplete="email" 
                     />
@@ -134,7 +135,7 @@ const Login = () => {
                         id="password" 
                         name="password" 
                         type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password" 
+                        placeholder={UI_TEXT.ENTER_PASSWORD} 
                         className="login-input password-input"
                         autoComplete="current-password" 
                       />

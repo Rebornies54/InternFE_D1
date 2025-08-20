@@ -1,4 +1,4 @@
-// API Configuration
+
 export const API_CONFIG = {
   BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
   API_ENDPOINT: '/api',
@@ -6,7 +6,6 @@ export const API_CONFIG = {
   RETRY_ATTEMPTS: 3,
 };
 
-// Pagination Configuration
 export const PAGINATION = {
   DEFAULT_PAGE_SIZE: 10,
   BLOG_PAGE_SIZE: 8,
@@ -15,7 +14,6 @@ export const PAGINATION = {
   DASHBOARD_PAGE_SIZE: 10,
 };
 
-// Animation Configuration
 export const ANIMATION = {
   DEFAULT_DURATION: 0.5,
   DEFAULT_DELAY: 0,
@@ -25,7 +23,6 @@ export const ANIMATION = {
   PROGRESS_BAR_COLOR: '#2C7BE5',
 };
 
-// Validation Limits
 export const VALIDATION = {
   MIN_AGE: 15,
   MAX_AGE: 80,
@@ -71,7 +68,6 @@ export const ERROR_MESSAGES = {
   IMAGE_LOAD_ERROR: 'Failed to load image',
 };
 
-// UI Constants
 export const UI = {
   CALENDAR_DAYS_IN_VIEW: 42,
   DATE_FORMAT_PADDING: 2,
@@ -81,7 +77,6 @@ export const UI = {
   OTP_PLACEHOLDER: '000000',
 };
 
-// Blog Categories
 export const BLOG_CATEGORIES = [
   { value: 'thực phẩm', label: 'Thực phẩm' },
   { value: 'thực đơn', label: 'Thực đơn' },
@@ -90,7 +85,6 @@ export const BLOG_CATEGORIES = [
   { value: 'công thức', label: 'Công thức' },
 ];
 
-// Default Values
 export const DEFAULTS = {
   SELECTED_CATEGORY: 1,
   QUANTITY: 100,
@@ -105,7 +99,6 @@ export const DEFAULTS = {
   SORT_BY: 'newest',
 };
 
-// HTTP Status Codes
 export const HTTP_STATUS = {
   UNAUTHORIZED: 401,
   NOT_FOUND: 404,
@@ -114,7 +107,6 @@ export const HTTP_STATUS = {
   CREATED: 201,
 };
 
-// Time Constants
 export const TIME = {
   MILLISECONDS_PER_HOUR: 1000 * 60 * 60,
   MILLISECONDS_PER_DAY: 1000 * 60 * 60 * 24,
@@ -122,7 +114,6 @@ export const TIME = {
   ANIMATION_DELAY: 100,
 };
 
-// BMI Categories
 export const BMI_CATEGORIES = {
   UNDERWEIGHT: 'underweight',
   NORMAL: 'normal',
@@ -130,11 +121,71 @@ export const BMI_CATEGORIES = {
   OBESE: 'obese',
 };
 
-// Activity Levels
 export const ACTIVITY_LEVELS = {
   SEDENTARY: 'sedentary',
   LIGHTLY_ACTIVE: 'lightly_active',
   MODERATELY_ACTIVE: 'moderately_active',
   VERY_ACTIVE: 'very_active',
   EXTREMELY_ACTIVE: 'extremely_active',
+};
+
+export const UI_TEXT = {
+  
+  LOADING: 'Loading...',
+  UPLOADING: 'Uploading...',
+  SELECT_IMAGE: 'Select Image',
+
+  ENTER_EMAIL: 'Enter your email',
+  ENTER_PASSWORD: 'Enter your password',
+  ENTER_CURRENT_PASSWORD: 'Current password',
+  ENTER_NEW_PASSWORD: 'New password',
+  CONFIRM_NEW_PASSWORD: 'Confirm new password',
+  ENTER_PHONE: 'Enter your phone number',
+  ENTER_ADDRESS: 'Enter your address',
+  ENTER_HEIGHT: 'Enter height...',
+  ENTER_WEIGHT: 'Enter weight',
+  ENTER_FULL_NAME: 'Full Name',
+  ENTER_PHONE_NUMBER: 'Phone Number',
+
+  ENTER_BLOG_TITLE: 'Nhập tiêu đề bài viết...',
+  ENTER_BLOG_DESCRIPTION: 'Mô tả ngắn gọn về bài viết...',
+  ENTER_BLOG_CONTENT: 'Viết nội dung bài blog của bạn...',
+  ENTER_COMMENT: 'Viết bình luận...',
+  EDIT_COMMENT: 'Chỉnh sửa bình luận...',
+  ENTER_REPLY: 'Viết trả lời...',
+
+  SEARCH_FOOD: 'Tìm kiếm thực phẩm...',
+  SEARCH_POSTS: 'Tìm kiếm bài viết...',
+
+  SELECT_DATE: 'Select date',
+  DATE_FORMAT: 'DD.MM.YYYY',
+
+  SELECT_GENDER: 'Select gender',
+  SELECT_PROVINCE: 'Select province',
+  SELECT_DISTRICT: 'Select district',
+
+  QUANTITY_PLACEHOLDER: 'Quantity (g)',
+  CALORIES_PLACEHOLDER: 'Calories',
+
+  OTP_PLACEHOLDER: '000000',
+
+  IMAGE_LOAD_FAILED: 'Avatar image failed to load. This might be due to server issues or file not found.',
+  BMI_REFRESH_FAILED: 'Failed to refresh BMI',
+  CATEGORIES_FETCH_FAILED: 'Error fetching categories',
+  SCROLL_ERROR: 'Scroll to top error',
+  FALLBACK_SCROLL_FAILED: 'Fallback scroll failed',
+  FINAL_SCROLL_FAILED: 'Final scroll attempt failed',
+  CREDENTIALS_PARSE_ERROR: 'Error parsing saved credentials',
+  BLOG_IMAGE_LOAD_FAILED: 'Failed to load blog image',
+  FOOD_IMAGE_LOAD_FAILED: 'Failed to load food image',
+  MY_BLOG_IMAGE_LOAD_FAILED: 'Failed to load my blog image',
+
+  COMMENTS_FETCH_ERROR: 'Error fetching comments',
+  COMMENTS_LOAD_MORE_ERROR: 'Error loading more comments',
+  COMMENT_CREATE_ERROR: 'Error creating comment',
+  COMMENT_UPDATE_ERROR: 'Error updating comment',
+  COMMENT_DELETE_ERROR: 'Error deleting comment',
+  REPLY_CREATE_ERROR: 'Error creating reply',
+  COMMENT_LIKE_TOGGLE_ERROR: 'Error toggling comment like',
+  REPLY_LIKE_TOGGLE_ERROR: 'Error toggling reply like',
 };

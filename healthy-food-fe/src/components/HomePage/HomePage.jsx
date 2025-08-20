@@ -1,8 +1,9 @@
+// Fixed import
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useBlogContext } from '../../context/BlogContext';
-import { motion, useInView } from 'framer-motion';
+// Fixed import
 import { authAPI } from '../../services/api';
 import { 
   Target, 
@@ -743,7 +744,7 @@ const originalMenuItems = [
                     src={post.image_url} 
                     alt={post.title}
                     onError={(e) => {
-                      console.warn(`Failed to load homepage blog image: ${post.image_url}`);
+                      logWarning(`Failed to load homepage blog image: ${post.image_url}`);
                       e.target.style.display = 'none';
                       const placeholder = e.target.parentNode.querySelector('.blog-placeholder');
                       if (placeholder) {

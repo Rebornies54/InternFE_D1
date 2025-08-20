@@ -1,3 +1,4 @@
+import { UI_TEXT, VALIDATION, ERROR_MESSAGES } from '../../constants';
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -156,7 +157,7 @@ const Register = () => {
                     label="Email"
                     name="email"
                     required={true}
-                    placeholder="Enter your email"
+                    placeholder={UI_TEXT.ENTER_EMAIL}
                     className="register-input-email"
                     groupClassName="register-form-group-email"
                   />
@@ -170,7 +171,7 @@ const Register = () => {
                     name="password"
                     type="password"
                     required={true}
-                    placeholder="Enter your password"
+                    placeholder={UI_TEXT.ENTER_PASSWORD}
                     className="register-input-password"
                     groupClassName="register-form-group-password"
                   />

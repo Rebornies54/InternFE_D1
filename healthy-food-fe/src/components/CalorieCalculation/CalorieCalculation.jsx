@@ -106,8 +106,7 @@ const CalorieCalculation = () => {
           setSelectedCategory(response.data.data[0].id);
         }
       }
-    } catch (error) {
-    } finally {
+    } catch (error) { /* Error handled */ }finally {
       setLoading(false);
     }
   };
@@ -122,8 +121,7 @@ const CalorieCalculation = () => {
           setSelectedFood(response.data.data[0].id);
         }
       }
-    } catch (error) {
-    } finally {
+    } catch (error) { /* Error handled */ }finally {
       setLoading(false);
     }
   };
@@ -134,9 +132,7 @@ const CalorieCalculation = () => {
       if (response.data.success) {
         setDailyFoodLog(response.data.data);
       }
-    } catch (error) {
-    }
-  };
+    } catch (error) { /* Error handled */ }};
 
   const loadDailyStatistics = async () => {
     try {
@@ -144,18 +140,14 @@ const CalorieCalculation = () => {
       if (response.data.success) {
         setDailyStats(response.data.data);
       }
-    } catch (error) {
-    }
-  };
+    } catch (error) { /* Error handled */ }};
 
   const loadWeeklyStatistics = async () => {
     try {
       const response = await foodAPI.getWeeklyStatistics();
       if (response.data.success) {
       }
-    } catch (error) {
-    }
-  };
+    } catch (error) { /* Error handled */ }};
 
   const loadMonthlyStatistics = async () => {
     try {
@@ -166,9 +158,7 @@ const CalorieCalculation = () => {
       );
       if (response.data.success) {
       }
-    } catch (error) {
-    }
-  };
+    } catch (error) { /* Error handled */ }};
 
   const calculateCalories = (foodId, qty) => {
     const food = foodItems.find(item => item.id === parseInt(foodId));
@@ -383,9 +373,7 @@ const CalorieCalculation = () => {
             if (response.data.success) {
               successCount++;
             }
-          } catch (error) {
-          }
-        });
+          } catch (error) { /* Error handled */ }});
 
         await Promise.all(promises);
 
