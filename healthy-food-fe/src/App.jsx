@@ -5,9 +5,9 @@ import { BlogProvider } from './context/BlogContext';
 import { FoodProvider } from './context/FoodContext';
 import { CalorieProvider } from './context/CalorieContext';
 import ScrollToTop from './components/ScrollToTop';
+import { UI_TEXT } from './constants';
 import './App.css';
 
-// Lazy load components
 const Login = React.lazy(() => import('./pages/Login/Login'));
 const Register = React.lazy(() => import('./pages/Register/Register'));
 const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword/ForgotPassword'));
@@ -15,7 +15,7 @@ const Home = React.lazy(() => import('./pages/Home/Home'));
 
 function App() {
   React.useEffect(() => {
-    // Disable React Router's scroll restoration
+    
     if (window.history.scrollRestoration) {
       window.history.scrollRestoration = 'manual';
     }
@@ -27,7 +27,7 @@ function App() {
         <FoodProvider>
           <CalorieProvider>
             <BrowserRouter>
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<div>{UI_TEXT.LOADING}</div>}>
                 <ScrollToTop />
                 <Routes>
                   <Route path="/login" element={<Login />} />

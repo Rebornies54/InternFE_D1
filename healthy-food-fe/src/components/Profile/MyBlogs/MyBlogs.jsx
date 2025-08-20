@@ -1,3 +1,4 @@
+// Fixed import
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { blogAPI } from '../../../services/api';
@@ -188,7 +189,7 @@ const MyBlogs = () => {
                           alt={blog.title} 
                           className="my-blogs-preview-image"
                           onError={(e) => {
-                            console.warn(`Failed to load my blog image: ${blog.image_url}`);
+                            logWarning(`Failed to load my blog image: ${blog.image_url}`);
                             e.target.style.display = 'none';
                           }}
                         />

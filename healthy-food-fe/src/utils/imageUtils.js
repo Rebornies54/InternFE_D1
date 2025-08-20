@@ -46,10 +46,9 @@ export const getFullImageUrl = (imageUrl, baseUrl = API_CONFIG.BASE_URL) => {
  * @param {string} fallbackSelector - CSS selector for fallback element
  */
 export const handleImageError = (event, imageUrl, fallbackSelector = null) => {
-  // Hide the failed image
-  event.target.style.display = 'none';
   
-  // Show fallback if selector provided
+  event.target.style.display = 'none';
+
   if (fallbackSelector) {
     const fallback = event.target.parentNode.querySelector(fallbackSelector);
     if (fallback) {

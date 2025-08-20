@@ -7,7 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "fix:all": "node scripts/fix-all-issues-final.js",
+    "optimize:typescript": "node scripts/optimize-typescript.js",
+    "audit:styles": "node scripts/check-inline-styles.js",
+    "audit:typescript": "node scripts/audit-typescript.js",
+    "audit:comprehensive": "node scripts/audit-comprehensive.js"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
@@ -41,7 +47,9 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
+    "glob": "^10.3.10",
     "jsdom": "^26.1.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.2",
     "vite": "^7.0.0",
     "vitest": "^3.2.4"

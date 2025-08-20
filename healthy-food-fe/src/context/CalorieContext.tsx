@@ -1,11 +1,9 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { STORAGE_KEYS } from '../constants';
 import { CalorieContextType, ActivityLevel, Formula, UnitSystem, Gender } from '../types';
 
-// Tạo context với type safety
 const CalorieContext = createContext<CalorieContextType | undefined>(undefined);
 
-// Custom hook với type checking
 export const useCalorieContext = (): CalorieContextType => {
   const context = useContext(CalorieContext);
   if (!context) {
@@ -14,7 +12,6 @@ export const useCalorieContext = (): CalorieContextType => {
   return context;
 };
 
-// Interface cho props của CalorieProvider
 interface CalorieProviderProps {
   children: ReactNode;
 }
@@ -85,7 +82,7 @@ const defaultCalorieData: CalorieData = {
   history: []
 };
 
-export const CalorieProvider: React.FC<CalorieProviderProps> = ({ children }) => {
+export const CalorieProvider: React.FC<CalorieProviderProps> = ({ children }: { children: ReactNode }) => {
   const [calorieData, setCalorieData] = useState<CalorieData>(() => {
     const savedData = localStorage.getItem(STORAGE_KEYS.CALORIE_DATA);
     return savedData ? JSON.parse(savedData) : defaultCalorieData;

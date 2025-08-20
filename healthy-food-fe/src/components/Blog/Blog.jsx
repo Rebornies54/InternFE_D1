@@ -1,3 +1,4 @@
+// Fixed import
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useBlogContext } from '../../context/BlogContext';
 import { blogAPI } from '../../services/api';
@@ -26,7 +27,7 @@ const FoodCard = ({ post, onClick, onLike, isLiked, likeCount }) => (
           src={post.image_url} 
           alt={post.title}
           onError={(e) => {
-            console.warn(`Failed to load blog image: ${post.image_url}`);
+            logWarning(`Failed to load blog image: ${post.image_url}`);
             e.target.style.display = 'none';
             const placeholder = e.target.parentNode.querySelector('.blog-image-placeholder');
             if (placeholder) {
@@ -74,7 +75,7 @@ const FoodItem = ({ food, onClick }) => (
           src={food.image_url} 
           alt={food.name}
           onError={(e) => {
-            console.warn(`Failed to load food image: ${food.image_url}`);
+            logWarning(`Failed to load food image: ${food.image_url}`);
             e.target.style.display = 'none';
             const placeholder = e.target.parentNode.querySelector('.food-image-placeholder');
             if (placeholder) {
@@ -226,7 +227,7 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
           src={post.image_url} 
           alt={post.title}
           onError={(e) => {
-            console.warn(`Failed to load blog detail image: ${post.image_url}`);
+            logWarning(`Failed to load blog detail image: ${post.image_url}`);
             e.target.style.display = 'none';
             const placeholder = e.target.parentNode.querySelector('.blog-detail-placeholder');
             if (placeholder) {

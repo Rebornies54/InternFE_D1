@@ -1,6 +1,5 @@
 import { ErrorMessages, StorageKeys, PaginationDefaults, TimeConstants, ActivityLevel, Formula, UnitSystem, BlogCategory } from '../types';
 
-// API Configuration
 export const API_CONFIG = {
   BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
   TIMEOUT: 10000,
@@ -48,7 +47,6 @@ export const TIME = {
   DEBOUNCE_DELAY: TimeConstants.DEBOUNCE_DELAY,
 } as const;
 
-// UI constants
 export const UI = {
   ANIMATION_DURATION: 300,
   TRANSITION_DURATION: 200,
@@ -56,7 +54,6 @@ export const UI = {
   INFINITE_SCROLL_THRESHOLD: 100,
 } as const;
 
-// Activity levels for calorie calculation
 export const ACTIVITY_LEVELS: readonly ActivityLevel[] = [
   'Sedentary: Little or no exercise',
   'Lightly active: Light exercise/sports 1-3 days/week',
@@ -65,7 +62,6 @@ export const ACTIVITY_LEVELS: readonly ActivityLevel[] = [
   'Extra active: Very hard exercise/sports, physical job',
 ] as const;
 
-// Formulas for calorie calculation
 export const FORMULAS: readonly Formula[] = [
   'mifflin',
   'harris',
@@ -167,4 +163,65 @@ export const Z_INDEX = {
   TOOLTIP: 200,
   HEADER: 50,
   FOOTER: 10,
+} as const;
+
+export const UI_TEXT = {
+  
+  LOADING: 'Loading...',
+  UPLOADING: 'Uploading...',
+  SELECT_IMAGE: 'Select Image',
+
+  ENTER_EMAIL: 'Enter your email',
+  ENTER_PASSWORD: 'Enter your password',
+  ENTER_CURRENT_PASSWORD: 'Current password',
+  ENTER_NEW_PASSWORD: 'New password',
+  CONFIRM_NEW_PASSWORD: 'Confirm new password',
+  ENTER_PHONE: 'Enter your phone number',
+  ENTER_ADDRESS: 'Enter your address',
+  ENTER_HEIGHT: 'Enter height...',
+  ENTER_WEIGHT: 'Enter weight',
+  ENTER_FULL_NAME: 'Full Name',
+  ENTER_PHONE_NUMBER: 'Phone Number',
+
+  ENTER_BLOG_TITLE: 'Nhập tiêu đề bài viết...',
+  ENTER_BLOG_DESCRIPTION: 'Mô tả ngắn gọn về bài viết...',
+  ENTER_BLOG_CONTENT: 'Viết nội dung bài blog của bạn...',
+  ENTER_COMMENT: 'Viết bình luận...',
+  EDIT_COMMENT: 'Chỉnh sửa bình luận...',
+  ENTER_REPLY: 'Viết trả lời...',
+
+  SEARCH_FOOD: 'Tìm kiếm thực phẩm...',
+  SEARCH_POSTS: 'Tìm kiếm bài viết...',
+
+  SELECT_DATE: 'Select date',
+  DATE_FORMAT: 'DD.MM.YYYY',
+
+  SELECT_GENDER: 'Select gender',
+  SELECT_PROVINCE: 'Select province',
+  SELECT_DISTRICT: 'Select district',
+
+  QUANTITY_PLACEHOLDER: 'Quantity (g)',
+  CALORIES_PLACEHOLDER: 'Calories',
+
+  OTP_PLACEHOLDER: '000000',
+
+  IMAGE_LOAD_FAILED: 'Avatar image failed to load. This might be due to server issues or file not found.',
+  BMI_REFRESH_FAILED: 'Failed to refresh BMI',
+  CATEGORIES_FETCH_FAILED: 'Error fetching categories',
+  SCROLL_ERROR: 'Scroll to top error',
+  FALLBACK_SCROLL_FAILED: 'Fallback scroll failed',
+  FINAL_SCROLL_FAILED: 'Final scroll attempt failed',
+  CREDENTIALS_PARSE_ERROR: 'Error parsing saved credentials',
+  BLOG_IMAGE_LOAD_FAILED: 'Failed to load blog image',
+  FOOD_IMAGE_LOAD_FAILED: 'Failed to load food image',
+  MY_BLOG_IMAGE_LOAD_FAILED: 'Failed to load my blog image',
+
+  COMMENTS_FETCH_ERROR: 'Error fetching comments',
+  COMMENTS_LOAD_MORE_ERROR: 'Error loading more comments',
+  COMMENT_CREATE_ERROR: 'Error creating comment',
+  COMMENT_UPDATE_ERROR: 'Error updating comment',
+  COMMENT_DELETE_ERROR: 'Error deleting comment',
+  REPLY_CREATE_ERROR: 'Error creating reply',
+  COMMENT_LIKE_TOGGLE_ERROR: 'Error toggling comment like',
+  REPLY_LIKE_TOGGLE_ERROR: 'Error toggling reply like',
 } as const;

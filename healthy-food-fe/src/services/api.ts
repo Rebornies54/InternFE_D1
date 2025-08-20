@@ -28,13 +28,11 @@ import {
   PaginatedResponse
 } from '../types';
 
-// API Configuration
 const API_CONFIG = {
   BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
   TIMEOUT: 10000,
 };
 
-// Create axios instance
 const api: AxiosInstance = axios.create({
   baseURL: API_CONFIG.BASE_URL,
   timeout: API_CONFIG.TIMEOUT,
@@ -43,7 +41,6 @@ const api: AxiosInstance = axios.create({
   },
 });
 
-// Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -57,7 +54,6 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle auth errors
 api.interceptors.response.use(
   (response: AxiosResponse) => {
     return response;
@@ -72,7 +68,6 @@ api.interceptors.response.use(
   }
 );
 
-// Auth API
 export const authAPI = {
   login: (credentials: LoginCredentials): Promise<AxiosResponse<AuthResponse>> =>
     api.post('/auth/login', credentials),
@@ -107,7 +102,6 @@ export const authAPI = {
     api.post('/auth/reset-password', { email, otp, newPassword }),
 };
 
-// Food API
 export const foodAPI = {
   getCategories: (): Promise<AxiosResponse<ApiResponse<FoodCategory[]>>> =>
     api.get('/food/categories'),
@@ -121,7 +115,6 @@ export const foodAPI = {
   addFoodLog: (logData: FoodLogData): Promise<AxiosResponse<ApiResponse<FoodLog>>> =>
     api.post('/food/log', logData),
 
-  // Batch API for adding multiple food logs
   addFoodLogsBatch: (logDataArray: FoodLogBatchData): Promise<AxiosResponse<ApiResponse<{ success: boolean }>>> =>
     api.post('/food/logs/batch', logDataArray),
 
@@ -148,7 +141,6 @@ export const foodAPI = {
     }),
 };
 
-// Blog API
 export const blogAPI = {
   getAllPosts: (): Promise<AxiosResponse<ApiResponse<BlogPost[]>>> =>
     api.get('/blog/posts'),
@@ -200,7 +192,6 @@ export const blogAPI = {
   checkCommentLiked: (commentId: number): Promise<AxiosResponse<LikeResponse>> =>
     api.get(`/blog/comments/${commentId}/like`),
 
-  // Batch API for checking multiple comment likes
   checkCommentLikesBatch: (commentIds: number[]): Promise<AxiosResponse<BatchLikeResponse>> =>
     api.post('/blog/comments/likes/batch', { comment_ids: commentIds }),
 

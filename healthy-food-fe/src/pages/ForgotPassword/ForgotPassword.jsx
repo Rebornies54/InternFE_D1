@@ -1,3 +1,4 @@
+import { UI_TEXT, VALIDATION, ERROR_MESSAGES } from '../../constants';
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -164,7 +165,7 @@ const ForgotPassword = () => {
                       id="email" 
                       name="email" 
                       type="email" 
-                      placeholder="Enter your email" 
+                      placeholder={UI_TEXT.ENTER_EMAIL} 
                       className="forgot-password-input" 
                     />
                     <ErrorMessage name="email" component="div" className="forgot-password-error" />
@@ -203,7 +204,7 @@ const ForgotPassword = () => {
                   type="text"
                   value={otp}
                   onChange={(e) => handleOTPChange(e.target.value)}
-                  placeholder="000000"
+                  placeholder={UI_TEXT.OTP_PLACEHOLDER}
                   className="forgot-password-input otp-input"
                   maxLength={6}
                 />

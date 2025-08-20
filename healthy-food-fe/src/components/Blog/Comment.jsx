@@ -1,3 +1,4 @@
+// Fixed import
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { blogAPI } from '../../services/api';
@@ -58,19 +59,19 @@ const Comment = ({ postId }) => {
       const response = await blogAPI.getComments(postId, 1, PAGINATION.COMMENT_PAGE_SIZE, sortBy);
       
       if (response.data.success) {
-        // Đảm bảo comments luôn là một mảng
+        
         const commentsData = Array.isArray(response.data.data) ? response.data.data : [];
         setComments(commentsData);
         setCurrentPage(1);
         setHasMore(commentsData.length === PAGINATION.COMMENT_PAGE_SIZE);
       } else {
         setError(ERROR_MESSAGES.COMMENTS_FETCH_FAILED);
-        setComments([]); // Đặt comments thành mảng rỗng nếu có lỗi
+        setComments([]); 
       }
     } catch (error) {
-      console.error('Error fetching comments:', error);
+      logError('Error fetching comments:', error);
       setError(ERROR_MESSAGES.COMMENTS_FETCH_FAILED);
-      setComments([]); // Đặt comments thành mảng rỗng nếu có lỗi
+      setComments([]); 
     } finally {
       setLoading(false);
     }
@@ -85,14 +86,14 @@ const Comment = ({ postId }) => {
       const response = await blogAPI.getComments(postId, nextPage, PAGINATION.COMMENT_PAGE_SIZE, sortBy);
       
       if (response.data.success) {
-        // Đảm bảo response.data.data là một mảng
+        
         const newComments = Array.isArray(response.data.data) ? response.data.data : [];
         setComments(prev => [...prev, ...newComments]);
         setCurrentPage(nextPage);
         setHasMore(newComments.length === PAGINATION.COMMENT_PAGE_SIZE);
       }
     } catch (error) {
-      console.error('Error loading more comments:', error);
+      logError('Error loading more comments:', error);
     } finally {
       setLoadingMore(false);
     }
@@ -113,7 +114,7 @@ const Comment = ({ postId }) => {
         setError(ERROR_MESSAGES.COMMENT_CREATE_FAILED);
       }
     } catch (error) {
-      console.error('Error creating comment:', error);
+      logError('Error creating comment:', error);
       setError(ERROR_MESSAGES.COMMENT_CREATE_FAILED);
     } finally {
       setSubmitting(false);
@@ -140,7 +141,7 @@ const Comment = ({ postId }) => {
         setReplyText('');
       }
     } catch (error) {
-      console.error('Error creating reply:', error);
+      logError('Error creating reply:', error);
     }
   };
 
@@ -160,7 +161,7 @@ const Comment = ({ postId }) => {
         setEditText('');
       }
     } catch (error) {
-      console.error('Error updating comment:', error);
+      logError('Error updating comment:', error);
     }
   };
 
@@ -174,7 +175,7 @@ const Comment = ({ postId }) => {
         setComments(prev => Array.isArray(prev) ? prev.filter(comment => comment.id !== commentId) : []);
       }
     } catch (error) {
-      console.error('Error deleting comment:', error);
+      logError('Error deleting comment:', error);
     }
   };
 
@@ -195,7 +196,7 @@ const Comment = ({ postId }) => {
         }) : []);
       }
     } catch (error) {
-      console.error('Error toggling comment like:', error);
+      logError('Error toggling comment like:', error);
     }
   };
 
@@ -219,7 +220,7 @@ const Comment = ({ postId }) => {
         })) : []);
       }
     } catch (error) {
-      console.error('Error toggling reply like:', error);
+      logError('Error toggling reply like:', error);
     }
   };
 

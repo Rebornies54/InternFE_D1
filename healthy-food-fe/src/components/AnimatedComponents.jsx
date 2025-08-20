@@ -1,7 +1,7 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import './AnimatedComponents.css';
+import { AnimatePresence } from 'framer-motion';
 import { ANIMATION } from '../constants';
 
-// Page transition component
 export const PageTransition = ({ children, className = "" }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -14,7 +14,6 @@ export const PageTransition = ({ children, className = "" }) => (
   </motion.div>
 );
 
-// Fade in animation
 export const FadeIn = ({ children, delay = ANIMATION.DEFAULT_DELAY, duration = ANIMATION.DEFAULT_DURATION }) => (
   <motion.div
     initial={{ opacity: 0 }}
@@ -25,7 +24,6 @@ export const FadeIn = ({ children, delay = ANIMATION.DEFAULT_DELAY, duration = A
   </motion.div>
 );
 
-// Slide in from left
 export const SlideInLeft = ({ children, delay = ANIMATION.DEFAULT_DELAY }) => (
   <motion.div
     initial={{ opacity: 0, x: -50 }}
@@ -36,7 +34,6 @@ export const SlideInLeft = ({ children, delay = ANIMATION.DEFAULT_DELAY }) => (
   </motion.div>
 );
 
-// Slide in from right
 export const SlideInRight = ({ children, delay = ANIMATION.DEFAULT_DELAY }) => (
   <motion.div
     initial={{ opacity: 0, x: 50 }}
@@ -47,7 +44,6 @@ export const SlideInRight = ({ children, delay = ANIMATION.DEFAULT_DELAY }) => (
   </motion.div>
 );
 
-// Scale in animation
 export const ScaleIn = ({ children, delay = ANIMATION.DEFAULT_DELAY }) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.8 }}
@@ -58,7 +54,6 @@ export const ScaleIn = ({ children, delay = ANIMATION.DEFAULT_DELAY }) => (
   </motion.div>
 );
 
-// Interactive button
 export const AnimatedButton = ({ children, onClick, className = "", disabled = false }) => (
   <motion.button
     whileHover={{ scale: 1.05, boxShadow: "0px 4px 12px rgba(0,0,0,0.15)" }}
@@ -72,7 +67,6 @@ export const AnimatedButton = ({ children, onClick, className = "", disabled = f
   </motion.button>
 );
 
-// Card with hover effect
 export const AnimatedCard = ({ children, className = "" }) => (
   <motion.div
     whileHover={{ 
@@ -86,22 +80,14 @@ export const AnimatedCard = ({ children, className = "" }) => (
   </motion.div>
 );
 
-// Loading spinner
 export const LoadingSpinner = ({ size = ANIMATION.LOADING_SPINNER_SIZE, color = ANIMATION.PRIMARY_COLOR }) => (
   <motion.div
     animate={{ rotate: 360 }}
     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-    style={{
-      width: size,
-      height: size,
-      border: `3px solid #f3f3f3`,
-      borderTop: `3px solid ${color}`,
-      borderRadius: "50%"
-    }}
+    className="loading-spinner"
   />
 );
 
-// Staggered list animation
 export const StaggeredList = ({ children, staggerDelay = ANIMATION.STAGGER_DELAY }) => (
   <motion.div
     initial={{ opacity: 0 }}
@@ -112,7 +98,6 @@ export const StaggeredList = ({ children, staggerDelay = ANIMATION.STAGGER_DELAY
   </motion.div>
 );
 
-// Staggered list item
 export const StaggeredItem = ({ children }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -124,7 +109,6 @@ export const StaggeredItem = ({ children }) => (
   </motion.div>
 );
 
-// Modal overlay
 export const AnimatedModal = ({ isOpen, onClose, children }) => (
   <AnimatePresence>
     {isOpen && (
@@ -133,18 +117,7 @@ export const AnimatedModal = ({ isOpen, onClose, children }) => (
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000
-        }}
+        className="animated-modal-overlay"
       >
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -160,31 +133,19 @@ export const AnimatedModal = ({ isOpen, onClose, children }) => (
   </AnimatePresence>
 );
 
-// Progress bar
 export const AnimatedProgressBar = ({ progress, color = ANIMATION.PROGRESS_BAR_COLOR }) => (
   <motion.div
-    style={{
-      width: "100%",
-      height: "8px",
-      backgroundColor: "#f0f0f0",
-      borderRadius: "4px",
-      overflow: "hidden"
-    }}
+    className="progress-bar-container"
   >
     <motion.div
       initial={{ width: 0 }}
       animate={{ width: `${progress}%` }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      style={{
-        height: "100%",
-        backgroundColor: color,
-        borderRadius: "4px"
-      }}
+      className="progress-bar-fill"
     />
   </motion.div>
 );
 
-// Pulse animation for notifications
 export const PulseNotification = ({ children }) => (
   <motion.div
     animate={{ 
@@ -205,7 +166,6 @@ export const PulseNotification = ({ children }) => (
   </motion.div>
 );
 
-// Bounce animation for success states
 export const BounceSuccess = ({ children }) => (
   <motion.div
     animate={{ 

@@ -7,18 +7,7 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* BMI Dynamic Styles */
-.bmi-number-colored {
-  /* Color will be set dynamically via JavaScript */
-}
 
-.bmi-category-colored {
-  /* Color and background will be set dynamically via JavaScript */
-}
-
-.bmi-marker-positioned {
-  /* Position will be set dynamically via JavaScript */
-}
 
 .bmi-badge {
   font-size: 15px;
@@ -27,9 +16,7 @@
   border-radius: 10px;
 }
 
-.food-img-placeholder-colored {
-  /* Background color will be set dynamically via JavaScript */
-}
+
 
 .food-modal-img-placeholder {
   max-width: 200px;
@@ -490,7 +477,9 @@
 }
 
 .quantity-input[type=number] {
+  -webkit-appearance: none;
   -moz-appearance: textfield;
+  appearance: none;
 }
 
 .quantity-unit {
@@ -845,4 +834,66 @@
   .food-modal {
     padding: 20px;
   }
+}
+
+.bmi-number-underweight { color: #4299E1; }
+.bmi-number-normal { color: #48BB78; }
+.bmi-number-overweight { color: #F6AD55; }
+.bmi-number-obese { color: #F56565; }
+
+.bmi-category-underweight { 
+  color: #4299E1; 
+  background-color: rgba(66, 153, 225, 0.1); 
+}
+.bmi-category-normal { 
+  color: #48BB78; 
+  background-color: rgba(72, 187, 120, 0.1); 
+}
+.bmi-category-overweight { 
+  color: #F6AD55; 
+  background-color: rgba(246, 173, 85, 0.1); 
+}
+.bmi-category-obese { 
+  color: #F56565; 
+  background-color: rgba(245, 101, 101, 0.1); 
+}
+
+.bmi-badge-underweight { 
+  color: #4299E1; 
+  background-color: rgba(66, 153, 225, 0.1); 
+}
+.bmi-badge-normal { 
+  color: #48BB78; 
+  background-color: rgba(72, 187, 120, 0.1); 
+}
+.bmi-badge-overweight { 
+  color: #F6AD55; 
+  background-color: rgba(246, 173, 85, 0.1); 
+}
+.bmi-badge-obese { 
+  color: #F56565; 
+  background-color: rgba(245, 101, 101, 0.1); 
+}
+
+
+.food-placeholder-meat { background-color: #ff6b6b; }
+.food-placeholder-vegetables { background-color: #51cf66; }
+.food-placeholder-fruits { background-color: #ffd43b; }
+.food-placeholder-grains { background-color: #d0bfff; }
+.food-placeholder-dairy { background-color: #74c0fc; }
+.food-placeholder-snacks { background-color: #ff8cc8; }
+.food-placeholder-default { background-color: #f8f9fa; }
+
+
+.bmi-marker-underweight { 
+  border-color: #4299E1 !important; 
+}
+.bmi-marker-normal { 
+  border-color: #48BB78 !important; 
+}
+.bmi-marker-overweight { 
+  border-color: #F6AD55 !important; 
+}
+.bmi-marker-obese { 
+  border-color: #F56565 !important; 
 }
