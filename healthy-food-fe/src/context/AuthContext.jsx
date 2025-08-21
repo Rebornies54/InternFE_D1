@@ -32,7 +32,8 @@ const AuthProvider = ({ children }) => {
         setCurrentBmi(null);
         localStorage.removeItem(STORAGE_KEYS.CURRENT_BMI);
       }
-    } catch (error) { /* Error handled */ }};
+    } catch (error) { /* Error handled */ }
+  };
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -58,17 +59,29 @@ const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await authAPI.login(credentials);
+      console.log('🔍 [AUTH] Login response:', response.data);
+      
+      // Check if response has the expected structure
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Login failed');
+      }
+      
       const { user, token } = response.data.data;
       
       localStorage.setItem(STORAGE_KEYS.TOKEN, token);
       localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
       setUser(user);
       
-      await new Promise(resolve => setTimeout(resolve, TIME.LOGIN_DELAY));
+      // Removed artificial delay for better UX
       await refreshCurrentBmi();
       
       return { success: true };
     } catch (error) {
+      console.log('❌ [AUTH] Login error full:', error);
+      console.log('❌ [AUTH] Error response:', error.response);
+      console.log('❌ [AUTH] Error response data:', error.response?.data);
+      console.log('❌ [AUTH] Error message:', error.message);
+      
       let message = 'Login failed';
       
       if (error.response?.data?.message) {
@@ -79,6 +92,8 @@ const AuthProvider = ({ children }) => {
         message = 'Email does not exist in the system';
       } else if (error.response?.status === 400) {
         message = 'Invalid login data';
+      } else if (error.message) {
+        message = error.message;
       }
       
       setError(message);

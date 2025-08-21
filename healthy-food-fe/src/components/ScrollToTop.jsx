@@ -44,7 +44,7 @@ export default function ScrollToTop() {
     return document.body;
   };
 
-  const performScroll = (retryCount = 0) => {
+  const performScroll = () => {
     try {
       const scrollableElement = findScrollableElement();
       
@@ -63,7 +63,6 @@ export default function ScrollToTop() {
           behavior: 'smooth'
         });
       } else {
-        
         window.scrollTo({
           top: 0,
           left: 0,
@@ -72,22 +71,11 @@ export default function ScrollToTop() {
       }
     } catch (error) {
       logWarning('Scroll to top error:', error);
-
-      if (retryCount < 2) {
-        setTimeout(() => {
-          try {
-            const scrollableElement = findScrollableElement();
-            scrollableElement.scrollTo(0, 0);
-          } catch (fallbackError) {
-            logError('Fallback scroll failed:', fallbackError);
-            
-            try {
-              window.scrollTo(0, 0);
-            } catch (finalError) {
-              logError('Final scroll attempt failed:', finalError);
-            }
-          }
-        }, 100 * (retryCount + 1));
+      // Fallback to immediate scroll without smooth behavior
+      try {
+        window.scrollTo(0, 0);
+      } catch (fallbackError) {
+        logError('Fallback scroll failed:', fallbackError);
       }
     }
   };
@@ -95,27 +83,10 @@ export default function ScrollToTop() {
   useEffect(() => {
     if (prevPathRef.current !== pathname) {
       
+      // Simplified scroll logic - single attempt with fallback
       performScroll();
-
-      const timer1 = setTimeout(() => {
-        performScroll(1);
-      }, 100);
-
-      const timer2 = setTimeout(() => {
-        performScroll(2);
-      }, 300);
-
-      const timer3 = setTimeout(() => {
-        requestAnimationFrame(() => performScroll(3));
-      }, 500);
-
-      prevPathRef.current = pathname;
       
-      return () => {
-        clearTimeout(timer1);
-        clearTimeout(timer2);
-        clearTimeout(timer3);
-      };
+      prevPathRef.current = pathname;
     }
   }, [pathname, hash]);
 

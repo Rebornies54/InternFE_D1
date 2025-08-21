@@ -1,6 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
+import { UI_TEXT } from '../../constants';
 import './Profile.css';
 import ProfileInfo from './ProfileInfo/ProfileInfo';
 import AddressInfo from './AddressInfo/AddressInfo';
@@ -11,19 +12,19 @@ const MyBlogs = lazy(() => import('./MyBlogs/MyBlogs'));
 const menuList = [
   {
     key: 'profile',
-    label: 'Profile',
+    label: UI_TEXT.PROFILE_MAIN_TITLE,
   },
   {
     key: 'address',
-    label: 'Address',
+    label: UI_TEXT.ADDRESS_MENU_LABEL,
   },
   {
     key: 'password',
-    label: 'Change Password',
+    label: UI_TEXT.CHANGE_PASSWORD_MENU_LABEL,
   },
   {
     key: 'my-blogs',
-    label: 'My Blogs',
+    label: UI_TEXT.MY_BLOGS_MENU_LABEL,
   },
 ];
 
@@ -79,7 +80,7 @@ const Profile = () => {
           {profileData.avatar && profileData.avatar.trim() !== '' ? (
             <img
               src={profileData.avatar}
-              alt="avatar"
+              alt={UI_TEXT.AVATAR_ALT_TEXT}
               className="profile-sidebar-avatar"
             />
           ) : (
@@ -87,12 +88,12 @@ const Profile = () => {
           )}
           <div className="profile-sidebar-avatar-info">
             <div className="profile-sidebar-name">{profileData.name}</div>
-            <span className="profile-sidebar-edit">Edit Profile</span>
+            <span className="profile-sidebar-edit">{UI_TEXT.EDIT_PROFILE_LABEL}</span>
           </div>
         </div>
         <div className="profile-sidebar-divider"></div>
         <div className="profile-sidebar-menu">
-          <div className="profile-sidebar-menu-title">My Profile</div>
+          <div className="profile-sidebar-menu-title">{UI_TEXT.MY_PROFILE_TITLE}</div>
           <div className="profile-sidebar-menu-list">
             {menuList.map(item => (
               <div
@@ -107,13 +108,13 @@ const Profile = () => {
         </div>
       </aside>
       <div className="profile2-content">
-        <div className="profile2-content-title">Profile</div>
+        <div className="profile2-content-title">{UI_TEXT.PROFILE_MAIN_TITLE}</div>
         <div className="profile2-content-divider"></div>
         {tab === 'profile' && <ProfileInfo profileData={profileData} setProfileData={setProfileData} />}
         {tab === 'address' && <AddressInfo />}
         {tab === 'password' && <ChangePassword />}
         {tab === 'my-blogs' && (
-          <Suspense fallback={<div>Đang tải...</div>}>
+          <Suspense fallback={<div>{UI_TEXT.LOADING_TEXT}</div>}>
             <MyBlogs />
           </Suspense>
         )}

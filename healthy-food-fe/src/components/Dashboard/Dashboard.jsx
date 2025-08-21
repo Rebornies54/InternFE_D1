@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import './Dashboard.css';
 import { useDashboardData } from '../../hooks/useDashboardData';
 import DashboardSummary from './DashboardSummary';
 import DatePicker from '../DatePicker';
+import { UI_TEXT } from '../../constants';
 import { 
   FadeIn, 
   SlideInLeft, 
-  SlideInRight, 
   ScaleIn,
   LoadingSpinner,
-  AnimatedProgressBar
 } from '../AnimatedComponents';
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
   BarChart, Bar
 } from 'recharts';
+import './Dashboard.css';
 
 function Dashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
@@ -35,7 +34,7 @@ function Dashboard() {
     getRadarData,
     getWeeklyLineData,
     getMonthlyBarData,
-    setError
+
   } = useDashboardData();
 
   const [weekOptions, setWeekOptions] = useState([]);
@@ -85,17 +84,17 @@ function Dashboard() {
         {/* DatePicker + Radar chart */}
         <div className="dashboard-date-filter-row">
           <div className="dashboard-datepicker-block">
-            <label className="dashboard-label">Select date</label>
+            <label className="dashboard-label">{UI_TEXT.SELECT_DATE}</label>
             <DatePicker
               value={selectedDate}
               onChange={setSelectedDate}
-              placeholder="Select date"
+              placeholder={UI_TEXT.SELECT_DATE}
               className="dashboard-datepicker"
             />
             <div className="dashboard-chart-desc">DD/MM/YYYY</div>
           </div>
           <div className="dashboard-radar-block">
-            <h3 className="dashboard-chart-title">Calories by Food Category</h3>
+            <h3 className="dashboard-chart-title">{UI_TEXT.CALORIES_BY_FOOD_CATEGORY}</h3>
             {loading ? (
               <div className="dashboard-loading">
                 <LoadingSpinner size={50} />
@@ -104,20 +103,20 @@ function Dashboard() {
               <ScaleIn>
                 <RadarChart width={400} height={320} cx="50%" cy="50%" outerRadius="75%" data={getRadarData()}>
                   <PolarGrid stroke="#ddd" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fill: '#555', fontSize: 12 }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 'dataMax']} tick={{ fill: '#666', fontSize: 11 }} />
-                  <Radar name="Calories" dataKey="A" stroke="#2196f3" fill="#2196f3" fillOpacity={0.15} dot={{ r: 4, fill: '#2196f3' }} />
+                  <PolarAngleAxis dataKey="subject" tick={{ fill: '#555', fontSize: 12 }} className="dashboard-polar-angle-axis-tick" />
+                  <PolarRadiusAxis angle={30} domain={[0, 'dataMax']} tick={{ fill: '#666', fontSize: 11 }} className="dashboard-polar-radius-axis-tick" />
+                  <Radar name="Calories" dataKey="A" stroke="#2196f3" fill="#2196f3" fillOpacity={0.15} dot={{ r: 4, fill: '#2196f3' }} className="dashboard-radar-stroke dashboard-radar-fill dashboard-radar-dot" />
                 </RadarChart>
               </ScaleIn>
             )}
-            <div className="dashboard-chart-desc">Daily calorie intake by food category</div>
+            <div className="dashboard-chart-desc">{UI_TEXT.DAILY_CALORIE_INTAKE_BY_CATEGORY}</div>
           </div>
         </div>
 
         {/* Line chart by week */}
         <div className="dashboard-section">
           <div className="dashboard-filter-row">
-            <label className="dashboard-label">Week:</label>
+            <label className="dashboard-label">{UI_TEXT.WEEK_LABEL}</label>
             <select
               className="dashboard-select"
               value={selectedWeek}
@@ -136,20 +135,20 @@ function Dashboard() {
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={getWeeklyLineData()} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                <XAxis dataKey="day" tick={{ fill: '#555', fontSize: 12 }} />
-                <YAxis tick={{ fill: '#555', fontSize: 12 }} />
+                <XAxis dataKey="day" tick={{ fill: '#555', fontSize: 12 }} className="dashboard-axis-tick" />
+                <YAxis tick={{ fill: '#555', fontSize: 12 }} className="dashboard-axis-tick" />
                 <Tooltip />
-                <Line type="monotone" dataKey="calo" stroke="#4caf50" strokeWidth={2} dot={{ r: 4, fill: '#fff', stroke: '#4caf50', strokeWidth: 2 }} activeDot={{ r: 6, fill: '#4caf50' }} />
+                <Line type="monotone" dataKey="calo" stroke="#4caf50" strokeWidth={2} dot={{ r: 4, fill: '#fff', stroke: '#4caf50', strokeWidth: 2 }} activeDot={{ r: 6, fill: '#4caf50' }} className="dashboard-line-stroke dashboard-line-dot dashboard-line-active-dot" />
               </LineChart>
             </ResponsiveContainer>
           )}
-          <div className="dashboard-chart-desc">Daily calorie intake for the selected week</div>
+          <div className="dashboard-chart-desc">{UI_TEXT.DAILY_CALORIE_INTAKE_FOR_WEEK}</div>
         </div>
 
         {/* Bar chart by month */}
         <div className="dashboard-section">
           <div className="dashboard-filter-row">
-            <label className="dashboard-label">Month:</label>
+            <label className="dashboard-label">{UI_TEXT.MONTH_LABEL}</label>
             <select
               className="dashboard-select"
               value={selectedMonth}
@@ -168,15 +167,15 @@ function Dashboard() {
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={getMonthlyBarData()} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                <XAxis dataKey="week" tick={{ fill: '#555', fontSize: 12 }} />
-                <YAxis tick={{ fill: '#555', fontSize: 12 }} />
+                <XAxis dataKey="week" tick={{ fill: '#555', fontSize: 12 }} className="dashboard-axis-tick" />
+                <YAxis tick={{ fill: '#555', fontSize: 12 }} className="dashboard-axis-tick" />
                 <Tooltip />
-                <Legend wrapperStyle={{ fontSize: 12, color: '#555' }} className="dashboard-chart-legend" />
-                <Bar dataKey="total" fill="#9c27b0" name="Total Calories" radius={[2, 2, 0, 0]} />
+                <Legend wrapperStyle={{ fontSize: 12, color: '#555' }} className="dashboard-chart-legend dashboard-legend-wrapper" />
+                <Bar dataKey="total" fill="#9c27b0" name="Total Calories" radius={[2, 2, 0, 0]} className="dashboard-bar-fill" />
               </BarChart>
             </ResponsiveContainer>
           )}
-          <div className="dashboard-chart-desc">Weekly calorie intake for the selected month</div>
+          <div className="dashboard-chart-desc">{UI_TEXT.WEEKLY_CALORIE_INTAKE_FOR_MONTH}</div>
         </div>
       </div>
     </FadeIn>

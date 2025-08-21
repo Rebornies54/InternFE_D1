@@ -1,12 +1,10 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
+import { SORT_OPTIONS } from '../../constants';
 import './SortComments.css';
 
 const SortComments = ({ currentSort, onSortChange }) => {
-  const sortOptions = [
-    { value: 'newest', label: 'Mới nhất' },
-    { value: 'most_liked', label: 'Nhiều like nhất' }
-  ];
+  const sortOptions = SORT_OPTIONS;
 
   return (
     <div className="sort-comments">

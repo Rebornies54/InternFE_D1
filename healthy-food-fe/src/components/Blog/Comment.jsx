@@ -2,12 +2,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { blogAPI } from '../../services/api';
-import { PAGINATION, ERROR_MESSAGES } from '../../constants';
+import { PAGINATION, ERROR_MESSAGES, UI_TEXT } from '../../constants';
 import { Heart, MessageCircle, MoreVertical, Edit, Trash, Reply } from 'lucide-react';
 import { 
   AnimatedButton, 
   FadeIn, 
-  SlideInLeft, 
   StaggeredList, 
   StaggeredItem,
   LoadingSpinner
@@ -32,9 +31,6 @@ const Comment = ({ postId }) => {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [showOptions, setShowOptions] = useState({});
-
-  const commentEndRef = useRef(null);
-  const observerRef = useRef(null);
 
   useEffect(() => {
     fetchComments();
@@ -166,7 +162,7 @@ const Comment = ({ postId }) => {
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa bình luận này?')) return;
+    if (!window.confirm(UI_TEXT.CONFIRM_DELETE_COMMENT)) return;
 
     try {
       const response = await blogAPI.deleteComment(commentId);
@@ -319,13 +315,13 @@ const Comment = ({ postId }) => {
             <Heart size={14} />
             <span>{comment.likes_count || 0}</span>
           </AnimatedButton>
-          <AnimatedButton
-            className="comment-reply-btn"
-            onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
-          >
-            <Reply size={14} />
-            <span>Trả lời</span>
-          </AnimatedButton>
+                     <AnimatedButton
+             className="comment-reply-btn"
+             onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+           >
+             <Reply size={14} />
+             <span>{UI_TEXT.REPLY_BUTTON}</span>
+           </AnimatedButton>
           {(canEditComment(comment) || canDeleteComment(comment)) && (
             <div className="comment-options">
               <AnimatedButton
@@ -337,30 +333,30 @@ const Comment = ({ postId }) => {
               {showOptions[comment.id] && (
                 <div className="comment-options-dropdown">
                   {canEditComment(comment) && (
-                    <button 
-                      type="button"
-                      className="comment-option-btn"
-                      onClick={() => {
-                        setEditingComment(comment);
-                        toggleOptions(comment.id);
-                      }}
-                    >
-                      <Edit size={14} />
-                      <span>Chỉnh sửa</span>
-                    </button>
+                                         <button 
+                       type="button"
+                       className="comment-option-btn"
+                       onClick={() => {
+                         setEditingComment(comment);
+                         toggleOptions(comment.id);
+                       }}
+                     >
+                       <Edit size={14} />
+                       <span>{UI_TEXT.EDIT_BUTTON}</span>
+                     </button>
                   )}
                   {canDeleteComment(comment) && (
-                    <button 
-                      type="button"
-                      className="comment-option-btn delete"
-                      onClick={() => {
-                        handleDeleteComment(comment.id);
-                        toggleOptions(comment.id);
-                      }}
-                    >
-                      <Trash size={14} />
-                      <span>Xóa</span>
-                    </button>
+                                         <button 
+                       type="button"
+                       className="comment-option-btn delete"
+                       onClick={() => {
+                         handleDeleteComment(comment.id);
+                         toggleOptions(comment.id);
+                       }}
+                     >
+                       <Trash size={14} />
+                       <span>{UI_TEXT.DELETE_BUTTON}</span>
+                     </button>
                   )}
                 </div>
               )}
@@ -374,24 +370,24 @@ const Comment = ({ postId }) => {
           <textarea
             value={editText}
             onChange={(e) => setEditText(e.target.value)}
-            placeholder="Chỉnh sửa bình luận..."
+            placeholder={UI_TEXT.EDIT_COMMENT}
             className="comment-edit-textarea"
           />
           <div className="comment-edit-actions">
-            <button 
-              type="button"
-              className="comment-edit-cancel"
-              onClick={() => setEditingComment(null)}
-            >
-              Hủy
-            </button>
-            <button 
-              type="button"
-              className="comment-edit-save"
-              onClick={handleEditComment}
-            >
-              Lưu
-            </button>
+                         <button 
+               type="button"
+               className="comment-edit-cancel"
+               onClick={() => setEditingComment(null)}
+             >
+               {UI_TEXT.CANCEL_BUTTON}
+             </button>
+             <button 
+               type="button"
+               className="comment-edit-save"
+               onClick={handleEditComment}
+             >
+               {UI_TEXT.SAVE_BUTTON}
+             </button>
           </div>
         </div>
       ) : (
@@ -405,25 +401,25 @@ const Comment = ({ postId }) => {
           <textarea
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
-            placeholder="Viết trả lời..."
+            placeholder={UI_TEXT.ENTER_REPLY}
             className="reply-textarea"
           />
           <div className="reply-actions">
-            <button 
-              type="button"
-              className="reply-cancel"
-              onClick={() => setReplyingTo(null)}
-            >
-              Hủy
-            </button>
-            <button 
-              type="button"
-              className="reply-submit"
-              onClick={() => handleReply(comment.id, replyText)}
-              disabled={!replyText.trim()}
-            >
-              Trả lời
-            </button>
+                         <button 
+               type="button"
+               className="reply-cancel"
+               onClick={() => setReplyingTo(null)}
+             >
+               {UI_TEXT.CANCEL_BUTTON}
+             </button>
+             <button 
+               type="button"
+               className="reply-submit"
+               onClick={() => handleReply(comment.id, replyText)}
+               disabled={!replyText.trim()}
+             >
+               {UI_TEXT.REPLY_BUTTON}
+             </button>
           </div>
         </div>
       )}
@@ -436,9 +432,9 @@ const Comment = ({ postId }) => {
             onClick={() => toggleReplies(comment.id)}
           >
             <MessageCircle size={12} />
-            <span>
-              {showReplies[comment.id] ? 'Ẩn' : 'Hiển thị'} {comment.replies.length} trả lời
-            </span>
+                         <span>
+               {showReplies[comment.id] ? UI_TEXT.HIDE_REPLIES : UI_TEXT.SHOW_REPLIES} {comment.replies.length} {UI_TEXT.REPLIES_COUNT}
+             </span>
           </button>
           {showReplies[comment.id] && (
             <div className="replies-list">
@@ -454,7 +450,7 @@ const Comment = ({ postId }) => {
     return (
       <div className="comments-loading">
         <LoadingSpinner />
-        <p>Đang tải bình luận...</p>
+        <p>{UI_TEXT.LOADING_COMMENTS}</p>
       </div>
     );
   }
@@ -471,12 +467,12 @@ const Comment = ({ postId }) => {
         />
       </div>
 
-      {error && (
-        <div className="comments-error">
-          <p>{error}</p>
-          <button type="button" onClick={fetchComments}>Thử lại</button>
-        </div>
-      )}
+             {error && (
+         <div className="comments-error">
+           <p>{error}</p>
+           <button type="button" onClick={fetchComments}>{UI_TEXT.RETRY_BUTTON}</button>
+         </div>
+       )}
 
       {user && (
         <form className="comment-form" onSubmit={handleSubmitComment}>
@@ -492,19 +488,19 @@ const Comment = ({ postId }) => {
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Viết bình luận..."
+              placeholder={UI_TEXT.ENTER_COMMENT}
               className="comment-form-textarea"
               disabled={submitting}
             />
           </div>
           <div className="comment-form-actions">
-            <button 
-              type="submit" 
-              className="comment-form-submit"
-              disabled={!newComment.trim() || submitting}
-            >
-              {submitting ? 'Đang gửi...' : 'Gửi bình luận'}
-            </button>
+                         <button 
+               type="submit" 
+               className="comment-form-submit"
+               disabled={!newComment.trim() || submitting}
+             >
+               {submitting ? UI_TEXT.SENDING_COMMENT : UI_TEXT.SEND_COMMENT}
+             </button>
           </div>
         </form>
       )}
@@ -529,16 +525,16 @@ const Comment = ({ postId }) => {
             onClick={loadMoreComments}
             disabled={loadingMore}
           >
-            {loadingMore ? 'Đang tải...' : 'Tải thêm bình luận'}
+            {loadingMore ? UI_TEXT.LOADING_MORE : UI_TEXT.LOAD_MORE_COMMENTS}
           </button>
         </div>
       )}
 
-      {!user && (
-        <div className="comments-login-prompt">
-          <p>Vui lòng đăng nhập để bình luận</p>
-        </div>
-      )}
+             {!user && (
+         <div className="comments-login-prompt">
+           <p>{UI_TEXT.LOGIN_TO_COMMENT}</p>
+         </div>
+       )}
     </div>
   );
 };

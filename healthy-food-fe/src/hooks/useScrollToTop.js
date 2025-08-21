@@ -108,11 +108,14 @@ export const useScrollToTop = () => {
         logWarning(`Scroll attempt ${attempt + 1} failed:`, error);
         
         if (attempt < retryCount - 1) {
-          setTimeout(() => {
-            performScroll(attempt + 1);
-          }, delay * (attempt + 1));
+          // Sử dụng requestAnimationFrame thay vì setTimeout cho retry
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              performScroll(attempt + 1);
+            }, delay * (attempt + 1));
+          });
         } else {
-          
+          // Final fallback
           try {
             window.scrollTo(0, 0);
           } catch (finalError) {
@@ -123,12 +126,6 @@ export const useScrollToTop = () => {
     };
 
     performScroll();
-
-    for (let i = 1; i < retryCount; i++) {
-      setTimeout(() => {
-        performScroll(i);
-      }, delay * i);
-    }
   }, [findScrollableElement]);
 
   return { scrollToTop, scrollModalToTop, scrollToTopWithRetry };

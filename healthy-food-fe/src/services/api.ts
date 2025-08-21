@@ -29,9 +29,11 @@ import {
 } from '../types';
 
 const API_CONFIG = {
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
+  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   TIMEOUT: 10000,
 };
+
+console.log('🔍 [API] Creating axios instance with baseURL:', API_CONFIG.BASE_URL);
 
 const api: AxiosInstance = axios.create({
   baseURL: API_CONFIG.BASE_URL,
@@ -43,6 +45,12 @@ const api: AxiosInstance = axios.create({
 
 api.interceptors.request.use(
   (config) => {
+    console.log('🔍 [API] BaseURL:', config.baseURL || 'undefined');
+    console.log('🔍 [API] URL:', config.url || 'undefined');
+    console.log('🔍 [API] Full URL:', (config.baseURL || '') + (config.url || ''));
+    console.log('🔍 [API] Request method:', config.method);
+    console.log('🔍 [API] Request data:', config.data);
+    
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

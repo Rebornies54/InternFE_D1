@@ -2,17 +2,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useBlogContext } from '../../context/BlogContext';
 import { blogAPI } from '../../services/api';
-import { PAGINATION, DEFAULTS, ERROR_MESSAGES } from '../../constants';
+import { PAGINATION, DEFAULTS, ERROR_MESSAGES, UI_TEXT } from '../../constants';
 import { Heart, Eye } from 'lucide-react';
 import { 
   AnimatedCard, 
   AnimatedButton, 
-  FadeIn, 
-  SlideInLeft, 
-  StaggeredList, 
-  StaggeredItem,
-  AnimatedModal,
-  LoadingSpinner
 } from '../AnimatedComponents';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
 import './Blog.css';
@@ -37,11 +31,11 @@ const FoodCard = ({ post, onClick, onLike, isLiked, likeCount }) => (
           }}
         />
       ) : null}
-      <div 
-        className={`blog-image-placeholder ${(post.image_url && post.image_url.trim() !== '') ? 'blog-image-placeholder-hidden' : 'blog-image-placeholder-visible'}`}
-      >
-        <span>Ảnh minh họa</span>
-      </div>
+             <div 
+         className={`blog-image-placeholder ${(post.image_url && post.image_url.trim() !== '') ? 'blog-image-placeholder-hidden' : 'blog-image-placeholder-visible'}`}
+       >
+         <span>{UI_TEXT.BLOG_IMAGE_PLACEHOLDER}</span>
+       </div>
       <div className="blog-card-view-count">
         <Eye size={14} />
         <span>{post.views_count || 0}</span>
@@ -88,12 +82,9 @@ const FoodItem = ({ food, onClick }) => (
       <div 
         className={`food-image-placeholder ${(food.image_url && food.image_url.trim() !== '') ? 'food-image-placeholder-hidden' : 'food-image-placeholder-visible'}`}
       >
-        <div className="food-placeholder-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </div>
+                 <div className="food-placeholder-icon">
+           <span>{UI_TEXT.FOOD_PLACEHOLDER_ICON}</span>
+         </div>
         <span className="food-placeholder-text">{food.name.split(' ')[0]}</span>
       </div>
     </div>
@@ -120,7 +111,7 @@ const FoodCategoryFilter = ({ categories, selectedCategory, onCategoryChange }) 
         onChange={(e) => onCategoryChange(e.target.value)}
         className="food-category-select"
       >
-        <option value="">Tất cả danh mục</option>
+                 <option value="">{UI_TEXT.ALL_CATEGORIES}</option>
         {categories.map(category => (
           <option key={category.id} value={category.id}>
             {category.name}
@@ -136,7 +127,7 @@ const FoodSearchBar = ({ value, onChange }) => (
   <div className="food-search">
     <input
       type="text"
-      placeholder="Tìm kiếm thực phẩm..."
+             placeholder={UI_TEXT.SEARCH_FOOD}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className="food-search-input"
@@ -151,7 +142,7 @@ const FoodModal = ({ food, variations, onClose }) => {
     <div className="food-modal-overlay" onClick={onClose}>
       <div className="food-modal" onClick={(e) => e.stopPropagation()}>
         <div className="food-modal-header">
-          <h2 className="food-modal-title">Chi tiết</h2>
+                     <h2 className="food-modal-title">{UI_TEXT.FOOD_DETAILS_TITLE}</h2>
           <button className="food-modal-close" onClick={onClose}>✕</button>
         </div>
         
@@ -159,12 +150,11 @@ const FoodModal = ({ food, variations, onClose }) => {
           <div className="food-intro">
             <div className="food-intro-text">
               <h1 className="food-name">{food.name.split('(')[0].trim()}</h1>
-              <p className="food-description">
-                {food.name.split('(')[0].trim()} rất giàu dinh dưỡng, chứa nhiều vitamin và khoáng chất. 
-                Mặc dù có hàm lượng carb cao hơn, những carbohydrate phức tạp giàu tinh bột này được chuyển hóa thành năng lượng 
-                và sẽ giúp bạn cảm thấy no lâu hơn. Hãy xem Bảng Calorie {food.name.split('(')[0].trim()} và Sản phẩm {food.name.split('(')[0].trim()} 
-                của chúng tôi dưới đây để biết thêm thông tin dinh dưỡng.
-              </p>
+                             <p className="food-description">
+                 {food.name.split('(')[0].trim()} {UI_TEXT.FOOD_DETAILS_DESCRIPTION} 
+                 Hãy xem Bảng Calorie {food.name.split('(')[0].trim()} {UI_TEXT.FOOD_DETAILS_PRODUCTS} {food.name.split('(')[0].trim()} 
+                 {UI_TEXT.FOOD_DETAILS_MORE_INFO}
+               </p>
             </div>
             <div className="food-intro-image">
               <span></span>
@@ -174,11 +164,11 @@ const FoodModal = ({ food, variations, onClose }) => {
           <div className="food-nutrition-table">
             <table>
               <thead>
-                <tr>
-                  <th>Food</th>
-                  <th>Serving</th>
-                  <th>Calories</th>
-                </tr>
+                                 <tr>
+                   <th>{UI_TEXT.FOOD_NUTRITION_TABLE_FOOD}</th>
+                   <th>{UI_TEXT.FOOD_NUTRITION_TABLE_SERVING}</th>
+                   <th>{UI_TEXT.FOOD_NUTRITION_TABLE_CALORIES}</th>
+                 </tr>
               </thead>
               <tbody>
                 {variations.map((variation, index) => (
@@ -199,16 +189,16 @@ const FoodModal = ({ food, variations, onClose }) => {
 
 const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
   <div className="blog-detail">
-    <button className="back-button" onClick={onBack}>← Quay lại danh sách</button>
+         <button className="back-button" onClick={onBack}>{UI_TEXT.BACK_TO_LIST}</button>
     <div className="blog-detail-header">
       <div className="blog-detail-info">
         <h1 className="blog-detail-title">{post.title}</h1>
         <div className="blog-detail-meta">
           <span className="blog-detail-category">{post.category}</span>
           <span className="blog-detail-date">{post.date}</span>
-          {post.author_name && (
-            <span className="blog-detail-author">Bởi {post.author_name}</span>
-          )}
+                     {post.author_name && (
+             <span className="blog-detail-author">{UI_TEXT.BY_AUTHOR} {post.author_name}</span>
+           )}
         </div>
       </div>
       <div className="blog-detail-actions">
@@ -236,23 +226,23 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
             }
           }}
         />
-        <div 
-          className="blog-detail-placeholder blog-detail-placeholder-hidden"
-          ref={(el) => {
-            if (el) {
-              el.placeholderRef = el;
-            }
-          }}
-        >
-          <span>Ảnh minh họa</span>
-        </div>
+                 <div 
+           className="blog-detail-placeholder blog-detail-placeholder-hidden"
+           ref={(el) => {
+             if (el) {
+               el.placeholderRef = el;
+             }
+           }}
+         >
+           <span>{UI_TEXT.BLOG_IMAGE_PLACEHOLDER}</span>
+         </div>
       </div>
     ) : (
-      <div className="blog-detail-image">
-        <div className="blog-detail-placeholder blog-detail-placeholder-visible">
-          <span>Ảnh minh họa</span>
-        </div>
-      </div>
+             <div className="blog-detail-image">
+         <div className="blog-detail-placeholder blog-detail-placeholder-visible">
+           <span>{UI_TEXT.BLOG_IMAGE_PLACEHOLDER}</span>
+         </div>
+       </div>
     )}
     <div className="blog-detail-content">
       {post.content.split('\n\n').map((paragraph, idx) => (
@@ -291,10 +281,10 @@ const CategoryFilter = ({ categories, selected, onChange }) => {
     setIsDropdownOpen(false);
   };
 
-  const getSelectedCategoryLabel = () => {
-    if (!selected) return 'Tất cả danh mục';
-    return selected.charAt(0).toUpperCase() + selected.slice(1);
-  };
+     const getSelectedCategoryLabel = () => {
+     if (!selected) return UI_TEXT.ALL_CATEGORIES;
+     return selected.charAt(0).toUpperCase() + selected.slice(1);
+   };
 
   return (
     <div className={`blog-categories-dropdown ${isDropdownOpen ? 'open' : ''}`} ref={dropdownRef}>
@@ -309,12 +299,12 @@ const CategoryFilter = ({ categories, selected, onChange }) => {
       
       {isDropdownOpen && (
         <div className="dropdown-menu">
-          <div 
-            className={`dropdown-item ${!selected ? 'selected' : ''}`}
-            onClick={() => selectCategory('')}
-          >
-            Tất cả danh mục
-          </div>
+                     <div 
+             className={`dropdown-item ${!selected ? 'selected' : ''}`}
+             onClick={() => selectCategory('')}
+           >
+             {UI_TEXT.ALL_CATEGORIES}
+           </div>
           {categories.map(category => (
             <div
               key={category}
@@ -334,7 +324,7 @@ const SearchBar = ({ value, onChange }) => (
   <div className="blog-search">
     <input
       type="text"
-      placeholder="Tìm kiếm bài viết..."
+             placeholder={UI_TEXT.SEARCH_POSTS}
       value={value}
       onChange={(e) => onChange(e.target.value)}
     />
@@ -344,10 +334,10 @@ const SearchBar = ({ value, onChange }) => (
 const FoodList = ({ foods, onFoodClick, loading, currentPage, itemsPerPage, totalPages, onPageChange }) => {
   if (loading) {
     return (
-      <div className="food-list-loading">
-        <div className="loading-spinner"></div>
-        <p>Đang tải danh sách thực phẩm...</p>
-      </div>
+             <div className="food-list-loading">
+         <div className="loading-spinner"></div>
+         <p>{UI_TEXT.LOADING_FOODS}</p>
+       </div>
     );
   }
 
@@ -360,8 +350,8 @@ const FoodList = ({ foods, onFoodClick, loading, currentPage, itemsPerPage, tota
             <circle cx="12" cy="12" r="3"/>
           </svg>
         </div>
-        <p>Không tìm thấy thực phẩm nào phù hợp với tiêu chí tìm kiếm.</p>
-        <p className="no-foods-suggestion">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p>
+                 <p>{UI_TEXT.NO_FOODS_FOUND}</p>
+         <p className="no-foods-suggestion">{UI_TEXT.SUGGESTION_CHANGE_FILTER}</p>
       </div>
     );
   }
@@ -389,23 +379,23 @@ const FoodList = ({ foods, onFoodClick, loading, currentPage, itemsPerPage, tota
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="food-pagination">
-          <button 
-            onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-            className="pagination-btn"
-          >
-            Previous
-          </button>
-          <span className="pagination-info">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button 
-            onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-            disabled={currentPage === totalPages}
-            className="pagination-btn"
-          >
-            Next
-          </button>
+                     <button 
+             onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+             disabled={currentPage === 1}
+             className="pagination-btn"
+           >
+             {UI_TEXT.PREVIOUS_BUTTON}
+           </button>
+           <span className="pagination-info">
+             {UI_TEXT.PAGE_INFO} {currentPage} {UI_TEXT.OF_TEXT} {totalPages}
+           </span>
+           <button 
+             onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+             disabled={currentPage === totalPages}
+             className="pagination-btn"
+           >
+             {UI_TEXT.NEXT_BUTTON}
+           </button>
         </div>
       )}
     </div>
@@ -446,16 +436,12 @@ const Blog = () => {
 
   const [showCreate, setShowCreate] = useState(false);
 
-  // Add refs for DOM elements
   const blogContainerRef = useRef(null);
 
-  // State for image loading
   const [imageStates, setImageStates] = useState({});
 
-  // Use improved scroll to top hook
   const { scrollToTop, scrollModalToTop, scrollToTopWithRetry } = useScrollToTop();
 
-  // Handle image load success
   const handleImageLoad = useCallback((postId, type = 'blog') => {
     setImageStates(prev => ({
       ...prev,
@@ -463,7 +449,6 @@ const Blog = () => {
     }));
   }, []);
 
-  // Handle image load error
   const handleImageError = useCallback((postId, type = 'blog') => {
     setImageStates(prev => ({
       ...prev,
@@ -471,13 +456,11 @@ const Blog = () => {
     }));
   }, []);
 
-  // Check if image should be shown
   const shouldShowImage = useCallback((postId, imageUrl, type = 'blog') => {
     const state = imageStates[`${type}_${postId}`];
     return imageUrl && imageUrl.trim() !== '' && state !== 'error';
   }, [imageStates]);
 
-  // Check if placeholder should be shown
   const shouldShowPlaceholder = useCallback((postId, imageUrl, type = 'blog') => {
     const state = imageStates[`${type}_${postId}`];
     return !imageUrl || imageUrl.trim() === '' || state === 'error';
@@ -485,17 +468,14 @@ const Blog = () => {
 
   const handleTabChange = (newTab) => {
     setActiveTab(newTab);
-    
-    // Scroll both window and container
-    setTimeout(() => {
-      // Scroll window
+
+    requestAnimationFrame(() => {
       window.scrollTo({
         top: 0,
         left: 0,
         behavior: 'smooth'
       });
-      
-      // Scroll container if exists
+
       const container = document.querySelector('.home-container');
       if (container && container.scrollTo) {
         container.scrollTo({
@@ -504,13 +484,12 @@ const Blog = () => {
           behavior: 'smooth'
         });
       }
-    }, 100);
+    });
   };
 
   const handleShowCreate = () => {
     setShowCreate(true);
-    
-    // Use improved scroll to top with retry logic
+
     scrollToTopWithRetry(100, 3);
   };
 
@@ -523,7 +502,6 @@ const Blog = () => {
         setSelectedPost(post);
       }
     } catch (error) {
-      // Fallback to existing post data on error
       setSelectedPost(post);
     }
     incrementViewCount(post.id);
@@ -531,8 +509,7 @@ const Blog = () => {
 
   const handleBackClick = () => {
     setSelectedPost(null);
-    
-    // Use improved scroll to top with retry logic
+
     scrollToTopWithRetry(100, 3);
   };
 
@@ -565,7 +542,6 @@ const Blog = () => {
 
   const foodVariations = selectedFood ? getFoodVariations(selectedFood) : [];
 
-  // Replace direct DOM manipulation in image rendering
   const renderBlogImage = (post) => {
     const imageKey = `blog_${post.id}`;
     const showImage = shouldShowImage(post.id, post.image_url, 'blog');
@@ -648,16 +624,16 @@ const Blog = () => {
           {activeTab === 'blog' ? (
             <>
               <div className="blog-create-button-container">
-                <button 
-                  className="create-blog-btn" 
-                  onClick={handleShowCreate}
-                  title="Viết blog mới"
-                  aria-label="Tạo bài viết blog mới"
-                >
-                  Viết Blog
-                </button>
+                                 <button 
+                   className="create-blog-btn" 
+                   onClick={handleShowCreate}
+                   title={UI_TEXT.CREATE_BLOG_TITLE}
+                   aria-label={UI_TEXT.CREATE_BLOG_TITLE}
+                 >
+                   {UI_TEXT.CREATE_BLOG_BUTTON}
+                 </button>
               </div>
-              <h1 className="blog-title">Bí Quyết Ăn Uống Lành Mạnh</h1>
+                             <h1 className="blog-title">{UI_TEXT.BLOG_TITLE}</h1>
               
               <div className="blog-controls">
                 <CategoryFilter 
@@ -673,7 +649,7 @@ const Blog = () => {
               
               {postsLoading ? (
                 <div className="blog-loading">
-                  <p>Đang tải bài viết...</p>
+                  <p>{UI_TEXT.LOADING_POSTS}</p>
                 </div>
               ) : filteredPosts.length > 0 ? (
                 <div className="blog-card-grid">
@@ -689,9 +665,9 @@ const Blog = () => {
                   ))}
                 </div>
               ) : (
-                <div className="no-posts-message">
-                  <p>Không tìm thấy bài viết phù hợp với tiêu chí tìm kiếm của bạn.</p>
-                </div>
+                                 <div className="no-posts-message">
+                   <p>{UI_TEXT.NO_POSTS_FOUND}</p>
+                 </div>
               )}
               {showCreate && (
                 <CreateBlog 
@@ -702,11 +678,10 @@ const Blog = () => {
             </>
           ) : (
             <>
-              <h1 className="blog-title">Danh Sách Thực Phẩm</h1>
-              <p className="menu-description">
-                Khám phá thông tin dinh dưỡng chi tiết của các loại thực phẩm. 
-                Click vào thực phẩm để xem các cách chế biến và hàm lượng calo.
-              </p>
+                             <h1 className="blog-title">{UI_TEXT.MENU_LIST_TITLE}</h1>
+               <p className="menu-description">
+                 {UI_TEXT.MENU_DESCRIPTION}
+               </p>
               
               <div className="food-controls">
                 <FoodCategoryFilter 

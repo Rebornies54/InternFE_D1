@@ -5,7 +5,7 @@ import { authAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useFoodContext } from '../../context/FoodContext';
 import { useCalorieContext } from '../../context/CalorieContext';
-import { DEFAULTS } from '../../constants';
+import { DEFAULTS, UI_TEXT } from '../../constants';
 import './BodyIndex.css';
 
 
@@ -174,21 +174,21 @@ const BodyIndex = () => {
     return 'Obese';
   };
 
-  const getBMICategoryColor = (bmi) => {
-    const bmiValue = parseFloat(bmi);
-    if (bmiValue < 18.5) return '#4299E1'; // Blue
-    if (bmiValue >= 18.5 && bmiValue < 25) return '#48BB78'; 
-    if (bmiValue >= 25 && bmiValue < 30) return '#F6AD55';
-    return '#F56565'; 
-  };
+  // const getBMICategoryColor = (bmi) => {
+  //   const bmiValue = parseFloat(bmi);
+  //   if (bmiValue < 18.5) return '#4299E1'; // Blue
+  //   if (bmiValue >= 18.5 && bmiValue < 25) return '#48BB78'; 
+  //   if (bmiValue >= 25 && bmiValue < 30) return '#F6AD55';
+  //   return '#F56565'; 
+  // };
 
-  const getBMIMarkerPosition = (bmi) => {
-    const bmiValue = parseFloat(bmi);
-    if (bmiValue < 16) return 0;
-    if (bmiValue > 35) return 100;
+  // const getBMIMarkerPosition = (bmi) => {
+  //   const bmiValue = parseFloat(bmi);
+  //   if (bmiValue < 16) return 0;
+  //   if (bmiValue > 35) return 100;
 
-    return ((bmiValue - 16) / (35 - 16)) * 100;
-  };
+  //   return ((bmiValue - 16) / (35 - 16)) * 100;
+  // };
 
   const addToCalorieCalculation = (food) => {
     addToPendingFoods(food);
@@ -236,31 +236,31 @@ const BodyIndex = () => {
     }
   };
 
-  const getPlaceholderColor = (categoryId) => {
-    const colors = {
-      1: '#f8f9fa', // Meat
-      2: '#f8f9fa', // Vegetables
-      3: '#f8f9fa', // Fruits
-      4: '#f8f9fa', // Grains
-      5: '#f8f9fa', // Dairy
-      6: '#f8f9fa'  // Snacks
-    };
-    return colors[categoryId] || '#f8f9fa';
-  };
+  // const getPlaceholderColor = (categoryId) => {
+  //   const colors = {
+  //     1: '#f8f9fa', // Meat
+  //     2: '#f8f9fa', // Vegetables
+  //     3: '#f8f9fa', // Fruits
+  //     4: '#f8f9fa', // Grains
+  //     5: '#f8f9fa', // Dairy
+  //     6: '#f8f9fa'  // Snacks
+  //   };
+  //   return colors[categoryId] || '#f8f9fa';
+  // };
 
-  const getTableOptions = () => {
-    const seen = new Set();
-    return categories
-      .map(cat => ({
-        value: cat.id,
-        label: cat.name
-      }))
-      .filter(option => {
-        if (seen.has(option.label)) return false;
-        seen.add(option.label);
-        return true;
-      });
-  };
+  // const getTableOptions = () => {
+  //   const seen = new Set();
+  //   return categories
+  //     .map(cat => ({
+  //       value: cat.id,
+  //       label: cat.name
+  //     }))
+  //     .filter(option => {
+  //       if (seen.has(option.label)) return false;
+  //       seen.add(option.label);
+  //       return true;
+  //     });
+  // };
 
   return (
     <div className="body-index-container">
@@ -271,7 +271,7 @@ const BodyIndex = () => {
             <div className="body-index-form-inputs">
               {bmiLoading && (
                 <div className="bmi-loading">
-                  Loading your BMI data...
+                  {UI_TEXT.LOADING_BMI_DATA}
                 </div>
               )}
               <div className="body-index-form-group">
@@ -280,7 +280,7 @@ const BodyIndex = () => {
                   type="number"
                   value={height}
                   onChange={_e => setHeight(_e.target.value)}
-                  placeholder="Enter height..."
+                  placeholder={UI_TEXT.ENTER_HEIGHT_PLACEHOLDER}
                   className="body-index-input"
                   onWheelCapture={handleWheel}
                 />
@@ -291,7 +291,7 @@ const BodyIndex = () => {
                   type="number"
                   value={weight}
                   onChange={_e => setWeight(_e.target.value)}
-                  placeholder="Enter weight"
+                  placeholder={UI_TEXT.ENTER_WEIGHT_PLACEHOLDER}
                   className="body-index-input"
                   onWheelCapture={handleWheel}
                 />
@@ -340,16 +340,16 @@ const BodyIndex = () => {
         
         <div className="food-list-section">
           <h2 className="body-index-section-title">
-            Recommended Dishes
+            {UI_TEXT.RECOMMENDED_DISHES}
             {bmi && (
               <span className={`bmi-badge bmi-badge-${getBMICategoryClass(bmi)}`}>
-                Based on BMI: {getBMICategory(bmi)}
+                {UI_TEXT.BASED_ON_BMI} {getBMICategory(bmi)}
               </span>
             )}
           </h2>
           
           {loading ? (
-            <div className="loading-message">Loading food recommendations...</div>
+                          <div className="loading-message">{UI_TEXT.LOADING_FOOD_RECOMMENDATIONS}</div>
           ) : (
             <div className="recommended-food-list">
               {recommendedFoods.length > 0 ? (
@@ -372,9 +372,9 @@ const BodyIndex = () => {
                         {food.calories} calories per {food.unit}
                       </p>
                       <div className="food-nutrition-info">
-                        <span>Protein: {food.protein}g</span>
-                        <span>Fat: {food.fat}g</span>
-                        <span>Carbs: {food.carbs}g</span>
+                        <span>{UI_TEXT.PROTEIN_LABEL} {food.protein}g</span>
+                        <span>{UI_TEXT.FAT_LABEL} {food.fat}g</span>
+                        <span>{UI_TEXT.CARBS_LABEL} {food.carbs}g</span>
                       </div>
                       <div className="food-actions">
                         <button className="detail-btn" onClick={() => openModal(food)}>
@@ -384,7 +384,7 @@ const BodyIndex = () => {
                           className="add-to-calorie-btn" 
                           onClick={() => addToCalorieCalculation(food)}
                         >
-                          Add to Calorie Calc
+                          {UI_TEXT.ADD_TO_CALORIE_CALC}
                         </button>
                       </div>
                     </div>
@@ -392,7 +392,7 @@ const BodyIndex = () => {
                 ))
               ) : (
                 <div className="no-recommendations">
-                  {bmi ? 'No recommendations available for your BMI category.' : 'Calculate your BMI to see personalized food recommendations.'}
+                  {bmi ? UI_TEXT.NO_RECOMMENDATIONS_AVAILABLE : UI_TEXT.CALCULATE_BMI_FOR_RECOMMENDATIONS}
                 </div>
               )}
             </div>
@@ -404,9 +404,9 @@ const BodyIndex = () => {
       {pendingFoods.length > 0 && (
         <div className="calorie-calculation-section">
           <h2 className="body-index-section-title">
-            Calorie Calculation
+            {UI_TEXT.CALORIE_CALCULATION}
             <span className="total-calories">
-              Total: {calculateTotalCalories().toFixed(1)} calories
+              {UI_TEXT.TOTAL}: {calculateTotalCalories().toFixed(1)} {UI_TEXT.CALORIES}
             </span>
           </h2>
           
@@ -439,7 +439,7 @@ const BodyIndex = () => {
                     }}
                     className="quantity-input"
                   />
-                  <span className="quantity-unit">g</span>
+                  <span className="quantity-unit">{UI_TEXT.QUANTITY_UNIT}</span>
                   <button 
                     className="quantity-btn"
                     onClick={() => updateFoodQuantity(food.id, food.quantity + 1)}
@@ -454,7 +454,7 @@ const BodyIndex = () => {
                   className="remove-food-btn"
                   onClick={() => removeFromCalorieCalculation(food.id)}
                 >
-                  ×
+                  {UI_TEXT.CLOSE_BUTTON}
                 </button>
               </div>
             ))}
@@ -466,7 +466,7 @@ const BodyIndex = () => {
         <div className="food-modal-overlay" onClick={closeModal}>
           <div className="food-modal-outer" onClick={_e => _e.stopPropagation()}>
             <div className="food-modal">
-              <button className="modal-close-btn" onClick={closeModal}>×</button>
+                              <button className="modal-close-btn" onClick={closeModal}>{UI_TEXT.CLOSE_BUTTON}</button>
               <div className="food-modal-img-large">
                 {getFoodImageUrl(selectedFood) && getFoodImageUrl(selectedFood).trim() !== '' ? (
                   <img 
@@ -480,28 +480,28 @@ const BodyIndex = () => {
               </div>
               <h3 className="food-title">{selectedFood.name}</h3>
               <p className="food-description">
-                Category: {categories.find(cat => cat.id === selectedFood.category_id)?.name || 'Unknown'}
+                {UI_TEXT.FOOD_CATEGORY_LABEL} {categories.find(cat => cat.id === selectedFood.category_id)?.name || UI_TEXT.UNKNOWN_CATEGORY}
               </p>
               <div className="food-nutrition-details">
                 <div className="nutrition-item">
-                  <strong>Calories:</strong> 
-                  <span className="nutrition-value">{selectedFood.calories} cal per {selectedFood.unit}</span>
+                  <strong>{UI_TEXT.CALORIES_LABEL}</strong> 
+                  <span className="nutrition-value">{selectedFood.calories} {UI_TEXT.CAL_PER_UNIT} {selectedFood.unit}</span>
                 </div>
                 <div className="nutrition-item">
-                  <strong>Protein:</strong> 
+                  <strong>{UI_TEXT.PROTEIN_LABEL}</strong> 
                   <span className="nutrition-value">{selectedFood.protein}g</span>
                 </div>
                 <div className="nutrition-item">
-                  <strong>Fat:</strong> 
+                  <strong>{UI_TEXT.FAT_LABEL}</strong> 
                   <span className="nutrition-value">{selectedFood.fat}g</span>
                 </div>
                 <div className="nutrition-item">
-                  <strong>Carbohydrates:</strong> 
+                  <strong>{UI_TEXT.CARBOHYDRATES_LABEL}</strong> 
                   <span className="nutrition-value">{selectedFood.carbs}g</span>
                 </div>
                 {selectedFood.fiber && (
                   <div className="nutrition-item">
-                    <strong>Fiber:</strong> 
+                    <strong>{UI_TEXT.FIBER_LABEL}</strong> 
                     <span className="nutrition-value">{selectedFood.fiber}g</span>
                   </div>
                 )}

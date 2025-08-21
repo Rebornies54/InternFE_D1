@@ -27,7 +27,7 @@ function App() {
         <FoodProvider>
           <CalorieProvider>
             <BrowserRouter>
-              <Suspense fallback={<div>{UI_TEXT.LOADING}</div>}>
+              <Suspense fallback={<div>{UI_TEXT.LOADING_TEXT}</div>}>
                 <ScrollToTop />
                 <Routes>
                   <Route path="/login" element={<Login />} />

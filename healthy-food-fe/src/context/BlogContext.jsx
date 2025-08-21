@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { foodAPI, blogAPI } from '../services/api';
 import { PAGINATION, DEFAULTS, STORAGE_KEYS, ERROR_MESSAGES } from '../constants';
+import useMessageTimer from '../hooks/useMessageTimer';
 
 const BlogContext = createContext();
 
@@ -48,14 +49,8 @@ export const BlogProvider = ({ children }) => {
 
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => {
-        setError(null);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
+  // Sử dụng custom hook thay vì timeout trực tiếp
+  useMessageTimer(error, setError, null, 5000);
 
   /**
    * Set error message with user-friendly text

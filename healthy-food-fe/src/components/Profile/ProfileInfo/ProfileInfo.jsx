@@ -32,12 +32,12 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         clearError();
         
         if (file.size > 5 * 1024 * 1024) {
-          setError('File size must be less than 5MB');
+          setError(UI_TEXT.FILE_SIZE_ERROR);
           return;
         }
         
         if (!file.type.startsWith('image/')) {
-          setError('Please select an image file');
+          setError(UI_TEXT.IMAGE_FILE_ERROR);
           return;
         }
 
@@ -55,12 +55,12 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           setTempData(prev => ({ ...prev, avatar: avatarUrl }));
           setProfileData(prev => ({ ...prev, avatar_url: avatarUrl }));
           
-          alert('Avatar uploaded successfully!');
+          alert(UI_TEXT.AVATAR_UPLOAD_SUCCESS);
         } else {
           throw new Error('Invalid response from server');
         }
       }).catch(_error => {
-        let errorMessage = 'Upload image failed! Please try again.';
+        let errorMessage = UI_TEXT.AVATAR_UPLOAD_FAILED;
         
         if (error.response?.data?.message) {
           errorMessage = error.response.data.message;
@@ -75,15 +75,15 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
 
   const handleSave = async () => {
     if (!tempData.name || !tempData.name.trim()) {
-      alert('Full name is required');
+      alert(UI_TEXT.FULL_NAME_REQUIRED);
       return;
     }
     if (!tempData.phone || !tempData.phone.trim()) {
-      alert('Phone number is required');
+      alert(UI_TEXT.PHONE_REQUIRED);
       return;
     }
     if (!tempData.gender) {
-      alert('Gender is required');
+      alert(UI_TEXT.GENDER_REQUIRED);
       return;
     }
 
@@ -107,12 +107,12 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         if (result.success) {
           setProfileData(result.user);
           setIsEditing(false);
-          alert('Profile updated successfully!');
+          alert(UI_TEXT.PROFILE_UPDATED_SUCCESS);
         } else {
-          throw new Error(result.message || 'Failed to update profile');
+          throw new Error(result.message || UI_TEXT.PROFILE_UPDATE_FAILED);
         }
       } catch (error) {
-        let errorMessage = 'Failed to update profile. Please try again.';
+        let errorMessage = UI_TEXT.PROFILE_UPDATE_FAILED;
         
         if (error.response?.data?.message) {
           errorMessage = error.response.data.message;
@@ -144,7 +144,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
     <form className="profile-info-form-row">
       <div className="profile-info-avatar-col">
         <label className="profile-info-avatar-label">
-          <span className="required">*</span>Profile Image
+          <span className="required">*</span>{UI_TEXT.PROFILE_IMAGE_LABEL}
         </label>
         {(tempData.avatar || (profileData.avatar_url && profileData.avatar_url.trim() !== '' && isValidAvatarUrl(profileData.avatar_url))) ? (
           <img
@@ -170,7 +170,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         {!tempData.avatar && (!profileData.avatar_url || profileData.avatar_url.trim() === '' || !isValidAvatarUrl(profileData.avatar_url)) && (
           <div className="profile-info-avatar-empty">
             <div className="profile-info-avatar-placeholder">
-              <span>No Image</span>
+              <span>{UI_TEXT.NO_IMAGE_TEXT}</span>
             </div>
           </div>
         )}
@@ -188,45 +188,45 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
       <div className="profile-info-fields-col">
         <div className="profile-info-form-group">
           <label className="profile-info-label">
-            <span className="required">*</span>Full Name
+            <span className="required">*</span>{UI_TEXT.FULL_NAME_LABEL_PROFILE}
           </label>
                                 <input
             type="text"
             className="profile-info-input"
             value={isEditing ? tempData.name : profileData.name}
             onChange={_e => setTempData(prev => ({ ...prev, name: _e.target.value }))}
-            placeholder="Full Name"
+            placeholder={UI_TEXT.ENTER_FULL_NAME}
             disabled={!isEditing || isSaving}
           />
         </div>
         <div className="profile-info-form-group">
           <label className="profile-info-label">
-            <span className="required">*</span>Email
+            <span className="required">*</span>{UI_TEXT.EMAIL_LABEL_PROFILE}
           </label>
           <input
             type="email"
             className="profile-info-input-disabled"
             value={profileData.email}
             disabled
-            placeholder="Email"
+            placeholder={UI_TEXT.ENTER_EMAIL}
           />
         </div>
         <div className="profile-info-form-group">
           <label className="profile-info-label">
-            <span className="required">*</span>Phone Number
+            <span className="required">*</span>{UI_TEXT.PHONE_NUMBER_LABEL_PROFILE}
           </label>
                                 <input
             type="tel"
             className="profile-info-input"
             value={isEditing ? tempData.phone : profileData.phone}
             onChange={_e => setTempData(prev => ({ ...prev, phone: _e.target.value }))}
-            placeholder="Phone Number"
+            placeholder={UI_TEXT.ENTER_PHONE_NUMBER}
             disabled={!isEditing || isSaving}
           />
         </div>
         <div className="profile-info-form-group">
           <label className="profile-info-label">
-            <span className="required">*</span>Gender
+            <span className="required">*</span>{UI_TEXT.GENDER_LABEL_PROFILE}
           </label>
           <div className="profile-info-select-wrapper">
             <select
@@ -235,17 +235,17 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
               onChange={_e => setTempData(prev => ({ ...prev, gender: _e.target.value }))}
               disabled={!isEditing || isSaving}
             >
-              <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
+              <option value="">{UI_TEXT.SELECT_GENDER_OPTION}</option>
+              <option value="male">{UI_TEXT.MALE_OPTION}</option>
+              <option value="female">{UI_TEXT.FEMALE_OPTION}</option>
+              <option value="other">{UI_TEXT.OTHER_OPTION}</option>
             </select>
             <div className="profile-info-select-arrow">▼</div>
           </div>
         </div>
         <div className="profile-info-form-group">
           <label className="profile-info-label">
-            <span className="required">*</span>Birthday
+            <span className="required">*</span>{UI_TEXT.BIRTHDAY_LABEL}
           </label>
           <div className="profile-info-birthday-container">
             <div className="profile-info-birthday-row">
@@ -256,7 +256,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                   onChange={_e => setTempData(prev => ({ ...prev, birthdayDay: _e.target.value }))}
                   disabled={!isEditing || isSaving}
                 >
-                  <option value="">Day</option>
+                  <option value="">{UI_TEXT.DAY_OPTION}</option>
                   {days.map(day => (
                     <option key={day} value={day}>{day}</option>
                   ))}
@@ -270,7 +270,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                   onChange={_e => setTempData(prev => ({ ...prev, birthdayMonth: _e.target.value }))}
                   disabled={!isEditing || isSaving}
                 >
-                  <option value="">Month</option>
+                  <option value="">{UI_TEXT.MONTH_OPTION}</option>
                   {months.map(month => (
                     <option key={month} value={month}>{month}</option>
                   ))}
@@ -284,7 +284,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                   onChange={_e => setTempData(prev => ({ ...prev, birthdayYear: _e.target.value }))}
                   disabled={!isEditing || isSaving}
                 >
-                  <option value="">Year</option>
+                  <option value="">{UI_TEXT.YEAR_OPTION}</option>
                   {years.map(year => (
                     <option key={year} value={year}>{year}</option>
                   ))}
@@ -305,7 +305,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                 onClick={handleCancel}
                 disabled={isSaving}
               >
-                Cancel
+                {UI_TEXT.CANCEL_PROFILE_BUTTON}
               </button>
               <button 
                 type="button" 
@@ -313,7 +313,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                 onClick={handleSave}
                 disabled={isSaving}
               >
-                {isSaving ? 'Saving...' : 'Update'}
+                {isSaving ? UI_TEXT.SAVING_PROFILE : UI_TEXT.UPDATE_PROFILE_BUTTON}
               </button>
             </div>
           ) : (
@@ -322,7 +322,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
               className="profile-info-btn-save" 
               onClick={() => setIsEditing(true)}
             >
-              Edit
+              {UI_TEXT.EDIT_PROFILE_BUTTON}
             </button>
           )}
         </div>

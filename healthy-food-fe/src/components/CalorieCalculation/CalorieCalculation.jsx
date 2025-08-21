@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { foodAPI } from '../../services/api';
 import { useFoodContext } from '../../context/FoodContext';
-import { PAGINATION, DEFAULTS, VALIDATION } from '../../constants';
+import { PAGINATION, DEFAULTS, VALIDATION, UI_TEXT } from '../../constants';
+import useDebounce from '../../hooks/useDebounce';
+import useMessageTimer from '../../hooks/useMessageTimer';
 import DatePicker from '../DatePicker';
 import './CalorieCalculation.css';
 
@@ -28,8 +30,17 @@ const CalorieCalculation = () => {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
 
-
   const [activeMobileMenu, setActiveMobileMenu] = useState(null);
+
+  // Sử dụng custom hooks thay vì timeout trực tiếp
+  const debouncedLoadData = useDebounce(() => {
+    Promise.all([
+      loadUserFoodLogs(),
+      loadDailyStatistics()
+    ]);
+  }, 300);
+
+  useMessageTimer(message, setMessage, setMessageType, 3000);
 
   const { 
     pendingFoods = [], 
@@ -49,22 +60,6 @@ const CalorieCalculation = () => {
     }
   }, [selectedCategory]);
 
-  const debouncedLoadData = useCallback(
-    (() => {
-      let timeoutId;
-      return () => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-          Promise.all([
-            loadUserFoodLogs(),
-            loadDailyStatistics()
-          ]);
-        }, 300); 
-      };
-    })(),
-    [selectedDate]
-  );
-
   useEffect(() => {
     debouncedLoadData();
   }, [selectedDate, debouncedLoadData]);
@@ -75,15 +70,6 @@ const CalorieCalculation = () => {
       loadMonthlyStatistics()
     ]);
   }, []);
-  useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => {
-        setMessage('');
-        setMessageType('');
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -202,9 +188,9 @@ const CalorieCalculation = () => {
         setQuantity(100);
         
         // Restore scroll position after reload
-        setTimeout(() => {
+        requestAnimationFrame(() => {
           window.scrollTo(0, currentScrollPosition);
-        }, 100);
+        });
       }
     } catch (error) {
       setMessage('Lỗi khi thêm thực phẩm vào nhật ký');
@@ -413,7 +399,7 @@ const CalorieCalculation = () => {
       <div className="food-database-table-wrapper">
         <div className="food-database-section">
           <div className="table-select-form-group">
-            <label className="table-select-label">Select calculation table</label>
+            <label className="table-select-label">{UI_TEXT.SELECT_CALCULATION_TABLE}</label>
             <select 
               className="table-select"
               value={selectedCategory}
@@ -433,16 +419,16 @@ const CalorieCalculation = () => {
             <table className="food-database-table">
               <thead>
                 <tr>
-                  <th>Food Type</th>
-                  <th>Calories (per 100g)</th>
-                  <th>Unit</th>
+                  <th>{UI_TEXT.FOOD_TYPE_LABEL}</th>
+                  <th>{UI_TEXT.CALORIES_PER_100G}</th>
+                  <th>{UI_TEXT.UNIT_LABEL}</th>
                 </tr>
               </thead>
               <tbody>
                 {foodItems.slice(0, 10).map(food => (
                   <tr key={food.id}>
                     <td>{food.name}</td>
-                    <td>{food.calories} cal</td>
+                    <td>{food.calories} {UI_TEXT.CAL_LABEL}</td>
                     <td>{food.unit}</td>
                   </tr>
                 ))}
@@ -450,7 +436,7 @@ const CalorieCalculation = () => {
             </table>
             {foodItems.length > 10 && (
               <div className="food-table-note">
-                <p>Showing first 10 items. Use the dropdown above to select specific foods.</p>
+                <p>{UI_TEXT.SHOWING_FIRST_10_ITEMS}</p>
               </div>
             )}
           </div>
@@ -460,33 +446,33 @@ const CalorieCalculation = () => {
       {/* Daily Statistics Section */}
       {dailyStats && (
         <div className="daily-statistics-section">
-          <h2 className="section-title">Daily Food Statistics - {selectedDate}</h2>
+          <h2 className="section-title">{UI_TEXT.DAILY_FOOD_STATISTICS} - {selectedDate}</h2>
           
           <div className="statistics-summary">
             <div className="stat-card">
-              <h3>Total Calories</h3>
-              <p className="stat-value">{dailyStats.summary.total_calories || 0} cal</p>
+              <h3>{UI_TEXT.TOTAL_CALORIES}</h3>
+              <p className="stat-value">{dailyStats.summary.total_calories || 0} {UI_TEXT.CAL_LABEL}</p>
             </div>
             <div className="stat-card">
-              <h3>Total Quantity</h3>
+              <h3>{UI_TEXT.TOTAL_QUANTITY}</h3>
               <p className="stat-value">{dailyStats.summary.total_quantity || 0}g</p>
             </div>
             <div className="stat-card">
-              <h3>Food Entries</h3>
+              <h3>{UI_TEXT.FOOD_ENTRIES}</h3>
               <p className="stat-value">{dailyStats.summary.total_entries || 0}</p>
             </div>
           </div>
 
           {dailyStats.categoryStats && dailyStats.categoryStats.length > 0 && (
             <div className="category-stats">
-              <h3>Statistics by Category</h3>
+              <h3>{UI_TEXT.STATISTICS_BY_CATEGORY}</h3>
               <div className="category-stats-grid">
                 {dailyStats.categoryStats.map((cat, index) => (
                   <div key={index} className="category-stat-card">
                     <h4>{cat.category_name}</h4>
-                    <p>{cat.total_calories} cal</p>
+                    <p>{cat.total_calories} {UI_TEXT.CAL_LABEL}</p>
                     <p>{cat.total_quantity}g</p>
-                    <p>{cat.entry_count} entries</p>
+                    <p>{cat.entry_count} {UI_TEXT.ENTRIES_LABEL}</p>
                   </div>
                 ))}
               </div>
@@ -495,13 +481,13 @@ const CalorieCalculation = () => {
 
           {dailyStats.topFoods && dailyStats.topFoods.length > 0 && (
             <div className="top-foods">
-              <h3>Top Foods Consumed</h3>
+              <h3>{UI_TEXT.TOP_FOODS_CONSUMED}</h3>
               <div className="top-foods-list">
                 {dailyStats.topFoods.map((food, index) => (
                   <div key={index} className="top-food-item">
                     <span className="food-name">{food.food_name}</span>
                     <span className="food-category">({food.category_name})</span>
-                    <span className="food-calories">{food.total_calories} cal</span>
+                    <span className="food-calories">{food.total_calories} {UI_TEXT.CAL_LABEL}</span>
                   </div>
                 ))}
               </div>
@@ -518,10 +504,10 @@ const CalorieCalculation = () => {
         {pendingFoods.length > 0 && (
           <div className="pending-foods-section">
             <div className="pending-foods-header">
-              <h3>Pending Foods from BodyIndex</h3>
+              <h3>{UI_TEXT.PENDING_FOODS_FROM_BODYINDEX}</h3>
               <div className="pending-foods-summary">
-                <span>{pendingFoods.length} items</span>
-                <span>{getPendingTotalCalories().toFixed(1)} total calories</span>
+                <span>{pendingFoods.length} {UI_TEXT.ITEMS_LABEL}</span>
+                <span>{getPendingTotalCalories().toFixed(1)} {UI_TEXT.TOTAL_CALORIES_LABEL}</span>
               </div>
             </div>
             
@@ -530,7 +516,7 @@ const CalorieCalculation = () => {
                 <div key={food.id} className="pending-food-item">
                   <div className="pending-food-info">
                     <h4>{food.name}</h4>
-                    <p>{food.calories} cal per {food.unit}</p>
+                    <p>{food.calories} {UI_TEXT.CAL_LABEL} {UI_TEXT.PER_100G} {food.unit}</p>
                   </div>
                   <div className="pending-food-quantity">
                     <button 
@@ -554,7 +540,7 @@ const CalorieCalculation = () => {
                       }}
                       className="quantity-input"
                     />
-                    <span className="quantity-unit">g</span>
+                    <span className="quantity-unit">{UI_TEXT.QUANTITY_UNIT}</span>
                     <button 
                       className="quantity-btn"
                       onClick={() => updatePendingFoodQuantity(food.id, food.quantity + 1)}
@@ -563,7 +549,7 @@ const CalorieCalculation = () => {
                     </button>
                   </div>
                   <div className="pending-food-calories">
-                    {(food.calories * food.quantity / 100).toFixed(1)} cal
+                    {(food.calories * food.quantity / 100).toFixed(1)} {UI_TEXT.CAL_LABEL}
                   </div>
                   <button 
                     className="remove-food-btn"
@@ -576,19 +562,19 @@ const CalorieCalculation = () => {
             </div>
             
             <div className="pending-foods-actions">
-              <button 
-                className="add-all-btn"
-                onClick={addPendingFoodsToTracking}
-                disabled={loading}
-              >
-                Add All to Daily Tracking
-              </button>
-              <button 
-                className="clear-all-btn"
-                onClick={clearPendingFoods}
-              >
-                Clear All
-              </button>
+                              <button 
+                  className="add-all-btn"
+                  onClick={addPendingFoodsToTracking}
+                  disabled={loading}
+                >
+                  {UI_TEXT.ADD_ALL_TO_DAILY_TRACKING}
+                </button>
+                              <button 
+                  className="clear-all-btn"
+                  onClick={clearPendingFoods}
+                >
+                  {UI_TEXT.CLEAR_ALL}
+                </button>
             </div>
           </div>
         )}
@@ -598,7 +584,7 @@ const CalorieCalculation = () => {
           <DatePicker
             value={selectedDate}
             onChange={setSelectedDate}
-            placeholder="Select date"
+            placeholder={UI_TEXT.SELECT_DATE_PLACEHOLDER}
             className="date-input"
           />
         </div>
@@ -606,7 +592,7 @@ const CalorieCalculation = () => {
         <div className="add-food-form">
           <div className="form-row">
             <div className="form-group food-group">
-              <label>Food Type</label>
+              <label>{UI_TEXT.FOOD_TYPE_LABEL}</label>
               <select 
                 value={selectedFood}
                 onChange={(e) => setSelectedFood(e.target.value)}
@@ -621,7 +607,7 @@ const CalorieCalculation = () => {
             </div>
             
             <div className="form-group">
-              <label>Quantity (g)</label>
+              <label>{UI_TEXT.QUANTITY_PLACEHOLDER}</label>
               <div className="quantity-group">
                 <button onClick={decreaseQuantity} className="quantity-btn">-</button>
                 <input 
@@ -631,31 +617,31 @@ const CalorieCalculation = () => {
                   value={quantity}
                   onChange={(e) => setQuantity(Math.round(parseFloat(e.target.value)) || 0)}
                   className="quantity-input"
-                  placeholder="Quantity (g)"
+                  placeholder={UI_TEXT.QUANTITY_PLACEHOLDER}
                 />
                 <button onClick={increaseQuantity} className="quantity-btn">+</button>
               </div>
             </div>
             
             <div className="form-group">
-              <label>Calories</label>
+              <label>{UI_TEXT.CALORIES_LABEL}</label>
               <input 
                 type="text" 
                 value={calculateCalories(selectedFood, quantity)}
                 readOnly
                 className="calorie-display"
-                placeholder="Calories"
+                placeholder={UI_TEXT.CALORIES_LABEL}
               />
             </div>
             
             <div className="form-group">
-              <button 
-                onClick={addFoodToLog} 
-                className="add-food-btn"
-                disabled={!selectedFood || loading}
-              >
-                Add to table
-              </button>
+                              <button 
+                  onClick={addFoodToLog} 
+                  className="add-food-btn"
+                  disabled={!selectedFood || loading}
+                >
+                  {UI_TEXT.ADD_TO_TABLE}
+                </button>
             </div>
           </div>
         </div>
@@ -668,9 +654,9 @@ const CalorieCalculation = () => {
                 <th>#</th>
                 <th>Date</th>
                 <th>Food</th>
-                <th>Quantity</th>
-                <th>Calories</th>
-                <th>Action</th>
+                <th>{UI_TEXT.QUANTITY_PLACEHOLDER}</th>
+                <th>{UI_TEXT.CALORIES_LABEL}</th>
+                <th>{UI_TEXT.ACTION_LABEL}</th>
               </tr>
             </thead>
             <tbody>
@@ -682,8 +668,8 @@ const CalorieCalculation = () => {
                   <td>{entry.quantity}g</td>
                   <td>{entry.calories}</td>
                   <td className="action-buttons">
-                    <button onClick={() => editFoodEntry(entry)} className="edit-btn">Edit</button>
-                    <button onClick={() => deleteFoodEntry(entry.id)} className="delete-btn">Delete</button>
+                    <button onClick={() => editFoodEntry(entry)} className="edit-btn">{UI_TEXT.EDIT_BUTTON_TEXT}</button>
+                    <button onClick={() => deleteFoodEntry(entry.id)} className="delete-btn">{UI_TEXT.DELETE_BUTTON_TEXT}</button>
                   </td>
                 </tr>
               ))}
@@ -719,12 +705,12 @@ const CalorieCalculation = () => {
                 <span className="food-log-card-detail-value">{entry.calories} cal</span>
               </div>
               <div className="food-log-card-detail">
-                <span className="food-log-card-detail-label">Entry #{(currentPage - 1) * itemsPerPage + index + 1}</span>
+                <span className="food-log-card-detail-label">{UI_TEXT.ENTRY_LABEL} #{(currentPage - 1) * itemsPerPage + index + 1}</span>
               </div>
             </div>
             <div className="food-log-card-actions">
-              <button onClick={() => editFoodEntry(entry)} className="edit-btn">Edit</button>
-              <button onClick={() => deleteFoodEntry(entry.id)} className="delete-btn">Delete</button>
+                          <button onClick={() => editFoodEntry(entry)} className="edit-btn">{UI_TEXT.EDIT_BUTTON_TEXT}</button>
+            <button onClick={() => deleteFoodEntry(entry.id)} className="delete-btn">{UI_TEXT.DELETE_BUTTON_TEXT}</button>
             </div>
           </div>
         ))}
@@ -739,10 +725,10 @@ const CalorieCalculation = () => {
               disabled={currentPage === 1}
               className="pagination-btn"
             >
-              Previous
+              {UI_TEXT.PREVIOUS_BUTTON_TEXT}
             </button>
             <span className="pagination-info">
-              Page {currentPage} of {totalPages}
+                              {UI_TEXT.PAGE_INFO_TEXT} {currentPage} {UI_TEXT.OF_TEXT} {totalPages}
             </span>
             <button 
               onClick={() => {
@@ -751,7 +737,7 @@ const CalorieCalculation = () => {
               disabled={currentPage === totalPages}
               className="pagination-btn"
             >
-              Next
+              {UI_TEXT.NEXT_BUTTON_TEXT}
             </button>
           </div>
         )}
@@ -761,19 +747,19 @@ const CalorieCalculation = () => {
       {showEditModal && editingLog && (
         <div className="edit-modal-overlay">
           <div className="edit-modal-content">
-            <h2>Edit Food Entry</h2>
+            <h2>{UI_TEXT.EDIT_FOOD_ENTRY}</h2>
             <div className="edit-modal-info">
-              <p><strong>Note:</strong> This entry represents the total quantity and calories for this food item on this date.</p>
+              <p><strong>Note:</strong> {UI_TEXT.EDIT_ENTRY_NOTE}</p>
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Food Name:</label>
+                <label>{UI_TEXT.FOOD_NAME_LABEL}</label>
                 <div className="food-name-display">
                   <strong>{editingLog.food_name}</strong>
                 </div>
               </div>
               <div className="form-group">
-                <label>Total Quantity (g):</label>
+                <label>{UI_TEXT.TOTAL_QUANTITY_LABEL}</label>
                 <div className="quantity-group">
                   <button onClick={decreaseEditQuantity} className="quantity-btn">-</button>
                   <input 
@@ -792,18 +778,18 @@ const CalorieCalculation = () => {
                 </div>
               </div>
               <div className="form-group">
-                <label>Total Calories:</label>
+                <label>{UI_TEXT.TOTAL_CALORIES_LABEL_2}</label>
                 <input 
                   type="text" 
                   value={editCalories}
                   readOnly
                   className="calorie-display"
-                  placeholder="Calories"
+                  placeholder={UI_TEXT.CALORIES_LABEL}
                 />
               </div>
               <div className="form-group">
-                <button onClick={updateFoodEntry} className="save-btn">Save Changes</button>
-                <button onClick={() => setShowEditModal(false)} className="cancel-btn">Cancel</button>
+                <button onClick={updateFoodEntry} className="save-btn">{UI_TEXT.SAVE_CHANGES}</button>
+                <button onClick={() => setShowEditModal(false)} className="cancel-btn">{UI_TEXT.CANCEL_BUTTON}</button>
               </div>
             </div>
           </div>
