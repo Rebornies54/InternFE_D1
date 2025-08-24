@@ -1,5 +1,5 @@
 import './AnimatedComponents.css';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ANIMATION } from '../constants';
 
 export const PageTransition = ({ children, className = "" }) => (

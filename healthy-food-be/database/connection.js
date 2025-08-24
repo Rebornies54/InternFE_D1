@@ -1,11 +1,11 @@
 const mysql = require('mysql2/promise');
 const path = require('path');
-// require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const dbConfig = {
-  host: process.env.DB_HOST || 'mysql',
+  host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '0504Giavuong',
+  password: process.env.DB_PASSWORD || '123456',
   database: process.env.DB_NAME || 'healthyfood',
   port: process.env.DB_PORT || 3306,
   charset: 'utf8mb4_unicode_ci',
