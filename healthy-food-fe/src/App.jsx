@@ -5,6 +5,7 @@ import { BlogProvider } from './context/BlogContext';
 import { FoodProvider } from './context/FoodContext';
 import { CalorieProvider } from './context/CalorieContext';
 import ScrollToTop from './components/ScrollToTop';
+import ProtectedRoute from './components/ProtectedRoute';
 import { UI_TEXT } from './constants';
 import './App.css';
 
@@ -33,7 +34,11 @@ function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/home/*" element={<Home />} />
+                  <Route path="/home/*" element={
+                    <ProtectedRoute>
+                      <Home />
+                    </ProtectedRoute>
+                  } />
                   <Route path="/" element={<Navigate to="/login" replace />} />
                 </Routes>
               </Suspense>

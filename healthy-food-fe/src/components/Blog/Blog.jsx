@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useBlogContext } from '../../context/BlogContext';
 import { blogAPI } from '../../services/api';
-import { PAGINATION, DEFAULTS, ERROR_MESSAGES } from '../../constants';
+import { PAGINATION, DEFAULTS, ERROR_MESSAGES, UI_TEXT } from '../../constants';
 import { Heart, Eye } from 'lucide-react';
 import { 
   AnimatedCard, 
@@ -40,7 +40,7 @@ const FoodCard = ({ post, onClick, onLike, isLiked, likeCount }) => (
       <div 
         className={`blog-image-placeholder ${(post.image_url && post.image_url.trim() !== '') ? 'blog-image-placeholder-hidden' : 'blog-image-placeholder-visible'}`}
       >
-        <span>Ảnh minh họa</span>
+        <span>{UI_TEXT.BLOG_IMAGE_PLACEHOLDER}</span>
       </div>
       <div className="blog-card-view-count">
         <Eye size={14} />
@@ -112,7 +112,7 @@ const FoodItem = ({ food, onClick }) => (
 
 const FoodCategoryFilter = ({ categories, selectedCategory, onCategoryChange }) => (
   <div className="food-category-filter">
-    <label htmlFor="food-category" className="filter-label">Lọc theo danh mục:</label>
+    <label htmlFor="food-category" className="filter-label">{UI_TEXT.FILTER_BY_CATEGORY}</label>
     <div className="food-category-select-wrapper">
       <select 
         id="food-category"
@@ -120,7 +120,7 @@ const FoodCategoryFilter = ({ categories, selectedCategory, onCategoryChange }) 
         onChange={(e) => onCategoryChange(e.target.value)}
         className="food-category-select"
       >
-        <option value="">Tất cả danh mục</option>
+        <option value="">{UI_TEXT.ALL_CATEGORIES}</option>
         {categories.map(category => (
           <option key={category.id} value={category.id}>
             {category.name}
@@ -136,7 +136,7 @@ const FoodSearchBar = ({ value, onChange }) => (
   <div className="food-search">
     <input
       type="text"
-      placeholder="Tìm kiếm thực phẩm..."
+      placeholder={UI_TEXT.SEARCH_FOOD}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className="food-search-input"
@@ -199,7 +199,7 @@ const FoodModal = ({ food, variations, onClose }) => {
 
 const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
   <div className="blog-detail">
-    <button className="back-button" onClick={onBack}>← Quay lại danh sách</button>
+    <button className="back-button" onClick={onBack}>{UI_TEXT.BACK_TO_LIST}</button>
     <div className="blog-detail-header">
       <div className="blog-detail-info">
         <h1 className="blog-detail-title">{post.title}</h1>
@@ -207,7 +207,7 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
           <span className="blog-detail-category">{post.category}</span>
           <span className="blog-detail-date">{post.date}</span>
           {post.author_name && (
-            <span className="blog-detail-author">Bởi {post.author_name}</span>
+            <span className="blog-detail-author">{UI_TEXT.BY_AUTHOR} {post.author_name}</span>
           )}
         </div>
       </div>
@@ -244,13 +244,13 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => (
             }
           }}
         >
-          <span>Ảnh minh họa</span>
+          <span>{UI_TEXT.BLOG_IMAGE_PLACEHOLDER}</span>
         </div>
       </div>
     ) : (
       <div className="blog-detail-image">
         <div className="blog-detail-placeholder blog-detail-placeholder-visible">
-          <span>Ảnh minh họa</span>
+          <span>{UI_TEXT.BLOG_IMAGE_PLACEHOLDER}</span>
         </div>
       </div>
     )}
@@ -292,7 +292,7 @@ const CategoryFilter = ({ categories, selected, onChange }) => {
   };
 
   const getSelectedCategoryLabel = () => {
-    if (!selected) return 'Tất cả danh mục';
+    if (!selected) return UI_TEXT.ALL_CATEGORIES;
     return selected.charAt(0).toUpperCase() + selected.slice(1);
   };
 
@@ -313,7 +313,7 @@ const CategoryFilter = ({ categories, selected, onChange }) => {
             className={`dropdown-item ${!selected ? 'selected' : ''}`}
             onClick={() => selectCategory('')}
           >
-            Tất cả danh mục
+            {UI_TEXT.ALL_CATEGORIES}
           </div>
           {categories.map(category => (
             <div
@@ -334,7 +334,7 @@ const SearchBar = ({ value, onChange }) => (
   <div className="blog-search">
     <input
       type="text"
-      placeholder="Tìm kiếm bài viết..."
+      placeholder={UI_TEXT.SEARCH_POSTS}
       value={value}
       onChange={(e) => onChange(e.target.value)}
     />

@@ -96,7 +96,7 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   return (
     <header className="home-header">
       <div className="home-header-content">
-        <div className="home-logo-group">
+        <div className="home-logo-group" onClick={() => navigate('/home')} style={{ cursor: 'pointer' }}>
           <img src={logo} alt="Healthy Food Logo" className="home-logo-img" />
           <span className="home-app-name">HEALTHY FOOD</span>
         </div>

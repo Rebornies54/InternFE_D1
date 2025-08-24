@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { blogAPI } from '../../services/api';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
-import { BLOG_CATEGORIES } from '../../constants';
+import { BLOG_CATEGORIES, UI_TEXT } from '../../constants';
 import './Blog.css';
 
 const CreateBlog = ({ onClose, onCreated }) => {
@@ -37,7 +37,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
       reader.readAsDataURL(file);
       setError('');
     } else {
-      setError('Vui lòng chọn file ảnh hợp lệ');
+      setError(UI_TEXT.INVALID_IMAGE_FILE);
     }
   };
 
@@ -86,7 +86,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
       if (onCreated) onCreated();
       onClose();
     } catch (err) {
-      setError('Đăng bài thất bại. Vui lòng thử lại!');
+      setError(UI_TEXT.PUBLISH_FAILED);
     } finally {
       setLoading(false);
     }
@@ -201,7 +201,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
 
           <div className="form-section">
             <label className="form-label">
-              Nội dung <span className="required">*</span>
+              {UI_TEXT.CONTENT} <span className="required">*</span>
               <span className="char-count">{charCount.content}/5000</span>
             </label>
             <textarea
@@ -209,7 +209,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
               onChange={e => setContent(e.target.value)}
               required
               maxLength={5000}
-              placeholder="Viết nội dung bài blog của bạn..."
+              placeholder={UI_TEXT.ENTER_BLOG_CONTENT}
               className="form-textarea content-textarea"
               rows={8}
             />
@@ -217,7 +217,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
 
           <div className="form-section">
             <label className="form-label">
-              Ảnh minh họa
+              {UI_TEXT.BLOG_IMAGE_PLACEHOLDER}
             </label>
             <div className="image-upload-area" onClick={() => fileInputRef.current?.click()}>
               {imagePreview && imagePreview.trim() !== '' ? (
@@ -241,8 +241,8 @@ const CreateBlog = ({ onClose, onCreated }) => {
                     <polyline points="7,10 12,15 17,10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
-                  <p>Click để chọn ảnh</p>
-                  <span>Hỗ trợ: JPG, PNG, GIF (tối đa 5MB)</span>
+                  <p>{UI_TEXT.CLICK_TO_SELECT_IMAGE}</p>
+                  <span>{UI_TEXT.SUPPORT_FORMATS}</span>
                 </div>
               )}
               <input
@@ -272,7 +272,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
               className="cancel-btn"
               onClick={onClose}
             >
-              Hủy
+              {UI_TEXT.CANCEL}
             </button>
             <button
               type="submit"
@@ -284,10 +284,10 @@ const CreateBlog = ({ onClose, onCreated }) => {
                   <svg className="loading-spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 12a9 9 0 11-6.219-8.56"></path>
                   </svg>
-                  Đang đăng...
+                  {UI_TEXT.PUBLISHING}
                 </>
               ) : (
-                'Đăng bài'
+                UI_TEXT.PUBLISH_POST
               )}
             </button>
           </div>

@@ -37,7 +37,9 @@ const Login = () => {
   } = useRememberPassword();
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
-    await withSubmitting(async () => {
+    try {
+      setSubmitting(true);
+      
       const errors = {};
       if (!values.email) errors.email = 'Email is required';
       if (!values.password) errors.password = 'Password is required';
@@ -50,8 +52,8 @@ const Login = () => {
       }
 
       const result = await login(values);
+      
       if (result.success) {
-
         if (rememberPassword) {
           saveCredentials(values.email, values.password);
         } else {
@@ -64,7 +66,12 @@ const Login = () => {
         setErrorMessage(result.message);
         openModal();
       }
-    });
+    } catch (error) {
+      setErrorMessage('An unexpected error occurred');
+      openModal();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleCloseErrorModal = () => {
@@ -173,7 +180,7 @@ const Login = () => {
                         onChange={handleRememberPasswordChange}
                         className="remember-password-checkbox"
                       />
-                      <span className="remember-password-text">Lưu mật khẩu</span>
+                                             <span className="remember-password-text">{UI_TEXT.REMEMBER_PASSWORD}</span>
                     </label>
                   </div>
                   
@@ -189,14 +196,14 @@ const Login = () => {
             </Formik>
             
             <div className="forgot-password-link">
-              <Link to="/forgot-password" className="forgot-password-text">
-                Forgot Password?
-              </Link>
+                             <Link to="/forgot-password" className="forgot-password-text">
+                 {UI_TEXT.FORGOT_PASSWORD}
+               </Link>
             </div>
             
             <div className="login-footer">
-              <span>Don't have an account?</span>
-              <Link to="/register" className="login-link">Register now</Link>
+                             <span>{UI_TEXT.DONT_HAVE_ACCOUNT}</span>
+               <Link to="/register" className="login-link">{UI_TEXT.REGISTER_NOW}</Link>
             </div>
           </div>
         </FadeIn>
