@@ -1,351 +1,231 @@
-.date-picker-container {
+/* Custom DatePicker Styles - Sử dụng CSS variables từ constants */
+:root {
+  --datepicker-primary: #7c3aed;
+  --datepicker-primary-light: #c4b5fd;
+  --datepicker-background: #ffffff;
+  --datepicker-background-hover: #f5f3ff;
+  --datepicker-border: #e5e7eb;
+  --datepicker-text: #1f2937;
+  --datepicker-text-secondary: #6b7280;
+  --datepicker-text-disabled: #9ca3af;
+  
+  --datepicker-input-padding: 12px 16px;
+  --datepicker-input-padding-mobile: 12px 14px;
+  --datepicker-input-font-size: 16px;
+  --datepicker-day-size: 40px;
+  --datepicker-day-size-mobile: 44px;
+  --datepicker-border-radius: 8px;
+  --datepicker-calendar-border-radius: 12px;
+  
+  --datepicker-z-index: 1000;
+  --datepicker-transition: all 0.2s ease;
+  --datepicker-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  
+  --datepicker-header-padding: 16px 16px 8px 16px;
+  --datepicker-action-padding: 8px 16px;
+  --datepicker-action-padding-mobile: 12px;
+  --datepicker-button-padding: 6px 12px;
+  --datepicker-button-padding-mobile: 8px 12px;
+  --datepicker-button-min-width: 64px;
+  --datepicker-touch-min-size: 44px;
+  
+  --datepicker-header-size: 16px;
+  --datepicker-header-weight: 600;
+  --datepicker-day-size-font: 14px;
+  --datepicker-day-weight: 400;
+  --datepicker-day-weight-selected: 500;
+  --datepicker-weekday-size: 14px;
+  --datepicker-weekday-weight: 500;
+  
+  --datepicker-focus-outline: 2px solid rgba(124, 58, 237, 0.4);
+  --datepicker-focus-offset: 2px;
+}
+
+.custom-datepicker-wrapper {
   position: relative;
   width: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.date-picker-input {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.custom-datepicker-input {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: #fff !important;
+}
+
+/* Input Styles */
+.custom-datepicker-input .MuiOutlinedInput-root {
+  border-radius: var(--datepicker-border-radius);
+  font-family: inherit;
+  transition: var(--datepicker-transition);
+}
+
+.custom-datepicker-input .MuiOutlinedInput-notchedOutline {
+  border: 1px solid var(--datepicker-border);
+  border-radius: var(--datepicker-border-radius);
+}
+
+.custom-datepicker-input .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--datepicker-primary-light);
+}
+
+.custom-datepicker-input .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--datepicker-primary);
+  border-width: 2px;
+}
+
+.custom-datepicker-input .MuiInputBase-input {
+  color: var(--datepicker-text);
+  font-size: var(--datepicker-input-font-size);
+  padding: var(--datepicker-input-padding);
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 14px;
-  color: #333 !important;
 }
 
-.date-picker-input:hover {
-  border-color: #2196f3;
+.custom-datepicker-input .MuiInputBase-input::placeholder {
+  color: var(--datepicker-text-secondary);
 }
 
-.date-picker-input.disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.custom-datepicker-input .MuiOutlinedInput-root.Mui-disabled {
+  background-color: #f9fafb;
 }
 
-.date-picker-text {
-  flex: 1;
-  color: #333 !important;
+.custom-datepicker-input .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline {
+  border-color: var(--datepicker-border);
 }
 
-.date-picker-text:empty::before {
-  content: attr(placeholder);
-  color: #999;
+/* Popper Styles */
+.custom-datepicker-popper {
+  z-index: var(--datepicker-z-index) !important;
 }
 
-.date-picker-clear {
-  background: none;
-  border: none;
-  color: #999;
-  cursor: pointer;
-  padding: 2px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+.custom-datepicker-popper .MuiPaper-root {
+  border-radius: var(--datepicker-calendar-border-radius) !important;
+  box-shadow: var(--datepicker-shadow) !important;
+  background: var(--datepicker-background) !important;
+  border: 1px solid var(--datepicker-border) !important;
+  overflow: hidden !important;
 }
 
-.date-picker-clear:hover {
-  background: #f0f0f0;
-  color: #666;
+/* Calendar Header */
+.custom-datepicker-popper .MuiPickersCalendarHeader-root {
+  padding: var(--datepicker-header-padding) !important;
 }
 
-.date-picker-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  margin-top: 4px;
-  max-width: 320px;
-  min-width: 280px;
+.custom-datepicker-popper .MuiPickersCalendarHeader-label {
+  color: var(--datepicker-text) !important;
+  font-size: var(--datepicker-header-size) !important;
+  font-weight: var(--datepicker-header-weight) !important;
 }
 
-.date-picker-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid #eee;
-  background: #f8f9fa;
-  border-radius: 8px 8px 0 0;
+.custom-datepicker-popper .MuiPickersArrowSwitcher-button {
+  color: var(--datepicker-primary) !important;
+  padding: 8px !important;
 }
 
-.date-picker-nav-btn {
-  background: none;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+.custom-datepicker-popper .MuiPickersArrowSwitcher-button:hover {
+  background-color: var(--datepicker-background-hover) !important;
 }
 
-.date-picker-nav-btn:hover {
-  background: #e9ecef;
-  color: #333;
+/* Day Names */
+.custom-datepicker-popper .MuiPickersCalendarHeader-weekDayLabel {
+  color: var(--datepicker-text-secondary) !important;
+  font-weight: var(--datepicker-weekday-weight) !important;
+  font-size: var(--datepicker-weekday-size) !important;
+  margin: 4px 0 !important;
 }
 
-.date-picker-title {
-  font-weight: 600;
-  font-size: 14px;
-  color: #333;
-  text-align: center;
-  flex: 1;
+/* Calendar Days */
+.custom-datepicker-popper .MuiPickersDay-root {
+  color: var(--datepicker-text) !important;
+  font-weight: var(--datepicker-day-weight) !important;
+  font-size: var(--datepicker-day-size-font) !important;
+  width: var(--datepicker-day-size) !important;
+  height: var(--datepicker-day-size) !important;
+  margin: 0 !important;
+  transition: var(--datepicker-transition) !important;
+  border-radius: 50% !important;
 }
 
-.date-picker-calendar {
-  padding: 16px;
+.custom-datepicker-popper .MuiPickersDay-root:hover {
+  background-color: var(--datepicker-background-hover) !important;
 }
 
-.date-picker-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 8px;
+.custom-datepicker-popper .MuiPickersDay-root.Mui-selected {
+  background-color: var(--datepicker-primary) !important;
+  color: white !important;
+  font-weight: var(--datepicker-day-weight-selected) !important;
 }
 
-.date-picker-weekday {
-  text-align: center;
-  font-size: 12px;
-  font-weight: 500;
-  color: #666;
-  padding: 8px 4px;
+.custom-datepicker-popper .MuiPickersDay-root.MuiPickersDay-today {
+  border: 1px solid var(--datepicker-primary) !important;
+  color: var(--datepicker-primary) !important;
+  font-weight: var(--datepicker-day-weight-selected) !important;
 }
 
-.date-picker-days {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+.custom-datepicker-popper .MuiPickersDay-root.MuiPickersDay-outsideMonth {
+  color: var(--datepicker-text-disabled) !important;
 }
 
-.date-picker-day {
-  background: none;
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 14px;
-  color: #333;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  position: relative;
+.custom-datepicker-popper .MuiPickersDay-root.Mui-disabled {
+  color: var(--datepicker-text-disabled) !important;
+  opacity: 0.5 !important;
 }
 
-.date-picker-day:hover {
-  background: #f0f0f0;
+/* Action Bar */
+.custom-datepicker-actions {
+  padding: var(--datepicker-action-padding) !important;
+  border-top: 1px solid var(--datepicker-border) !important;
+  display: flex !important;
+  justify-content: space-between !important;
 }
 
-.date-picker-day.other-month {
-  color: #ccc;
+.custom-datepicker-actions .MuiButton-root {
+  color: var(--datepicker-primary) !important;
+  font-weight: var(--datepicker-day-weight-selected) !important;
+  text-transform: none !important;
+  min-width: var(--datepicker-button-min-width) !important;
+  padding: var(--datepicker-button-padding) !important;
 }
 
-.date-picker-day.today {
-  background: #e3f2fd;
-  color: #1976d2;
-  font-weight: 600;
-}
-
-.date-picker-day.selected {
-  background: #2196f3;
-  color: #fff;
-  font-weight: 600;
-}
-
-.date-picker-day.selected:hover {
-  background: #1976d2;
-}
-
-.date-picker-actions {
-  display: flex;
-  gap: 8px;
-  padding: 12px 16px;
-  border-top: 1px solid #eee;
-  background: #f8f9fa;
-  border-radius: 0 0 8px 8px;
-}
-
-.date-picker-action-btn {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: #fff;
-  color: #666;
-  cursor: pointer;
-  font-size: 13px;
-  transition: all 0.2s ease;
-}
-
-.date-picker-action-btn:hover {
-  background: #f0f0f0;
-  border-color: #ccc;
-}
-
-.date-picker-action-btn.primary {
-  background: #2196f3;
-  color: #fff;
-  border-color: #2196f3;
-}
-
-.date-picker-action-btn.primary:hover {
-  background: #1976d2;
-  border-color: #1976d2;
-}
-
-.date-picker-action-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.custom-datepicker-actions .MuiButton-root:hover {
+  background-color: var(--datepicker-background-hover) !important;
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-  .date-picker-dropdown {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 350px;
-    margin: 0;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-
-  .date-picker-header {
-    padding: 16px 20px;
-    border-radius: 12px 12px 0 0;
-  }
-
-  .date-picker-title {
-    font-size: 16px;
-  }
-
-  .date-picker-calendar {
-    padding: 20px;
-  }
-
-  .date-picker-day {
-    width: 36px;
-    height: 36px;
-    font-size: 15px;
-  }
-
-  .date-picker-actions {
-    padding: 16px 20px;
-    border-radius: 0 0 12px 12px;
-  }
-
-  .date-picker-action-btn {
-    padding: 10px 16px;
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .date-picker-dropdown {
-    width: 95%;
-    max-width: 320px;
-  }
-
-  .date-picker-day {
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
-  }
-
-  .date-picker-calendar {
-    padding: 16px;
-  }
-
-  .date-picker-header {
-    padding: 14px 16px;
-  }
-
-  .date-picker-actions {
-    padding: 14px 16px;
-  }
-}
-
-/* Touch-friendly improvements for mobile */
-@media (hover: none) and (pointer: coarse) {
-  .date-picker-day {
-    min-width: 44px;
-    min-height: 44px;
-  }
-
-  .date-picker-nav-btn {
-    min-width: 44px;
-    min-height: 44px;
-  }
-
-  .date-picker-action-btn {
-    min-height: 44px;
-  }
-}
-
-/* Dark mode support - Override to force light mode for consistency */
-@media (prefers-color-scheme: dark) {
-  .date-picker-input {
-    background: #fff !important;
-    border-color: #ddd !important;
-    color: #333 !important;
+  .custom-datepicker-input .MuiInputBase-input {
+    padding: var(--datepicker-input-padding-mobile);
   }
   
-  .date-picker-text {
-    color: #333 !important;
+  .custom-datepicker-popper .MuiPickersDay-root {
+    width: var(--datepicker-day-size-mobile) !important;
+    height: var(--datepicker-day-size-mobile) !important;
   }
+  
+  .custom-datepicker-actions {
+    padding: var(--datepicker-action-padding-mobile) !important;
+  }
+  
+  .custom-datepicker-actions .MuiButton-root {
+    padding: var(--datepicker-button-padding-mobile) !important;
+  }
+}
 
-  .date-picker-dropdown {
-    background: #2d2d2d;
-    border-color: #444;
+/* Touch-friendly on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .custom-datepicker-popper .MuiPickersArrowSwitcher-button,
+  .custom-datepicker-actions .MuiButton-root {
+    min-height: var(--datepicker-touch-min-size) !important;
+    min-width: var(--datepicker-touch-min-size) !important;
   }
+}
 
-  .date-picker-header {
-    background: #1a1a1a;
-    border-color: #444;
-  }
+/* Focus styles for accessibility */
+.custom-datepicker-input .MuiOutlinedInput-root:focus-within {
+  outline: var(--datepicker-focus-outline);
+  outline-offset: var(--datepicker-focus-offset);
+}
 
-  .date-picker-day {
-    color: #fff;
-  }
-
-  .date-picker-day.other-month {
-    color: #666;
-  }
-
-  .date-picker-day:hover {
-    background: #444;
-  }
-
-  .date-picker-actions {
-    background: #1a1a1a;
-    border-color: #444;
-  }
-
-  .date-picker-action-btn {
-    background: #2d2d2d;
-    border-color: #444;
-    color: #fff;
-  }
-
-  .date-picker-action-btn:hover {
-    background: #444;
-  }
-} 
+.custom-datepicker-popper .MuiPickersDay-root:focus-visible,
+.custom-datepicker-popper .MuiPickersArrowSwitcher-button:focus-visible,
+.custom-datepicker-actions .MuiButton-root:focus-visible {
+  outline: 2px solid var(--datepicker-primary);
+  outline-offset: var(--datepicker-focus-offset);
+}

@@ -1,2 +1,2 @@
 export { default } from './CalorieIndex';
-export { default as CheckboxOption } from './CheckboxOption'; 
+export { default as CheckboxOption } from './components/CheckboxOption'; 

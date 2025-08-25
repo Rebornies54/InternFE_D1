@@ -737,3 +737,146 @@ export const WELCOME_STATS = {
   TARGET_CALORIES: 1850,
   TRACKING_DAYS: 15
 } as const;
+
+export const DASHBOARD = {
+  TITLE: 'Dashboard Summary',
+  DATE_FORMAT: 'DD/MM/YYYY',
+  CHART_TITLES: {
+    RADAR: 'Calories by Food Category',
+    WEEKLY: 'Daily calorie intake for the selected week',
+    MONTHLY: 'Weekly calorie intake for the selected month',
+  },
+  LABELS: {
+    SELECT_DATE: 'Select date',
+    SELECT_WEEK: 'Week:',
+    SELECT_MONTH: 'Month:',
+    TOP_CATEGORIES: 'Top Categories Today',
+  },
+  SUMMARY: {
+    DAILY: {
+      TITLE: "Today's Summary",
+      ICON: "📊",
+      LABELS: {
+        TOTAL_CALORIES: 'Total Calories:',
+        FOOD_ITEMS: 'Food Items:',
+        TOTAL_QUANTITY: 'Total Quantity:',
+      },
+      UNITS: {
+        CALORIES: 'cal',
+        QUANTITY: 'g',
+      },
+    },
+    WEEKLY: {
+      TITLE: 'This Week',
+      ICON: "📈",
+      LABELS: {
+        TOTAL_CALORIES: 'Total Calories:',
+        AVG_PER_DAY: 'Avg/Day:',
+        TOTAL_ENTRIES: 'Total Entries:',
+      },
+      UNITS: {
+        CALORIES: 'cal',
+      },
+    },
+    MONTHLY: {
+      TITLE: 'This Month',
+      ICON: "📅",
+      LABELS: {
+        TOTAL_CALORIES: 'Total Calories:',
+        AVG_PER_DAY: 'Avg/Day:',
+        TOTAL_ENTRIES: 'Total Entries:',
+      },
+      UNITS: {
+        CALORIES: 'cal',
+      },
+    },
+  },
+  CHART_CONFIG: {
+    RADAR: {
+      WIDTH: 400,
+      HEIGHT: 320,
+      OUTER_RADIUS: '75%',
+      DOT_RADIUS: 4,
+      ACTIVE_DOT_RADIUS: 6,
+      FILL_OPACITY: 0.15,
+    },
+    LINE: {
+      HEIGHT: 200,
+      STROKE_WIDTH: 2,
+      DOT_RADIUS: 4,
+      ACTIVE_DOT_RADIUS: 6,
+    },
+    BAR: {
+      HEIGHT: 240,
+      RADIUS: [2, 2, 0, 0],
+    },
+  },
+  COLORS: {
+    RADAR: '#2196f3',
+    LINE: '#4caf50',
+    BAR: '#9c27b0',
+  },
+} as const;
+
+export const DATEPICKER = {
+  PLACEHOLDER: 'Chọn ngày',
+  FORMAT: 'dd/MM/yyyy',
+  BUTTONS: {
+    TODAY: 'Hôm nay',
+    ACCEPT: 'Xác nhận',
+    CLEAR: 'Xóa',
+  },
+  COLORS: {
+    PRIMARY: '#7c3aed',
+    PRIMARY_LIGHT: '#c4b5fd',
+    BACKGROUND: '#ffffff',
+    BACKGROUND_HOVER: '#f5f3ff',
+    BORDER: '#e5e7eb',
+    TEXT: '#1f2937',
+    TEXT_SECONDARY: '#6b7280',
+    TEXT_DISABLED: '#9ca3af',
+  },
+  SIZES: {
+    INPUT_PADDING: '12px 16px',
+    INPUT_PADDING_MOBILE: '12px 14px',
+    INPUT_FONT_SIZE: '16px',
+    DAY_SIZE: 40,
+    DAY_SIZE_MOBILE: 44,
+    BORDER_RADIUS: 8,
+    CALENDAR_BORDER_RADIUS: 12,
+  },
+  BREAKPOINTS: {
+    MOBILE: 768,
+  },
+  Z_INDEX: {
+    POPPER: 1000,
+  },
+  TRANSITIONS: {
+    DEFAULT: 'all 0.2s ease',
+  },
+  SHADOW: '0 4px 20px rgba(0, 0, 0, 0.08)',
+  SPACING: {
+    HEADER_PADDING: '16px 16px 8px 16px',
+    ACTION_PADDING: '8px 16px',
+    ACTION_PADDING_MOBILE: '12px',
+    BUTTON_PADDING: '6px 12px',
+    BUTTON_PADDING_MOBILE: '8px 12px',
+    BUTTON_MIN_WIDTH: 64,
+    TOUCH_MIN_SIZE: 44,
+  },
+  FONTS: {
+    HEADER_SIZE: '16px',
+    HEADER_WEIGHT: 600,
+    DAY_SIZE: '14px',
+    DAY_WEIGHT: 400,
+    DAY_WEIGHT_SELECTED: 500,
+    WEEKDAY_SIZE: '14px',
+    WEEKDAY_WEIGHT: 500,
+  },
+  DAY_NAMES: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+  ACCESSIBILITY: {
+    INPUT_LABEL: 'Chọn ngày',
+    FOCUS_OUTLINE: '2px solid rgba(124, 58, 237, 0.4)',
+    FOCUS_OFFSET: 2,
+  },
+} as const;
