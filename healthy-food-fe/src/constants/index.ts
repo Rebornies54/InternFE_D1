@@ -214,6 +214,253 @@ export const Z_INDEX = {
   FOOTER: 10,
 } as const;
 
+// Blog Component Constants
+export const BLOG_TABS = {
+  BLOG: 'blog',
+  MENU: 'menu',
+} as const;
+
+export const BLOG_TAB_LABELS = {
+  BLOG: 'Blog',
+  MENU_LIST: 'Menu List',
+} as const;
+
+export const BLOG_HEADER = {
+  BLOG_TITLE: 'Bí Quyết Ăn Uống Lành Mạnh',
+  CREATE_BLOG_BUTTON: 'Viết Blog',
+  CREATE_BLOG_TITLE: 'Viết blog mới',
+  CREATE_BLOG_ARIA_LABEL: 'Tạo bài viết blog mới',
+} as const;
+
+export const BLOG_ACTIONS = {
+  VIEW_DETAILS: 'Xem chi tiết',
+  BACK_TO_FOODS: '← Quay lại danh sách thực phẩm',
+  BACK_TO_LIST: '← Quay lại danh sách',
+} as const;
+
+// Blog Card Grid Constants
+export const BLOG_CARD_GRID = {
+  LOADING_TEXT: 'Đang tải bài viết...',
+  NO_POSTS_MESSAGE: 'Không tìm thấy bài viết phù hợp với tiêu chí tìm kiếm của bạn.',
+} as const;
+
+// Food Components Constants
+export const FOOD = {
+  LOADING_TEXT: 'Đang tải danh sách thực phẩm...',
+  NO_FOODS_MESSAGE: 'Không tìm thấy thực phẩm nào phù hợp với tiêu chí tìm kiếm.',
+  NO_FOODS_SUGGESTION: 'Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.',
+  PAGINATION_PREVIOUS: 'Previous',
+  PAGINATION_NEXT: 'Next',
+  PAGINATION_PAGE_INFO: 'Page',
+  PAGINATION_OF: 'of',
+  DETAILS_TITLE: 'Chi tiết',
+  CALORIES_UNIT: 'cal',
+  PROTEIN_UNIT: 'g protein',
+  CARBS_UNIT: 'g carbs',
+  FAT_UNIT: 'g fat',
+  NUTRITION_TABLE_HEADERS: {
+    FOOD: 'Food',
+    SERVING: 'Serving',
+    CALORIES: 'Calories',
+  },
+} as const;
+
+export const FOOD_DESCRIPTION = {
+  NUTRITION_RICH: 'rất giàu dinh dưỡng, chứa nhiều vitamin và khoáng chất.',
+  CARB_DESCRIPTION: 'Mặc dù có hàm lượng carb cao hơn, những carbohydrate phức tạp giàu tinh bột này được chuyển hóa thành năng lượng và sẽ giúp bạn cảm thấy no lâu hơn.',
+  CALORIE_TABLE_REFERENCE: 'Hãy xem Bảng Calorie',
+  PRODUCT_REFERENCE: 'và Sản phẩm',
+  MORE_INFO: 'của chúng tôi dưới đây để biết thêm thông tin dinh dưỡng.',
+} as const;
+
+// Create Blog Constants
+export const CREATE_BLOG = {
+  TITLE: 'Viết Blog mới',
+  FORM_LABELS: {
+    TITLE: 'Tiêu đề',
+    DESCRIPTION: 'Mô tả',
+    CONTENT: 'Nội dung',
+    CATEGORY: 'Danh mục',
+    IMAGE: 'Hình ảnh',
+  },
+  PLACEHOLDERS: {
+    TITLE: 'Nhập tiêu đề bài viết...',
+    DESCRIPTION: 'Mô tả ngắn gọn về bài viết...',
+    CONTENT: 'Viết nội dung bài blog của bạn...',
+  },
+  BUTTONS: {
+    SELECT_IMAGE: 'Chọn ảnh',
+    REMOVE_IMAGE: 'Xóa ảnh',
+    PUBLISH: 'Đăng bài',
+    CANCEL: 'Hủy',
+  },
+  STATUS: {
+    PUBLISHING: 'Đang đăng...',
+    UPLOADING: 'Đang tải lên...',
+  },
+  VALIDATION: {
+    TITLE_REQUIRED: 'Tiêu đề là bắt buộc',
+    CONTENT_REQUIRED: 'Nội dung là bắt buộc',
+    CATEGORY_REQUIRED: 'Danh mục là bắt buộc',
+    IMAGE_SIZE_LIMIT: 'Kích thước ảnh không được vượt quá 5MB',
+    IMAGE_FORMAT: 'Chỉ hỗ trợ định dạng JPG, PNG, GIF',
+  },
+  SUPPORT_TEXT: 'Hỗ trợ: JPG, PNG, GIF (tối đa 5MB)',
+  CLICK_TO_SELECT: 'Click để chọn ảnh',
+} as const;
+
+// Comment Component Constants
+export const COMMENT = {
+  SECTION_TITLE: 'Bình luận',
+  NO_COMMENTS: 'Chưa có bình luận nào. Hãy là người đầu tiên bình luận!',
+  LOADING_COMMENTS: 'Đang tải bình luận...',
+  LOADING_MORE: 'Đang tải thêm...',
+  LOAD_MORE: 'Tải thêm bình luận',
+  NO_MORE_COMMENTS: 'Không còn bình luận nào',
+  PLACEHOLDERS: {
+    COMMENT: 'Viết bình luận...',
+    REPLY: 'Viết trả lời...',
+    EDIT_COMMENT: 'Chỉnh sửa bình luận...',
+  },
+  BUTTONS: {
+    POST_COMMENT: 'Đăng bình luận',
+    POSTING: 'Đang đăng...',
+    REPLY: 'Trả lời',
+    REPLYING: 'Đang trả lời...',
+    EDIT: 'Chỉnh sửa',
+    SAVE: 'Lưu',
+    SAVING: 'Đang lưu...',
+    CANCEL: 'Hủy',
+    DELETE: 'Xóa',
+    DELETING: 'Đang xóa...',
+    SHOW_REPLIES: 'Xem trả lời',
+    HIDE_REPLIES: 'Ẩn trả lời',
+    SHOW_OPTIONS: 'Tùy chọn',
+  },
+  ACTIONS: {
+    REPLY_TO: 'Trả lời',
+    EDIT_COMMENT: 'Chỉnh sửa bình luận',
+    DELETE_COMMENT: 'Xóa bình luận',
+    SHOW_OPTIONS: 'Hiển thị tùy chọn',
+  },
+  MESSAGES: {
+    COMMENT_POSTED: 'Bình luận đã được đăng thành công!',
+    REPLY_POSTED: 'Trả lời đã được đăng thành công!',
+    COMMENT_UPDATED: 'Bình luận đã được cập nhật!',
+    COMMENT_DELETED: 'Bình luận đã được xóa!',
+    LOGIN_REQUIRED: 'Vui lòng đăng nhập để bình luận',
+    EMPTY_COMMENT: 'Bình luận không được để trống',
+    EMPTY_REPLY: 'Trả lời không được để trống',
+    DELETE_CONFIRMATION: 'Bạn có chắc chắn muốn xóa bình luận này?',
+    TRY_AGAIN: 'Thử lại',
+  },
+  TIME: {
+    JUST_NOW: 'Vừa xong',
+    MINUTES_AGO: 'phút trước',
+    HOURS_AGO: 'giờ trước',
+    DAYS_AGO: 'ngày trước',
+    WEEKS_AGO: 'tuần trước',
+    MONTHS_AGO: 'tháng trước',
+    YEARS_AGO: 'năm trước',
+  },
+  SORT: {
+    NEWEST: 'newest',
+    OLDEST: 'oldest',
+    MOST_LIKED: 'most_liked',
+    LABELS: {
+      NEWEST: 'Mới nhất',
+      OLDEST: 'Cũ nhất',
+      MOST_LIKED: 'Nhiều like nhất',
+    },
+  },
+  REPLIES: {
+    COUNT_TEXT: 'trả lời',
+  },
+} as const;
+
+// BodyIndex Component Constants
+export const BMI = {
+  TITLE: 'Calorie Index (BMI) Calculation',
+  HEIGHT_LABEL: 'Height (cm)',
+  WEIGHT_LABEL: 'Weight (kg)',
+  HEIGHT_PLACEHOLDER: 'Enter height',
+  WEIGHT_PLACEHOLDER: 'Enter weight',
+  CALCULATE_BUTTON: 'Calculate BMI',
+  LOADING_TEXT: 'Loading your BMI data...',
+  INFO_TEXT: "BMI is a measurement of a person's leanness or corpulence based on their height and weight.",
+  RECOMMENDATIONS_TITLE: 'Recommended Dishes',
+  NO_RECOMMENDATIONS: 'No recommendations available for your BMI category.',
+  CALCULATE_FIRST: 'Calculate your BMI to see personalized food recommendations.',
+} as const;
+
+export const BMI_CATEGORY_CLASSES = {
+  UNDERWEIGHT: 'underweight',
+  NORMAL: 'normal',
+  OVERWEIGHT: 'overweight',
+  OBESE: 'obese',
+} as const;
+
+export const BMI_RANGE_LABELS = {
+  UNDERWEIGHT: 'Underweight',
+  NORMAL: 'Normal',
+  OVERWEIGHT: 'Overweight',
+  OBESE: 'Obese',
+} as const;
+
+export const BMI_RANGE_VALUES = {
+  UNDERWEIGHT: '<18.5',
+  NORMAL: '18.5-24.9',
+  OVERWEIGHT: '25-29.9',
+  OBESE: '>30',
+} as const;
+
+export const FOOD_CATEGORY_CLASSES = {
+  MEAT: 'meat',
+  VEGETABLES: 'vegetables',
+  FRUITS: 'fruits',
+  GRAINS: 'grains',
+  DAIRY: 'dairy',
+  SNACKS: 'snacks',
+  DEFAULT: 'default',
+} as const;
+
+export const FOOD_CATEGORY_MAPPING = {
+  1: 'meat',
+  2: 'vegetables',
+  3: 'fruits',
+  4: 'grains',
+  5: 'dairy',
+  6: 'snacks',
+} as const;
+
+export const FOOD_FALLBACK_IMAGES = {
+  MEAT: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400&h=300&fit=crop',
+  VEGETABLES: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
+  FRUITS: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400&h=300&fit=crop',
+  GRAINS: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=300&fit=crop',
+  DAIRY: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=300&fit=crop',
+  SNACKS: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop',
+} as const;
+
+export const CALORIE_CALCULATION = {
+  TITLE: 'Calorie Calculation',
+  TOTAL_CALORIES: 'total calories',
+  CALORIES_PER_UNIT: 'cal per',
+  GRAMS_UNIT: 'g',
+  CALORIES_UNIT: 'cal',
+  VIEW_DETAILS: 'View Details',
+  ADD_TO_CALORIE: 'Add to Calorie Calc',
+} as const;
+
+export const NUTRITION_LABELS = {
+  PROTEIN: 'Protein',
+  FAT: 'Fat',
+  CARBS: 'Carbs',
+  FIBER: 'Fiber',
+  CALORIES: 'Calories',
+  CARBOHYDRATES: 'Carbohydrates',
+} as const;
+
 export const UI_TEXT = {
   
   LOADING: 'Loading...',
@@ -349,29 +596,32 @@ export const BANNER_DATA = [
     primaryButton: 'Kiểm tra BMI',
     secondaryButton: 'Khám phá blog',
     primaryPath: '/home/body-index',
-    secondaryPath: '/home/blog'
+    secondaryPath: '/home/blog',
+    layout: 'center'
   },
   {
     id: 2,
     badge: 'Thực phẩm tươi ngon',
     title: 'Khám phá thế giới ẩm thực lành mạnh',
     subtitle: 'Từ những nguyên liệu tươi ngon đến những công thức nấu ăn bổ dưỡng cho gia đình',
-    image: 'https://as2.ftcdn.net/jpg/05/52/01/07/1000_F_552010790_ZIeJI42YzsoTIORzAjhHBi54XuJ5CuwS.jpg',
-    primaryButton: 'Xem công thức',
-    secondaryButton: 'Tìm hiểu thêm',
-    primaryPath: '/home/calorie-calculation',
-    secondaryPath: '/home/blog'
+    image: 'https://cdn.pixabay.com/photo/2023/12/30/14/21/coffee-8478202_1280.jpg',
+    primaryButton: 'Kiểm tra BMI',
+    secondaryButton: 'Khám phá blog',
+    primaryPath: '/home/body-index',
+    secondaryPath: '/home/blog',
+    layout: 'center'
   },
   {
     id: 3,
     badge: 'Trái cây theo mùa',
     title: 'Tận hưởng hương vị tự nhiên từ thiên nhiên',
     subtitle: 'Những loại trái cây tươi ngon giàu vitamin và khoáng chất cho sức khỏe tối ưu',
-    image: 'https://cdn.pixabay.com/photo/2021/04/09/22/03/strawberries-6165597_640.jpg',
-    primaryButton: 'Khám phá ngay',
-    secondaryButton: 'Đăng ký nhận tin',
+    image: 'https://cdn.pixabay.com/photo/2024/10/01/02/17/ai-generated-9087007_1280.jpg',
+    primaryButton: 'Kiểm tra BMI',
+    secondaryButton: 'Khám phá blog',
     primaryPath: '/home/body-index',
-    secondaryPath: '/home/blog'
+    secondaryPath: '/home/blog',
+    layout: 'center'
   }
 ] as const;
 

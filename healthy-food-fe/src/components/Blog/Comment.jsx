@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { blogAPI } from '../../services/api';
-import { PAGINATION, ERROR_MESSAGES } from '../../constants';
+import { PAGINATION, ERROR_MESSAGES, COMMENT } from '../../constants';
 import { Heart, MessageCircle, MoreVertical, Edit, Trash, Reply } from 'lucide-react';
 import { 
   AnimatedButton, 
@@ -27,14 +27,11 @@ const Comment = ({ postId }) => {
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
   const [showReplies, setShowReplies] = useState({});
-  const [sortBy, setSortBy] = useState('newest');
+  const [sortBy, setSortBy] = useState(COMMENT.SORT.NEWEST);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [showOptions, setShowOptions] = useState({});
-
-  const commentEndRef = useRef(null);
-  const observerRef = useRef(null);
 
   useEffect(() => {
     fetchComments();
@@ -166,7 +163,7 @@ const Comment = ({ postId }) => {
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa bình luận này?')) return;
+    if (!window.confirm(COMMENT.MESSAGES.DELETE_CONFIRMATION)) return;
 
     try {
       const response = await blogAPI.deleteComment(commentId);
@@ -324,7 +321,7 @@ const Comment = ({ postId }) => {
             onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
           >
             <Reply size={14} />
-            <span>Trả lời</span>
+            <span>{COMMENT.BUTTONS.REPLY}</span>
           </AnimatedButton>
           {(canEditComment(comment) || canDeleteComment(comment)) && (
             <div className="comment-options">
@@ -346,7 +343,7 @@ const Comment = ({ postId }) => {
                       }}
                     >
                       <Edit size={14} />
-                      <span>Chỉnh sửa</span>
+                      <span>{COMMENT.BUTTONS.EDIT}</span>
                     </button>
                   )}
                   {canDeleteComment(comment) && (
@@ -359,7 +356,7 @@ const Comment = ({ postId }) => {
                       }}
                     >
                       <Trash size={14} />
-                      <span>Xóa</span>
+                      <span>{COMMENT.BUTTONS.DELETE}</span>
                     </button>
                   )}
                 </div>
@@ -374,7 +371,7 @@ const Comment = ({ postId }) => {
           <textarea
             value={editText}
             onChange={(e) => setEditText(e.target.value)}
-            placeholder="Chỉnh sửa bình luận..."
+            placeholder={COMMENT.PLACEHOLDERS.EDIT_COMMENT}
             className="comment-edit-textarea"
           />
           <div className="comment-edit-actions">
@@ -383,14 +380,14 @@ const Comment = ({ postId }) => {
               className="comment-edit-cancel"
               onClick={() => setEditingComment(null)}
             >
-              Hủy
+              {COMMENT.BUTTONS.CANCEL}
             </button>
             <button 
               type="button"
               className="comment-edit-save"
               onClick={handleEditComment}
             >
-              Lưu
+              {COMMENT.BUTTONS.SAVE}
             </button>
           </div>
         </div>
@@ -405,7 +402,7 @@ const Comment = ({ postId }) => {
           <textarea
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
-            placeholder="Viết trả lời..."
+            placeholder={COMMENT.PLACEHOLDERS.REPLY}
             className="reply-textarea"
           />
           <div className="reply-actions">
@@ -414,7 +411,7 @@ const Comment = ({ postId }) => {
               className="reply-cancel"
               onClick={() => setReplyingTo(null)}
             >
-              Hủy
+              {COMMENT.BUTTONS.CANCEL}
             </button>
             <button 
               type="button"
@@ -422,7 +419,7 @@ const Comment = ({ postId }) => {
               onClick={() => handleReply(comment.id, replyText)}
               disabled={!replyText.trim()}
             >
-              Trả lời
+              {COMMENT.BUTTONS.REPLY}
             </button>
           </div>
         </div>
@@ -437,7 +434,7 @@ const Comment = ({ postId }) => {
           >
             <MessageCircle size={12} />
             <span>
-              {showReplies[comment.id] ? 'Ẩn' : 'Hiển thị'} {comment.replies.length} trả lời
+              {showReplies[comment.id] ? COMMENT.BUTTONS.HIDE_REPLIES : COMMENT.BUTTONS.SHOW_REPLIES} {comment.replies.length} {COMMENT.REPLIES.COUNT_TEXT}
             </span>
           </button>
           {showReplies[comment.id] && (
@@ -454,7 +451,7 @@ const Comment = ({ postId }) => {
     return (
       <div className="comments-loading">
         <LoadingSpinner />
-        <p>Đang tải bình luận...</p>
+        <p>{COMMENT.LOADING_COMMENTS}</p>
       </div>
     );
   }
@@ -463,7 +460,7 @@ const Comment = ({ postId }) => {
     <div className="comments-section">
       <div className="comments-header">
         <h3 className="comments-title">
-          Bình luận ({Array.isArray(comments) ? comments.length : 0})
+          {COMMENT.SECTION_TITLE} ({Array.isArray(comments) ? comments.length : 0})
         </h3>
         <SortComments 
           sortBy={sortBy} 
@@ -474,7 +471,7 @@ const Comment = ({ postId }) => {
       {error && (
         <div className="comments-error">
           <p>{error}</p>
-          <button type="button" onClick={fetchComments}>Thử lại</button>
+          <button type="button" onClick={fetchComments}>{COMMENT.MESSAGES.TRY_AGAIN}</button>
         </div>
       )}
 
@@ -492,7 +489,7 @@ const Comment = ({ postId }) => {
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Viết bình luận..."
+              placeholder={COMMENT.PLACEHOLDERS.COMMENT}
               className="comment-form-textarea"
               disabled={submitting}
             />
@@ -503,7 +500,7 @@ const Comment = ({ postId }) => {
               className="comment-form-submit"
               disabled={!newComment.trim() || submitting}
             >
-              {submitting ? 'Đang gửi...' : 'Gửi bình luận'}
+              {submitting ? COMMENT.BUTTONS.POSTING : COMMENT.BUTTONS.POST_COMMENT}
             </button>
           </div>
         </form>
@@ -529,14 +526,14 @@ const Comment = ({ postId }) => {
             onClick={loadMoreComments}
             disabled={loadingMore}
           >
-            {loadingMore ? 'Đang tải...' : 'Tải thêm bình luận'}
+            {loadingMore ? COMMENT.LOADING_MORE : COMMENT.LOAD_MORE}
           </button>
         </div>
       )}
 
       {!user && (
         <div className="comments-login-prompt">
-          <p>Vui lòng đăng nhập để bình luận</p>
+          <p>{COMMENT.MESSAGES.LOGIN_REQUIRED}</p>
         </div>
       )}
     </div>

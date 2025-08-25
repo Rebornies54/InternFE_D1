@@ -1,0 +1,161 @@
+.blog-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blog-header-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  z-index: 1;
+}
+
+.blog-header-blog .blog-header-background {
+  background-image: linear-gradient(135deg, rgba(44, 62, 80, 0.2), rgba(52, 73, 94, 0.2)), 
+                    url('https://cdn.pixabay.com/photo/2015/10/02/15/07/diary-968603_1280.jpg');
+}
+
+.blog-header-menu .blog-header-background {
+  background-image: linear-gradient(135deg, rgba(52, 73, 94, 0.2), rgba(44, 62, 80, 0.2)), 
+                    url('https://cdn.pixabay.com/photo/2017/05/07/08/56/pancakes-2291908_1280.jpg');
+}
+
+.blog-header-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.blog-create-button-container {
+  margin-bottom: 1.5rem;
+}
+
+.create-blog-btn {
+  background: #2c3e50;
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.create-blog-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.create-blog-btn:hover::before {
+  left: 100%;
+}
+
+.create-blog-btn:hover {
+  background: #1a252f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.create-blog-btn:active {
+  transform: translateY(0);
+}
+
+.blog-title {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  letter-spacing: -1px;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.1;
+  text-transform: uppercase;
+  filter: brightness(1.2) contrast(1.1);
+}
+
+.blog-description {
+  font-size: 1.3rem;
+  color: #ffffff;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.4);
+  font-weight: 500;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+@media (max-width: 768px) {
+  .blog-header {
+    padding: 2rem 1.5rem;
+    min-height: 180px;
+  }
+  
+  .blog-title {
+    font-size: 3rem;
+    text-shadow: 
+      2px 2px 0 #000,
+      -2px -2px 0 #000,
+      2px -2px 0 #000,
+      -2px 2px 0 #000,
+      0 0 8px rgba(0, 0, 0, 0.8);
+  }
+  
+  .blog-description {
+    font-size: 1.2rem;
+    padding: 0 1rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.4);
+  }
+  
+  .create-blog-btn {
+    padding: 0.9rem 2rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .blog-header {
+    padding: 1.5rem 1rem;
+    min-height: 160px;
+  }
+  
+  .blog-title {
+    font-size: 2.5rem;
+    text-shadow: 
+      1.5px 1.5px 0 #000,
+      -1.5px -1.5px 0 #000,
+      1.5px -1.5px 0 #000,
+      -1.5px 1.5px 0 #000,
+      0 0 6px rgba(0, 0, 0, 0.8);
+  }
+  
+  .blog-description {
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), 0 0 6px rgba(0, 0, 0, 0.4);
+  }
+}

@@ -31,6 +31,9 @@ export const CalorieProvider = ({ children }) => {
     };
   });
 
+  // Add pending foods state for calorie calculation
+  const [pendingCalorieFoods, setPendingCalorieFoods] = useState([]);
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.CALORIE_DATA, JSON.stringify(calorieData));
   }, [calorieData]);
@@ -226,6 +229,37 @@ export const CalorieProvider = ({ children }) => {
     }
   };
 
+  // Pending foods management functions
+  const addToPendingCalorieFoods = (food) => {
+    setPendingCalorieFoods(prev => {
+      const existingFood = prev.find(f => f.id === food.id);
+      if (existingFood) {
+        return prev.map(f => 
+          f.id === food.id 
+            ? { ...f, quantity: f.quantity + 1 }
+            : f
+        );
+      }
+      return [...prev, { ...food, quantity: 1 }];
+    });
+  };
+
+  const removeFromPendingCalorieFoods = (foodId) => {
+    setPendingCalorieFoods(prev => prev.filter(f => f.id !== foodId));
+  };
+
+  const updatePendingCalorieFoodQuantity = (foodId, quantity) => {
+    setPendingCalorieFoods(prev => 
+      prev.map(f => f.id === foodId ? { ...f, quantity } : f)
+    );
+  };
+
+  const getPendingCalorieTotalCalories = () => {
+    return pendingCalorieFoods.reduce((total, food) => {
+      return total + (food.calories * food.quantity);
+    }, 0);
+  };
+
   const value = {
     calorieData,
     updateCalorieData,
@@ -234,7 +268,13 @@ export const CalorieProvider = ({ children }) => {
     getCalorieGoals,
     calculateBMR,
     calculateTDEE,
-    convertUnits
+    convertUnits,
+    // Pending foods functions
+    pendingCalorieFoods,
+    addToPendingCalorieFoods,
+    removeFromPendingCalorieFoods,
+    updatePendingCalorieFoodQuantity,
+    getPendingCalorieTotalCalories
   };
 
   return (

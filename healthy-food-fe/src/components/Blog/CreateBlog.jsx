@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { blogAPI } from '../../services/api';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
-import { BLOG_CATEGORIES, UI_TEXT } from '../../constants';
+import { BLOG_CATEGORIES, UI_TEXT, CREATE_BLOG } from '../../constants';
 import './Blog.css';
 
 const CreateBlog = ({ onClose, onCreated }) => {
@@ -97,7 +97,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
       <div className="create-blog-modal" onClick={e => e.stopPropagation()}>
         <div className="create-blog-header">
           <div className="create-blog-title-section">
-            <h2>Viết Blog mới</h2>
+            <h2>{CREATE_BLOG.TITLE}</h2>
             <p className="create-blog-subtitle">Chia sẻ kiến thức và kinh nghiệm của bạn</p>
           </div>
           <button className="create-blog-close" onClick={onClose}>
@@ -111,7 +111,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
         <form className="create-blog-form" onSubmit={handleSubmit}>
           <div className="form-section">
             <label className="form-label">
-              Tiêu đề <span className="required">*</span>
+              {CREATE_BLOG.FORM_LABELS.TITLE} <span className="required">*</span>
               <span className="char-count">{charCount.title}/100</span>
             </label>
             <input
@@ -119,21 +119,21 @@ const CreateBlog = ({ onClose, onCreated }) => {
               onChange={e => setTitle(e.target.value)}
               required
               maxLength={100}
-              placeholder="Nhập tiêu đề bài viết..."
+              placeholder={CREATE_BLOG.PLACEHOLDERS.TITLE}
               className="form-input"
             />
           </div>
 
           <div className="form-section">
             <label className="form-label">
-              Mô tả ngắn
+              {CREATE_BLOG.FORM_LABELS.DESCRIPTION}
               <span className="char-count">{charCount.description}/200</span>
             </label>
             <textarea
               value={description}
               onChange={e => setDescription(e.target.value)}
               maxLength={200}
-              placeholder="Mô tả ngắn gọn về bài viết..."
+              placeholder={CREATE_BLOG.PLACEHOLDERS.DESCRIPTION}
               className="form-textarea"
               rows={3}
             />
@@ -141,7 +141,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
 
           <div className="form-section">
             <label className="form-label">
-              Danh mục <span className="required">*</span>
+              {CREATE_BLOG.FORM_LABELS.CATEGORY} <span className="required">*</span>
             </label>
             <div className="category-selector">
               {BLOG_CATEGORIES.map(cat => (
@@ -201,7 +201,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
 
           <div className="form-section">
             <label className="form-label">
-              {UI_TEXT.CONTENT} <span className="required">*</span>
+              {CREATE_BLOG.FORM_LABELS.CONTENT} <span className="required">*</span>
               <span className="char-count">{charCount.content}/5000</span>
             </label>
             <textarea
@@ -209,7 +209,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
               onChange={e => setContent(e.target.value)}
               required
               maxLength={5000}
-              placeholder={UI_TEXT.ENTER_BLOG_CONTENT}
+              placeholder={CREATE_BLOG.PLACEHOLDERS.CONTENT}
               className="form-textarea content-textarea"
               rows={8}
             />
@@ -217,7 +217,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
 
           <div className="form-section">
             <label className="form-label">
-              {UI_TEXT.BLOG_IMAGE_PLACEHOLDER}
+              {CREATE_BLOG.FORM_LABELS.IMAGE}
             </label>
             <div className="image-upload-area" onClick={() => fileInputRef.current?.click()}>
               {imagePreview && imagePreview.trim() !== '' ? (
@@ -241,8 +241,8 @@ const CreateBlog = ({ onClose, onCreated }) => {
                     <polyline points="7,10 12,15 17,10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
-                  <p>{UI_TEXT.CLICK_TO_SELECT_IMAGE}</p>
-                  <span>{UI_TEXT.SUPPORT_FORMATS}</span>
+                  <p>{CREATE_BLOG.CLICK_TO_SELECT}</p>
+                  <span>{CREATE_BLOG.SUPPORT_TEXT}</span>
                 </div>
               )}
               <input
@@ -272,7 +272,7 @@ const CreateBlog = ({ onClose, onCreated }) => {
               className="cancel-btn"
               onClick={onClose}
             >
-              {UI_TEXT.CANCEL}
+              {CREATE_BLOG.BUTTONS.CANCEL}
             </button>
             <button
               type="submit"
@@ -284,10 +284,10 @@ const CreateBlog = ({ onClose, onCreated }) => {
                   <svg className="loading-spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 12a9 9 0 11-6.219-8.56"></path>
                   </svg>
-                  {UI_TEXT.PUBLISHING}
+                  {CREATE_BLOG.STATUS.PUBLISHING}
                 </>
               ) : (
-                UI_TEXT.PUBLISH_POST
+                CREATE_BLOG.BUTTONS.PUBLISH
               )}
             </button>
           </div>

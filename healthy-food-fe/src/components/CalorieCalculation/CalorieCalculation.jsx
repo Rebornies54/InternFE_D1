@@ -521,7 +521,7 @@ const CalorieCalculation = () => {
               <h3>Pending Foods from BodyIndex</h3>
               <div className="pending-foods-summary">
                 <span>{pendingFoods.length} items</span>
-                <span>{getPendingTotalCalories().toFixed(1)} total calories</span>
+                <span>{(getPendingTotalCalories() || 0).toFixed(1)} total calories</span>
               </div>
             </div>
             

@@ -45,7 +45,6 @@ const AuthProvider = ({ children }) => {
         try {
           const response = await authAPI.getCurrentUser();
           setUser(response.data.data);
-          await refreshCurrentBmi();
         } catch (error) {
           localStorage.removeItem(STORAGE_KEYS.TOKEN);
           localStorage.removeItem(STORAGE_KEYS.USER);

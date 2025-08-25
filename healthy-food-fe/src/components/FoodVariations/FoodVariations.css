@@ -1,0 +1,229 @@
+.food-variations-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.food-variations-modal {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.food-variations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+
+.food-variations-title h2 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.food-variations-subtitle {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.food-variations-close {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.food-variations-close:hover {
+  background: #f8f9fa;
+  color: #333;
+}
+
+.food-variations-content {
+  padding: 1.5rem;
+}
+
+.food-detail-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid #e0e0e0;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.food-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.food-detail-name {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.food-detail-calories {
+  background: #34495e;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.food-detail-nutrition {
+  margin-bottom: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+}
+
+.nutrition-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.nutrition-item:last-child {
+  border-bottom: none;
+}
+
+.nutrition-label {
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.nutrition-value {
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.food-detail-description {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(52, 73, 94, 0.1);
+  border-radius: 8px;
+  border-left: 4px solid #34495e;
+}
+
+.food-detail-description svg {
+  color: #34495e;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.food-detail-description p {
+  margin: 0;
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.food-detail-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.food-variation-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.food-variation-btn.primary {
+  background: #34495e;
+  color: white;
+}
+
+.food-variation-btn.primary:hover {
+  background: #2c3e50;
+}
+
+.food-variation-btn.secondary {
+  background: white;
+  color: #34495e;
+  border: 1px solid #34495e;
+}
+
+.food-variation-btn.secondary:hover {
+  background: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+  .food-variations-modal {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+  
+  .food-variations-header {
+    padding: 1rem;
+  }
+  
+  .food-variations-title h2 {
+    font-size: 1.5rem;
+  }
+  
+  .food-variations-content {
+    padding: 1rem;
+  }
+  
+  .food-detail-card {
+    padding: 1.5rem;
+  }
+  
+  .food-detail-actions {
+    flex-direction: column;
+  }
+  
+  .food-variation-btn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,49 @@
+.blog-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 1rem 2rem;
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.tab-button:hover {
+  background: #f8f9fa;
+  color: #333;
+}
+
+.tab-button.active {
+  color: #34495e;
+  background: #f8f9fa;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #34495e;
+}
+
+@media (max-width: 768px) {
+  .tab-button {
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+  }
+}

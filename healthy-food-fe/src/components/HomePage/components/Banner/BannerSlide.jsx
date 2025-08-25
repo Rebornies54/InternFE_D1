@@ -5,7 +5,13 @@ import { Zap, Target, BookOpen } from 'lucide-react';
 const BannerSlide = ({ banner, isActive }) => {
   return (
     <div className={`banner-slide ${isActive ? 'active' : ''}`}>
-      <div className="banner-content">
+      <div className="banner-image">
+        <img 
+          src={banner.image} 
+          alt={banner.title} 
+        />
+      </div>
+      <div className={`banner-content banner-layout-${banner.layout || 'center'}`}>
         <div className="banner-text">
           <div className="banner-badge">
             <Zap size={14} />
@@ -27,12 +33,6 @@ const BannerSlide = ({ banner, isActive }) => {
               {banner.secondaryButton}
             </Link>
           </div>
-        </div>
-        <div className="banner-image">
-          <img 
-            src={banner.image} 
-            alt={banner.title} 
-          />
         </div>
       </div>
     </div>
