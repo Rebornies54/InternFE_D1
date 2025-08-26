@@ -1,6 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
+import { PROFILE } from '../../constants';
 import './Profile.css';
 import ProfileInfo from './ProfileInfo/ProfileInfo';
 import AddressInfo from './AddressInfo/AddressInfo';
@@ -11,19 +12,19 @@ const MyBlogs = lazy(() => import('./MyBlogs/MyBlogs'));
 const menuList = [
   {
     key: 'profile',
-    label: 'Profile',
+    label: PROFILE.MENU.PROFILE,
   },
   {
     key: 'address',
-    label: 'Address',
+    label: PROFILE.MENU.ADDRESS,
   },
   {
     key: 'password',
-    label: 'Change Password',
+    label: PROFILE.MENU.CHANGE_PASSWORD,
   },
   {
     key: 'my-blogs',
-    label: 'My Blogs',
+    label: PROFILE.MENU.MY_BLOGS,
   },
 ];
 
@@ -87,12 +88,12 @@ const Profile = () => {
           )}
           <div className="profile-sidebar-avatar-info">
             <div className="profile-sidebar-name">{profileData.name}</div>
-            <span className="profile-sidebar-edit">Edit Profile</span>
+            <span className="profile-sidebar-edit">{PROFILE.SIDEBAR.EDIT_PROFILE}</span>
           </div>
         </div>
         <div className="profile-sidebar-divider"></div>
         <div className="profile-sidebar-menu">
-          <div className="profile-sidebar-menu-title">My Profile</div>
+          <div className="profile-sidebar-menu-title">{PROFILE.SIDEBAR.MY_PROFILE}</div>
           <div className="profile-sidebar-menu-list">
             {menuList.map(item => (
               <div
@@ -107,13 +108,13 @@ const Profile = () => {
         </div>
       </aside>
       <div className="profile2-content">
-        <div className="profile2-content-title">Profile</div>
+        <div className="profile2-content-title">{PROFILE.CONTENT.TITLE}</div>
         <div className="profile2-content-divider"></div>
         {tab === 'profile' && <ProfileInfo profileData={profileData} setProfileData={setProfileData} />}
         {tab === 'address' && <AddressInfo />}
         {tab === 'password' && <ChangePassword />}
         {tab === 'my-blogs' && (
-          <Suspense fallback={<div>Đang tải...</div>}>
+          <Suspense fallback={<div>{PROFILE.CONTENT.LOADING}</div>}>
             <MyBlogs />
           </Suspense>
         )}

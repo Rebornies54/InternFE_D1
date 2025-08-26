@@ -1,34 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { foodAPI } from '../../services/api';
-import { authAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import { useFoodContext } from '../../context/FoodContext';
 import { useCalorieContext } from '../../context/CalorieContext';
-import { useBlogContext } from '../../context/BlogContext';
-import { BMI, BMI_RANGES } from '../../constants';
+import { useFoodContext } from '../../context/FoodContext';
+import { authAPI, foodAPI } from '../../services/api';
+import { BMI_RANGES, BMI } from '../../constants';
 import BMICalculator from './components/BMICalculator';
 import FoodRecommendations from './components/FoodRecommendations';
 import './BodyIndex.css';
 
 const BodyIndex = () => {
-  const { setCurrentBmi, currentBmi: authBmi } = useAuth();
-  const { foodItems: contextFoodItems = [], foodCategories: contextCategories = [] } = useBlogContext();
-
-  const {
-    pendingCalorieFoods,
+  const { currentBmi, setCurrentBmi } = useAuth();
+  const { 
+    foodItems: contextFoodItems, 
+    categories: contextCategories 
+  } = useFoodContext();
+  const { 
+    pendingFoods: pendingCalorieFoods,
     addToPendingCalorieFoods,
     removeFromPendingCalorieFoods,
     updatePendingCalorieFoodQuantity,
     getPendingCalorieTotalCalories
   } = useCalorieContext();
-
-  console.log('CalorieContext functions available:', {
-    addToPendingCalorieFoods: typeof addToPendingCalorieFoods,
-    removeFromPendingCalorieFoods: typeof removeFromPendingCalorieFoods,
-    updatePendingCalorieFoodQuantity: typeof updatePendingCalorieFoodQuantity,
-    getPendingCalorieTotalCalories: typeof getPendingCalorieTotalCalories,
-    pendingCalorieFoods: pendingCalorieFoods
-  });
 
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
@@ -47,14 +39,14 @@ const BodyIndex = () => {
       loadFoodData();
     }
 
-    if (!authBmi) {
+    if (!currentBmi) {
       loadBMIData();
     } else {
-      setBmi(authBmi.toString());
-      generateRecommendations(authBmi.toString());
+      setBmi(currentBmi.toString());
+      generateRecommendations(currentBmi.toString());
       loadFullBMIData();
     }
-  }, [authBmi, contextFoodItems, contextCategories]);
+  }, [currentBmi, contextFoodItems, contextCategories]);
 
   const loadFoodData = async () => {
     try {
@@ -85,7 +77,7 @@ const BodyIndex = () => {
         generateRecommendations(bmiData.bmi.toString());
       }
     } catch (error) {
-      console.log('BMI data not available or user not authenticated:', error.message);
+      // BMI data not available or user not authenticated
     } finally {
       setBmiLoading(false);
     }
@@ -115,7 +107,7 @@ const BodyIndex = () => {
         });
         setCurrentBmi(parseFloat(bmiValue));
       } catch (error) {
-        console.log('Could not save BMI data (user may not be authenticated):', error.message);
+        // Could not save BMI data (user may not be authenticated)
       }
     }
   };
@@ -172,13 +164,11 @@ const BodyIndex = () => {
       if (typeof getPendingCalorieTotalCalories === 'function') {
         return getPendingCalorieTotalCalories() || 0;
       } else {
-        console.warn('getPendingCalorieTotalCalories is not a function:', getPendingCalorieTotalCalories);
         return pendingCalorieFoods.reduce((total, food) => {
           return total + (food.calories * food.quantity);
         }, 0);
       }
     } catch (error) {
-      console.error('Error calculating total calories:', error);
       return 0;
     }
   };

@@ -1,4 +1,4 @@
-import { UI_TEXT, VALIDATION, ERROR_MESSAGES } from '../../../constants';
+import { UI_TEXT, VALIDATION, ERROR_MESSAGES, PROFILE_INFO } from '../../../constants';
 // Fixed import
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
@@ -32,12 +32,12 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         clearError();
         
         if (file.size > 5 * 1024 * 1024) {
-          setError('File size must be less than 5MB');
+          setError(PROFILE_INFO.MESSAGES.FILE_SIZE_ERROR);
           return;
         }
         
         if (!file.type.startsWith('image/')) {
-          setError('Please select an image file');
+          setError(PROFILE_INFO.MESSAGES.FILE_TYPE_ERROR);
           return;
         }
 
@@ -55,12 +55,12 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
           setTempData(prev => ({ ...prev, avatar: avatarUrl }));
           setProfileData(prev => ({ ...prev, avatar_url: avatarUrl }));
           
-          alert('Avatar uploaded successfully!');
+          alert(PROFILE_INFO.MESSAGES.AVATAR_UPLOAD_SUCCESS);
         } else {
           throw new Error('Invalid response from server');
         }
       }).catch(_error => {
-        let errorMessage = 'Upload image failed! Please try again.';
+        let errorMessage = PROFILE_INFO.MESSAGES.UPLOAD_FAILED;
         
         if (error.response?.data?.message) {
           errorMessage = error.response.data.message;
@@ -75,15 +75,15 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
 
   const handleSave = async () => {
     if (!tempData.name || !tempData.name.trim()) {
-      alert('Full name is required');
+      alert(PROFILE_INFO.MESSAGES.VALIDATION.FULL_NAME_REQUIRED);
       return;
     }
     if (!tempData.phone || !tempData.phone.trim()) {
-      alert('Phone number is required');
+      alert(PROFILE_INFO.MESSAGES.VALIDATION.PHONE_REQUIRED);
       return;
     }
     if (!tempData.gender) {
-      alert('Gender is required');
+      alert(PROFILE_INFO.MESSAGES.VALIDATION.GENDER_REQUIRED);
       return;
     }
 
@@ -107,12 +107,12 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         if (result.success) {
           setProfileData(result.user);
           setIsEditing(false);
-          alert('Profile updated successfully!');
+          alert(PROFILE_INFO.MESSAGES.PROFILE_UPDATE_SUCCESS);
         } else {
-          throw new Error(result.message || 'Failed to update profile');
+          throw new Error(result.message || PROFILE_INFO.MESSAGES.UPDATE_FAILED);
         }
       } catch (error) {
-        let errorMessage = 'Failed to update profile. Please try again.';
+        let errorMessage = PROFILE_INFO.MESSAGES.UPDATE_FAILED;
         
         if (error.response?.data?.message) {
           errorMessage = error.response.data.message;
@@ -144,7 +144,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
     <form className="profile-info-form-row">
       <div className="profile-info-avatar-col">
         <label className="profile-info-avatar-label">
-          <span className="required">*</span>Profile Image
+          <span className="required">*</span>{PROFILE_INFO.LABELS.PROFILE_IMAGE}
         </label>
         {(tempData.avatar || (profileData.avatar_url && profileData.avatar_url.trim() !== '' && isValidAvatarUrl(profileData.avatar_url))) ? (
           <img
@@ -157,7 +157,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
               if (emptyDiv) {
                 emptyDiv.style.display = 'block';
               }
-              logWarning('Avatar image failed to load. This might be due to server issues or file not found.');
+              logWarning(PROFILE_INFO.AVATAR.LOAD_ERROR);
               if (profileData.avatar_url) {
                 setProfileData(prev => ({ ...prev, avatar_url: null }));
               }
@@ -170,7 +170,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
         {!tempData.avatar && (!profileData.avatar_url || profileData.avatar_url.trim() === '' || !isValidAvatarUrl(profileData.avatar_url)) && (
           <div className="profile-info-avatar-empty">
             <div className="profile-info-avatar-placeholder">
-              <span>No Image</span>
+              <span>{PROFILE_INFO.AVATAR.NO_IMAGE}</span>
             </div>
           </div>
         )}
@@ -188,45 +188,45 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
       <div className="profile-info-fields-col">
         <div className="profile-info-form-group">
           <label className="profile-info-label">
-            <span className="required">*</span>Full Name
+            <span className="required">*</span>{PROFILE_INFO.LABELS.FULL_NAME}
           </label>
                                 <input
             type="text"
             className="profile-info-input"
             value={isEditing ? tempData.name : profileData.name}
             onChange={_e => setTempData(prev => ({ ...prev, name: _e.target.value }))}
-            placeholder="Full Name"
+            placeholder={PROFILE_INFO.PLACEHOLDERS.FULL_NAME}
             disabled={!isEditing || isSaving}
           />
         </div>
         <div className="profile-info-form-group">
           <label className="profile-info-label">
-            <span className="required">*</span>Email
+            <span className="required">*</span>{PROFILE_INFO.LABELS.EMAIL}
           </label>
           <input
             type="email"
             className="profile-info-input-disabled"
             value={profileData.email}
             disabled
-            placeholder="Email"
+            placeholder={PROFILE_INFO.PLACEHOLDERS.EMAIL}
           />
         </div>
         <div className="profile-info-form-group">
           <label className="profile-info-label">
-            <span className="required">*</span>Phone Number
+            <span className="required">*</span>{PROFILE_INFO.LABELS.PHONE_NUMBER}
           </label>
                                 <input
             type="tel"
             className="profile-info-input"
             value={isEditing ? tempData.phone : profileData.phone}
             onChange={_e => setTempData(prev => ({ ...prev, phone: _e.target.value }))}
-            placeholder="Phone Number"
+            placeholder={PROFILE_INFO.PLACEHOLDERS.PHONE_NUMBER}
             disabled={!isEditing || isSaving}
           />
         </div>
         <div className="profile-info-form-group">
           <label className="profile-info-label">
-            <span className="required">*</span>Gender
+            <span className="required">*</span>{PROFILE_INFO.LABELS.GENDER}
           </label>
           <div className="profile-info-select-wrapper">
             <select
@@ -235,17 +235,17 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
               onChange={_e => setTempData(prev => ({ ...prev, gender: _e.target.value }))}
               disabled={!isEditing || isSaving}
             >
-              <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
+              <option value="">{PROFILE_INFO.PLACEHOLDERS.SELECT_GENDER}</option>
+              <option value="male">{PROFILE_INFO.GENDER_OPTIONS.MALE}</option>
+              <option value="female">{PROFILE_INFO.GENDER_OPTIONS.FEMALE}</option>
+              <option value="other">{PROFILE_INFO.GENDER_OPTIONS.OTHER}</option>
             </select>
             <div className="profile-info-select-arrow">▼</div>
           </div>
         </div>
         <div className="profile-info-form-group">
           <label className="profile-info-label">
-            <span className="required">*</span>Birthday
+            <span className="required">*</span>{PROFILE_INFO.LABELS.BIRTHDAY}
           </label>
           <div className="profile-info-birthday-container">
             <div className="profile-info-birthday-row">
@@ -256,7 +256,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                   onChange={_e => setTempData(prev => ({ ...prev, birthdayDay: _e.target.value }))}
                   disabled={!isEditing || isSaving}
                 >
-                  <option value="">Day</option>
+                  <option value="">{PROFILE_INFO.PLACEHOLDERS.DAY}</option>
                   {days.map(day => (
                     <option key={day} value={day}>{day}</option>
                   ))}
@@ -270,7 +270,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                   onChange={_e => setTempData(prev => ({ ...prev, birthdayMonth: _e.target.value }))}
                   disabled={!isEditing || isSaving}
                 >
-                  <option value="">Month</option>
+                  <option value="">{PROFILE_INFO.PLACEHOLDERS.MONTH}</option>
                   {months.map(month => (
                     <option key={month} value={month}>{month}</option>
                   ))}
@@ -284,7 +284,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                   onChange={_e => setTempData(prev => ({ ...prev, birthdayYear: _e.target.value }))}
                   disabled={!isEditing || isSaving}
                 >
-                  <option value="">Year</option>
+                  <option value="">{PROFILE_INFO.PLACEHOLDERS.YEAR}</option>
                   {years.map(year => (
                     <option key={year} value={year}>{year}</option>
                   ))}
@@ -305,7 +305,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                 onClick={handleCancel}
                 disabled={isSaving}
               >
-                Cancel
+                {PROFILE_INFO.BUTTONS.CANCEL}
               </button>
               <button 
                 type="button" 
@@ -313,7 +313,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
                 onClick={handleSave}
                 disabled={isSaving}
               >
-                {isSaving ? 'Saving...' : 'Update'}
+                {isSaving ? PROFILE_INFO.BUTTONS.SAVING : PROFILE_INFO.BUTTONS.UPDATE}
               </button>
             </div>
           ) : (
@@ -322,7 +322,7 @@ const ProfileInfo = ({ profileData, setProfileData }) => {
               className="profile-info-btn-save" 
               onClick={() => setIsEditing(true)}
             >
-              Edit
+              {PROFILE_INFO.BUTTONS.EDIT}
             </button>
           )}
         </div>

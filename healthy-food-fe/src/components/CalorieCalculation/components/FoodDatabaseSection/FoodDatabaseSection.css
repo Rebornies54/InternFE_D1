@@ -1,0 +1,738 @@
+@import '../../CalorieCalculation.css';
+
+/* Food Database Section - Enhanced Responsive Design */
+.food-database-table-wrapper {
+  margin: 20px 0;
+}
+
+.food-database-section {
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+/* Reduced hover effect */
+.food-database-section:hover {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+}
+
+/* Section Header */
+.section-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.section-header .section-title {
+  background-color: #ffffff;
+  color: #333333;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  border: 1px solid #dee2e6;
+}
+
+/* Enhanced Table Select - Mobile First */
+.table-select-form-group {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 20px auto;
+}
+
+.table-select-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+  display: block;
+  text-align: center;
+}
+
+.table-select {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  border: 2px solid #d9d9d9;
+  padding: 12px 16px;
+  background: #fff;
+  font-size: 14px;
+  color: #333;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.table-select:focus {
+  outline: none;
+  border-color: #e83e8c;
+  box-shadow: 0 0 0 3px rgba(232, 62, 140, 0.1);
+}
+
+.table-select:disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Enhanced Food Table Container */
+.food-table-container {
+  margin-top: 20px;
+  overflow-x: auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: #fff;
+}
+
+/* Loading State */
+.table-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #6c757d;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #dee2e6;
+  border-top: 4px solid #e83e8c;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced Food Database Table - Mobile Responsive */
+.food-database-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  min-width: 600px;
+}
+
+.food-database-table th {
+  background: linear-gradient(135deg, #e83e8c 0%, #d63384 100%);
+  color: white;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 2px solid #d63384;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.food-database-table th:nth-child(1) {
+  text-align: center;
+  width: 60px;
+}
+
+.food-database-table th:nth-child(3) {
+  text-align: center;
+  width: 120px;
+}
+
+.food-database-table th:nth-child(4) {
+  text-align: center;
+  width: 80px;
+}
+
+.food-database-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f3f4;
+  vertical-align: middle;
+  transition: background-color 0.2s ease;
+}
+
+.food-database-table td:nth-child(1) {
+  text-align: center;
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.food-database-table td:nth-child(3) {
+  text-align: center;
+}
+
+.food-database-table td:nth-child(4) {
+  text-align: center;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Reduced hover effect for table rows */
+.food-database-table tr:hover {
+  background: #f8f9fa;
+}
+
+/* Enhanced Food Row - removed transform hover */
+.food-row {
+  transition: background-color 0.2s ease;
+}
+
+/* Food Name Cell */
+.food-name-cell {
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.food-name-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.food-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.food-description {
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+/* Calories Cell - Fixed Alignment */
+.calories-cell {
+  text-align: center;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.calories-value {
+  color: #e83e8c;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.calories-unit {
+  color: #6c757d;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* No Data State */
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.no-data-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.no-data h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+}
+
+.no-data p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Enhanced Table Note */
+.food-table-note {
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  border-radius: 8px;
+  border-left: 4px solid #ffc107;
+}
+
+.food-table-note p {
+  margin: 0;
+  font-size: 14px;
+  color: #856404;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Daily Statistics Section */
+.daily-statistics-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-radius: 12px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.daily-statistics-section .section-title {
+  background-color: #ffffff;
+  color: #333333;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid #dee2e6;
+}
+
+/* Statistics Summary - Responsive Grid */
+.statistics-summary {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Mobile: Single column */
+@media (max-width: 768px) {
+  .food-database-section {
+    padding: 16px;
+    margin: 10px 0;
+  }
+
+  .section-header .section-title {
+    font-size: 16px;
+    padding: 12px 16px;
+  }
+
+  .table-select-form-group {
+    max-width: 100%;
+  }
+
+  .table-select {
+    height: 44px;
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  /* Fix table container for mobile */
+  .food-table-container {
+    margin-top: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    overflow-y: visible;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .food-database-table {
+    min-width: 400px;
+    width: 100%;
+  }
+
+  .food-database-table th,
+  .food-database-table td {
+    padding: 8px 6px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .food-database-table th:nth-child(1) {
+    width: 40px;
+    min-width: 40px;
+  }
+
+  .food-database-table th:nth-child(3) {
+    width: 80px;
+    min-width: 80px;
+  }
+
+  .food-database-table th:nth-child(4) {
+    width: 60px;
+    min-width: 60px;
+  }
+
+  .food-name-cell {
+    min-width: 120px;
+    max-width: 150px;
+  }
+
+  .food-name {
+    font-size: 12px;
+  }
+
+  .food-description {
+    font-size: 10px;
+  }
+
+  .calories-value {
+    font-size: 12px;
+  }
+
+  .calories-unit {
+    font-size: 10px;
+  }
+
+  .statistics-summary {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .daily-statistics-section {
+    padding: 16px;
+    margin-top: 20px;
+  }
+
+  .daily-statistics-section .section-title {
+    font-size: 16px;
+    padding: 12px 16px;
+  }
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .statistics-summary {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .food-database-table th,
+  .food-database-table td {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .food-database-table {
+    min-width: 550px;
+  }
+}
+
+/* Desktop: 3 columns */
+@media (min-width: 1025px) {
+  .statistics-summary {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Enhanced Stat Cards */
+.stat-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #e83e8c 0%, #d63384 100%);
+}
+
+/* Reduced hover effect */
+.stat-card:hover {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+}
+
+.stat-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #e83e8c;
+  background: linear-gradient(135deg, #e83e8c 0%, #d63384 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Category Statistics - Responsive */
+.category-stats {
+  margin-bottom: 24px;
+}
+
+.category-stats h3 {
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+  text-align: center;
+  position: relative;
+}
+
+.category-stats h3::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #e83e8c 0%, #d63384 100%);
+  border-radius: 2px;
+}
+
+.category-stats-grid {
+  display: grid;
+  gap: 16px;
+}
+
+/* Mobile: Single column */
+@media (max-width: 768px) {
+  .category-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .category-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* Desktop: Auto-fit */
+@media (min-width: 1025px) {
+  .category-stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+}
+
+/* Enhanced Category Stat Cards */
+.category-stat-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.category-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(232, 62, 140, 0.05) 0%, rgba(214, 51, 132, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.category-stat-card:hover::before {
+  opacity: 1;
+}
+
+/* Reduced hover effect */
+.category-stat-card:hover {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+}
+
+.category-stat-card h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+.category-stat-card p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #6c757d;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category-stat-card p:first-of-type {
+  color: #e83e8c;
+  font-weight: 600;
+}
+
+/* Top Foods - Responsive */
+.top-foods {
+  margin-bottom: 24px;
+}
+
+.top-foods h3 {
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+  text-align: center;
+  position: relative;
+}
+
+.top-foods h3::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #e83e8c 0%, #d63384 100%);
+  border-radius: 2px;
+}
+
+.top-foods-list {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  overflow: hidden;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Enhanced Top Food Items */
+.top-food-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f3f4;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.top-food-item:last-child {
+  border-bottom: none;
+}
+
+/* Reduced hover effect */
+.top-food-item:hover {
+  background: #f8f9fa;
+}
+
+.top-food-item:nth-child(1) {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  color: white;
+}
+
+.top-food-item:nth-child(1) .food-name,
+.top-food-item:nth-child(1) .food-category,
+.top-food-item:nth-child(1) .food-calories {
+  color: white;
+}
+
+.top-food-item:nth-child(2) {
+  background: linear-gradient(135deg, #4ecdc4 0%, #6ee7df 100%);
+  color: white;
+}
+
+.top-food-item:nth-child(2) .food-name,
+.top-food-item:nth-child(2) .food-category,
+.top-food-item:nth-child(2) .food-calories {
+  color: white;
+}
+
+.top-food-item:nth-child(3) {
+  background: linear-gradient(135deg, #45b7d1 0%, #6bc5d8 100%);
+  color: white;
+}
+
+.top-food-item:nth-child(3) .food-name,
+.top-food-item:nth-child(3) .food-category,
+.top-food-item:nth-child(3) .food-calories {
+  color: white;
+}
+
+.food-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.food-category {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.food-calories {
+  font-weight: 700;
+  font-size: 14px;
+  min-width: 80px;
+  text-align: right;
+}
+
+/* Mobile: Stack top food items */
+@media (max-width: 768px) {
+  .top-food-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 12px;
+  }
+
+  .food-calories {
+    align-self: flex-end;
+    text-align: right;
+  }
+}
+
+/* Scrollbar Styling */
+.food-table-container::-webkit-scrollbar,
+.top-foods-list::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.food-table-container::-webkit-scrollbar-track,
+.top-foods-list::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 3px;
+}
+
+.food-table-container::-webkit-scrollbar-thumb,
+.top-foods-list::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 3px;
+}
+
+.food-table-container::-webkit-scrollbar-thumb:hover,
+.top-foods-list::-webkit-scrollbar-thumb:hover {
+  background: #dee2e6;
+}

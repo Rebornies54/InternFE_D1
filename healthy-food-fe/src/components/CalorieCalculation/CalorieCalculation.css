@@ -56,7 +56,7 @@
   --shadow-md: 0 4px 20px rgba(0,0,0,0.15);
 }
 
-/* Base Container */
+/* Base Container - Mobile First */
 .calorie-calculation-container {
   font-family: 'Helvetica Neue', Arial, sans-serif;
   width: 100%;
@@ -66,6 +66,30 @@
   color: var(--color-text);
   background: var(--color-background);
   touch-action: manipulation;
+  min-height: 100vh;
+}
+
+/* Mobile: Reduce padding */
+@media (max-width: 768px) {
+  .calorie-calculation-container {
+    padding: var(--spacing-lg) var(--spacing-md);
+    max-width: 100%;
+  }
+}
+
+/* Extra small mobile: Further reduce padding */
+@media (max-width: 480px) {
+  .calorie-calculation-container {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+}
+
+/* Tablet: Optimize for medium screens */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .calorie-calculation-container {
+    padding: var(--spacing-lg) var(--spacing-md);
+    max-width: 100%;
+  }
 }
 
 /* Message Display */
@@ -161,9 +185,35 @@
   touch-action: manipulation;
 }
 
+/* Mobile: Full width table select */
+@media (max-width: 768px) {
+  .table-select {
+    max-width: 100%;
+    min-width: 100%;
+    height: 44px;
+    font-size: var(--font-size-md);
+  }
+  
+  .table-select-form-group {
+    max-width: 100%;
+  }
+}
+
+/* Tablet: Medium width */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .table-select {
+    max-width: 300px;
+    min-width: 200px;
+    height: 42px;
+  }
+  
+  .table-select-form-group {
+    max-width: 300px;
+  }
+}
+
 /* Tables Styling - Optimized */
-.food-database-table,
-.food-log-table {
+.food-database-table {
   width: 100%;
   border-collapse: collapse;
   background: var(--color-background);
@@ -182,15 +232,68 @@
   overflow-x: auto; /* Allow horizontal scrolling on small screens */
 }
 
-/* Food Log Table Container - NEW */
-.food-log-table-container {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  margin-bottom: var(--spacing-lg);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
+/* Mobile: Improve table scrolling */
+@media (max-width: 768px) {
+  .food-table-container {
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+  
+  .food-table-container::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .food-table-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .food-table-container::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 2px;
+  }
+  
+  .food-table-container::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border-light);
+  }
+  
+  .food-database-table {
+    min-width: 600px; /* Ensure minimum width for readability */
+  }
+  
+  .food-database-table th,
+  .food-database-table td {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
 }
+
+/* Tablet: Improve table scrolling */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .food-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .food-database-table {
+    min-width: 650px;
+  }
+  
+  .food-database-table th,
+  .food-database-table td {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Food log table and card styles moved to FoodLogDisplay component */
+
+/* Food log table styles moved to FoodLogDisplay component */
+
+/* Food log table styles moved to FoodLogDisplay component */
+
+/* Food log card styles moved to FoodLogDisplay component */
 
 .food-table-note {
   margin-top: var(--spacing-sm);
@@ -207,8 +310,7 @@
   font-style: italic;
 }
 
-.food-database-table th,
-.food-log-table th {
+.food-database-table th {
   background: var(--color-background-light);
   padding: var(--spacing-md);
   text-align: left;
@@ -218,55 +320,14 @@
   white-space: nowrap;
 }
 
-.food-database-table td,
-.food-log-table td {
+.food-database-table td {
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--color-border-lighter);
 }
 
-/* Food Log Table Cell Widths - NEW */
-.food-log-table th:nth-child(1),
-.food-log-table td:nth-child(1) {
-  width: 40px;
-  min-width: 40px;
-  text-align: center;
-}
+/* Food Log Table Cell Widths - REMOVED (replaced with mobile-first responsive design) */
 
-.food-log-table th:nth-child(2),
-.food-log-table td:nth-child(2) {
-  width: 90px;
-  min-width: 90px;
-}
-
-.food-log-table th:nth-child(3),
-.food-log-table td:nth-child(3) {
-  min-width: 120px;
-}
-
-.food-log-table th:nth-child(4),
-.food-log-table td:nth-child(4),
-.food-log-table th:nth-child(5),
-.food-log-table td:nth-child(5) {
-  width: 80px;
-  min-width: 80px;
-}
-
-.food-log-table th:nth-child(6),
-.food-log-table td:nth-child(6) {
-  width: 120px;
-  min-width: 120px;
-}
-
-/* Truncate text in cells with ellipsis - NEW */
-.food-log-table td {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 150px;
-}
-
-.food-database-table tr:hover,
-.food-log-table tr:hover {
+.food-database-table tr:hover {
   background: var(--color-background-light);
 }
 
@@ -285,9 +346,32 @@
 
 .statistics-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: var(--spacing-lg);
   margin-bottom: 30px;
+}
+
+/* Mobile: Single column */
+@media (max-width: 768px) {
+  .statistics-summary {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .statistics-summary {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+}
+
+/* Desktop: 3 columns */
+@media (min-width: 1025px) {
+  .statistics-summary {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+  }
 }
 
 .stat-card {
@@ -325,8 +409,31 @@
 
 .category-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 15px;
+}
+
+/* Mobile: Single column */
+@media (max-width: 768px) {
+  .category-stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .category-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+}
+
+/* Desktop: Auto-fit */
+@media (min-width: 1025px) {
+  .category-stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+  }
 }
 
 .category-stat-card {
@@ -377,6 +484,31 @@
   padding: 8px 12px;
   border-bottom: 1px solid var(--color-border-lighter);
   transition: background-color 0.2s ease;
+}
+
+/* Mobile: Stack top food items */
+@media (max-width: 768px) {
+  .top-food-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+  }
+  
+  .food-name {
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  .food-category {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+  }
+  
+  .food-calories {
+    align-self: flex-end;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+  }
 }
 
 .top-food-item:nth-child(1) {
@@ -447,13 +579,30 @@
   text-align: right;
 }
 
-/* Date Selector */
+/* Date Selector - Mobile First */
 .date-selector {
   margin-bottom: var(--spacing-xl);
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+/* Mobile: Stack date selector */
+@media (max-width: 768px) {
+  .date-selector {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .date-selector label {
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .date-input {
+    width: 100%;
+  }
 }
 
 .date-selector label {
@@ -499,16 +648,48 @@
   border: 1px solid var(--color-border-light);
 }
 
-/* Add Food Form */
+/* Add Food Form - Mobile First */
 .add-food-form {
   margin-bottom: var(--spacing-xl);
 }
 
 .form-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 15px;
   align-items: end;
+}
+
+/* Mobile: Stack vertically */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .add-food-form {
+    padding: var(--spacing-md);
+  }
+}
+
+/* Tablet: 3 columns for better fit */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .form-row {
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .calorie-display {
+    font-size: var(--font-size-xs);
+    padding: 8px;
+  }
+}
+
+/* Desktop: 4 columns */
+@media (min-width: 1025px) {
+  .form-row {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: var(--spacing-lg);
+  }
 }
 
 .form-group {
@@ -698,7 +879,7 @@
   color: var(--color-danger);
 }
 
-/* Pagination */
+/* Pagination - Mobile First */
 .pagination {
   display: flex;
   justify-content: center;
@@ -706,6 +887,19 @@
   gap: 15px;
   margin-top: var(--spacing-xl);
   flex-wrap: wrap;
+}
+
+/* Mobile: Stack pagination elements */
+@media (max-width: 768px) {
+  .pagination {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .pagination-btn {
+    min-width: 120px;
+    height: 40px;
+  }
 }
 
 .pagination-btn {
@@ -755,6 +949,19 @@
   box-shadow: var(--shadow-md);
   max-width: 500px;
   width: 100%;
+}
+
+/* Mobile: Full width modal */
+@media (max-width: 768px) {
+  .edit-modal-content {
+    max-width: 100%;
+    margin: var(--spacing-md);
+    padding: var(--spacing-lg);
+  }
+  
+  .edit-modal-overlay {
+    padding: var(--spacing-sm);
+  }
 }
 
 .edit-modal-info {
@@ -852,7 +1059,7 @@
   background-color: var(--color-gray-dark);
 }
 
-/* Pending Foods Section - Improved Styling */
+/* Pending Foods Section - Mobile First */
 .pending-foods-section {
   margin-bottom: 30px;
   padding: 20px;
@@ -866,6 +1073,24 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+}
+
+/* Mobile: Stack header elements */
+@media (max-width: 768px) {
+  .pending-foods-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .pending-foods-summary {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  
+  .pending-foods-section {
+    padding: var(--spacing-lg);
+  }
 }
 
 .pending-foods-header h3 {
@@ -908,6 +1133,25 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   flex-wrap: wrap;
   gap: 10px;
+}
+
+/* Mobile: Stack pending food items */
+@media (max-width: 768px) {
+  .pending-food-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-md);
+  }
+  
+  .pending-food-quantity {
+    margin: 0;
+    justify-content: center;
+  }
+  
+  .pending-food-calories {
+    text-align: center;
+    font-weight: var(--font-weight-semibold);
+  }
 }
 
 .pending-food-info {
@@ -1031,71 +1275,11 @@
   color: #bd2130;
 }
 
-/* Card View for Mobile Table - NEW */
-.food-log-card {
-  display: none;
-  background: var(--color-background);
-  border-radius: var(--border-radius-md);
-  border: 1px solid var(--color-border-light);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-  box-shadow: var(--shadow-sm);
-}
-
-.food-log-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-sm);
-}
-
-.food-log-card-title {
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-md);
-  color: var(--color-text);
-}
-
-.food-log-card-date {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  background: var(--color-background-light);
-  padding: 2px 6px;
-  border-radius: var(--border-radius-sm);
-}
-
-.food-log-card-details {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-md);
-}
-
-.food-log-card-detail {
-  display: flex;
-  flex-direction: column;
-}
-
-.food-log-card-detail-label {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  margin-bottom: 2px;
-}
-
-.food-log-card-detail-value {
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-sm);
-  color: var(--color-text);
-}
-
-.food-log-card-actions {
-  display: flex;
-  gap: var(--spacing-sm);
-}
+/* Food log card styles moved to FoodLogDisplay component */
 
 /* Responsive Design - Improved for modern devices */
 @media (max-width: 1024px) {
-  .form-row {
-    grid-template-columns: 2fr 1fr 1fr;
-  }
+  /* Form row responsive handled above */
   
   .statistics-summary {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -1111,10 +1295,7 @@
     padding: 12px var(--spacing-md);
   }
   
-  .form-row {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
+  /* Form row responsive handled above */
   
   .statistics-summary {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -1125,23 +1306,11 @@
     grid-template-columns: 1fr;
   }
   
-  .table-select, 
-  .table-select-form-group {
-    width: 100%;
-    max-width: 100%;
-  }
+  /* Table select responsive handled above */
   
-  .food-database-table th,
-  .food-log-table th {
-    padding: var(--spacing-sm);
-    font-size: var(--font-size-xs);
-  }
+  /* Food database table responsive handled above */
   
-  .food-database-table td,
-  .food-log-table td {
-    padding: var(--spacing-sm);
-    font-size: var(--font-size-xs);
-  }
+  /* Food log table styles moved to FoodLogDisplay component */
   
   .edit-modal-content {
     width: 95%;
@@ -1231,22 +1400,9 @@
     padding: 10px;
   }
   
-  .form-row {
-    grid-template-columns: 1fr;
-  }
+  /* Form row responsive handled above */
   
-  .date-selector {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .date-selector label {
-    margin-bottom: 5px;
-  }
-  
-  .date-input {
-    width: 100%;
-  }
+  /* Date selector responsive handled above */
   
   .stat-card {
     padding: var(--spacing-md);
@@ -1263,14 +1419,7 @@
     width: 100%;
   }
   
-  /* Card View for Mobile - NEW */
-  .food-log-table {
-    display: none; /* Hide the traditional table on mobile */
-  }
-  
-  .food-log-card {
-    display: block; /* Show card view instead */
-  }
+  /* Card View for Mobile - handled above with !important */
   
   .mobile-action-btn {
     display: flex;
@@ -1317,10 +1466,7 @@
     min-width: 40px;
   }
   
-  .food-database-table,
-  .food-log-table {
-    font-size: var(--font-size-xs);
-  }
+  /* Food log table styles moved to FoodLogDisplay component */
   
   .section-title {
     font-size: var(--font-size-md);
@@ -1370,18 +1516,7 @@
     padding: 12px;
   }
   
-  .food-log-card {
-    padding: 15px;
-    margin-bottom: 12px;
-  }
-  
-  .food-log-card-title {
-    font-size: 16px;
-  }
-  
-  .food-log-card-detail-value {
-    font-size: 14px;
-  }
+  /* Food log card styles moved to FoodLogDisplay component */
   
   .edit-btn, .delete-btn {
     height: 36px;
@@ -1403,42 +1538,13 @@
     padding: 16px;
   }
   
-  .form-row {
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 12px;
-  }
+  /* Form row responsive handled above */
   
   .statistics-summary {
     grid-template-columns: repeat(3, 1fr);
   }
   
-  /* iPad Specific Table Improvements - NEW */
-  .food-log-table-container {
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    overflow: hidden;
-  }
-  
-  .food-log-table th {
-    padding: 12px 15px;
-    font-size: 14px;
-  }
-  
-  .food-log-table td {
-    padding: 12px 15px;
-    font-size: 14px;
-  }
-  
-  /* Action button improvements for touch */
-  .edit-btn, .delete-btn {
-    height: 36px;
-    min-width: 70px;
-    font-size: 14px;
-  }
-  
-  .action-buttons {
-    flex-direction: row;
-  }
+  /* iPad Specific Table Improvements - REMOVED (replaced with mobile-first responsive design) */
   
   .pending-foods-header {
     flex-direction: row;
@@ -1482,10 +1588,7 @@
     font-size: 28px;
   }
   
-  .form-row {
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 20px;
-  }
+  /* Form row responsive handled above */
   
   .quantity-btn {
     width: 45px;
@@ -1497,11 +1600,7 @@
     font-size: 16px;
   }
   
-  .edit-btn, .delete-btn {
-    height: 40px;
-    min-width: 80px;
-    font-size: 14px;
-  }
+  /* Action buttons - REMOVED (replaced with mobile-first responsive design) */
 }
 
 /* Newer Android Devices (Samsung S21/S22) optimization */
@@ -1523,33 +1622,5 @@
     font-size: 16px;
   }
   
-  /* Card view for tables */
-  .food-log-table {
-    display: none;
-  }
-  
-  .food-log-card {
-    display: block;
-  }
-  
-  .food-log-card-title {
-    font-size: 15px;
-  }
-  
-  .food-log-card-date {
-    font-size: 11px;
-  }
-  
-  .food-log-card-detail-label {
-    font-size: 11px;
-  }
-  
-  .food-log-card-detail-value {
-    font-size: 13px;
-  }
-  
-  .edit-btn, .delete-btn {
-    height: 34px;
-    font-size: 13px;
-  }
+  /* Card view for tables - REMOVED (replaced with mobile-first responsive design) */
 }

@@ -17,12 +17,10 @@ export const getFallbackImage = (categoryId) => {
 export const updateFoodImages = async () => {
   try {
     // This would be called from an admin panel or development tool
-    console.log('Updating food images...');
     
     // For now, we'll just return the fallback images mapping
     return fallbackImages;
   } catch (error) {
-    console.error('Error updating food images:', error);
     return fallbackImages;
   }
 };

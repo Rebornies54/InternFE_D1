@@ -880,3 +880,289 @@ export const DATEPICKER = {
     FOCUS_OFFSET: 2,
   },
 } as const;
+
+// Food Database Section Constants
+export const FOOD_DATABASE_SECTION = {
+  TITLE: 'Chọn bảng tính',
+  LABEL: 'Chọn danh mục thực phẩm:',
+  TABLE_HEADERS: {
+    STT: 'STT',
+    FOOD_NAME: 'Tên thực phẩm',
+    CALORIES: 'Calo/100g',
+    UNIT: 'Đơn vị',
+  },
+  LOADING: {
+    TEXT: 'Đang tải dữ liệu...',
+  },
+  NO_DATA: {
+    ICON: '📋',
+    TITLE: 'Không có dữ liệu',
+    MESSAGE: 'Vui lòng chọn danh mục khác hoặc thử lại sau.',
+  },
+  TABLE_NOTE: {
+    MESSAGE: 'Hiển thị 10 mục đầu tiên. Sử dụng thanh tìm kiếm bên dưới để xem tất cả.',
+  },
+  STATISTICS: {
+    TITLE: 'Thống kê dinh dưỡng ngày',
+    SUMMARY: {
+      TOTAL_CALORIES: 'Tổng calo',
+      TOTAL_QUANTITY: 'Tổng lượng',
+      TOTAL_ENTRIES: 'Số món',
+    },
+    CATEGORY: {
+      TITLE: 'Thống kê theo danh mục',
+      LABELS: {
+        CALORIES: 'Calo:',
+        QUANTITY: 'Lượng:',
+        ENTRIES: 'Số món:',
+      },
+    },
+    TOP_FOODS: {
+      TITLE: 'Top món ăn tiêu thụ',
+    },
+  },
+} as const;
+
+// Food Tracking Form Constants
+export const FOOD_TRACKING_FORM = {
+  SECTIONS: {
+    PENDING_FOODS: 'Thực phẩm chờ thêm',
+    ADD_FOOD: 'Thêm thực phẩm vào nhật ký',
+  },
+  LABELS: {
+    DATE: 'Chọn ngày:',
+    FOOD: 'Chọn thực phẩm:',
+    QUANTITY: 'Số lượng (g):',
+    CALORIES: 'Calo:',
+  },
+  PLACEHOLDERS: {
+    FOOD: 'Chọn thực phẩm...',
+    QUANTITY: 'Nhập số lượng...',
+  },
+  BUTTONS: {
+    ADD_FOOD: 'Thêm thực phẩm',
+    ADD_ALL: 'Thêm tất cả',
+    CLEAR_ALL: 'Xóa tất cả',
+    REMOVE: 'Xóa',
+  },
+  MESSAGES: {
+    NO_PENDING_FOODS: 'Chưa có thực phẩm nào trong danh sách chờ',
+    TOTAL_CALORIES: 'Tổng calo:',
+    CALORIES_UNIT: 'cal',
+  },
+} as const;
+
+// Food Log Display Constants
+export const FOOD_LOG_DISPLAY = {
+  TITLE: 'Nhật ký ăn uống hàng ngày',
+  TABLE_HEADERS: {
+    FOOD_NAME: 'Tên thực phẩm',
+    QUANTITY: 'Số lượng',
+    CALORIES: 'Calo',
+    ACTIONS: 'Thao tác',
+  },
+  BUTTONS: {
+    EDIT: 'Sửa',
+    DELETE: 'Xóa',
+    SAVE: 'Lưu',
+    CANCEL: 'Hủy',
+  },
+  MODAL: {
+    TITLE: 'Chỉnh sửa thực phẩm',
+    LABELS: {
+      FOOD_NAME: 'Tên thực phẩm:',
+      QUANTITY: 'Số lượng (g):',
+      CALORIES: 'Calo:',
+    },
+  },
+  PAGINATION: {
+    PREVIOUS: 'Trước',
+    NEXT: 'Tiếp',
+    PAGE_INFO: 'Trang',
+    OF: 'trên',
+  },
+  NO_DATA: {
+    MESSAGE: 'Chưa có dữ liệu nhật ký cho ngày này',
+  },
+  LOADING: {
+    TEXT: 'Đang tải dữ liệu...',
+  },
+  NO_LOGS: {
+    TITLE: 'Chưa có nhật ký',
+    MESSAGE: 'Hãy thêm thực phẩm để bắt đầu theo dõi dinh dưỡng',
+  },
+  TABLE: {
+    DATE_HEADER: 'Ngày thêm',
+    STT_HEADER: 'STT',
+  },
+  CARD: {
+    DATE_LABEL: 'Ngày:',
+  },
+} as const;
+
+// Profile Constants
+export const PROFILE = {
+  MENU: {
+    PROFILE: 'Profile',
+    ADDRESS: 'Address',
+    CHANGE_PASSWORD: 'Change Password',
+    MY_BLOGS: 'My Blogs',
+  },
+  SIDEBAR: {
+    EDIT_PROFILE: 'Edit Profile',
+    MY_PROFILE: 'My Profile',
+  },
+  CONTENT: {
+    TITLE: 'Profile',
+    LOADING: 'Đang tải...',
+  },
+} as const;
+
+// Profile Info Constants
+export const PROFILE_INFO = {
+  LABELS: {
+    PROFILE_IMAGE: 'Profile Image',
+    FULL_NAME: 'Full Name',
+    EMAIL: 'Email',
+    PHONE_NUMBER: 'Phone Number',
+    GENDER: 'Gender',
+    BIRTHDAY: 'Birthday',
+  },
+  PLACEHOLDERS: {
+    FULL_NAME: 'Full Name',
+    EMAIL: 'Email',
+    PHONE_NUMBER: 'Phone Number',
+    SELECT_GENDER: 'Select Gender',
+    DAY: 'Day',
+    MONTH: 'Month',
+    YEAR: 'Year',
+  },
+  GENDER_OPTIONS: {
+    MALE: 'Male',
+    FEMALE: 'Female',
+    OTHER: 'Other',
+  },
+  BUTTONS: {
+    CANCEL: 'Cancel',
+    UPDATE: 'Update',
+    EDIT: 'Edit',
+    SAVING: 'Saving...',
+  },
+  MESSAGES: {
+    AVATAR_UPLOAD_SUCCESS: 'Avatar uploaded successfully!',
+    PROFILE_UPDATE_SUCCESS: 'Profile updated successfully!',
+    FILE_SIZE_ERROR: 'File size must be less than 5MB',
+    FILE_TYPE_ERROR: 'Please select an image file',
+    UPLOAD_FAILED: 'Upload image failed! Please try again.',
+    UPDATE_FAILED: 'Failed to update profile. Please try again.',
+    VALIDATION: {
+      FULL_NAME_REQUIRED: 'Full name is required',
+      PHONE_REQUIRED: 'Phone number is required',
+      GENDER_REQUIRED: 'Gender is required',
+    },
+  },
+  AVATAR: {
+    NO_IMAGE: 'No Image',
+    LOAD_ERROR: 'Avatar image failed to load. This might be due to server issues or file not found.',
+  },
+} as const;
+
+// Address Info Constants
+export const ADDRESS_INFO = {
+  TITLE: 'Address',
+  BUTTONS: {
+    ADD_ANOTHER_ADDRESS: '+ Add Another Address',
+    UPDATE: 'Update',
+    BACK: 'Back',
+    ADD: 'Add',
+  },
+  LABELS: {
+    FULL_NAME: 'Full Name',
+    PHONE_NUMBER: 'Phone Number',
+    PROVINCE: 'Province',
+    DISTRICT: 'District',
+    TOWN_STREET: 'Town/Street',
+    DETAILS: 'Details',
+  },
+  PLACEHOLDERS: {
+    FULL_NAME: 'Full name',
+    PHONE_NUMBER: 'Phone number',
+    SPECIFIC_ADDRESS: 'Specific address',
+  },
+  SELECT_OPTIONS: {
+    SELECT: 'Select',
+  },
+  MESSAGES: {
+    ADDRESS_NOT_UPDATED: 'Address not updated yet',
+    NA: 'N/A',
+  },
+} as const;
+
+// Change Password Constants
+export const CHANGE_PASSWORD = {
+  TITLE: 'Change Password',
+  LABELS: {
+    CURRENT_PASSWORD: 'Current Password',
+    NEW_PASSWORD: 'New Password',
+    CONFIRM_NEW_PASSWORD: 'Confirm New Password',
+  },
+  PLACEHOLDERS: {
+    CURRENT_PASSWORD: 'Current password',
+    NEW_PASSWORD: 'New password',
+    CONFIRM_NEW_PASSWORD: 'Confirm new password',
+  },
+  BUTTONS: {
+    SAVE: 'Save',
+    SAVING: 'Saving...',
+  },
+  MESSAGES: {
+    SUCCESS: 'Password changed successfully!',
+    PASSWORDS_NOT_MATCH: 'New passwords do not match',
+    PASSWORD_TOO_SHORT: 'New password must be at least 6 characters',
+    FAILED: 'Failed to change password',
+    ERROR_OCCURRED: 'An error occurred while changing password',
+  },
+} as const;
+
+// My Blogs Constants
+export const MY_BLOGS = {
+  TITLE: 'Quản lý bài viết của tôi',
+  SUBTITLE: 'Tổng cộng: {count} bài viết',
+  EMPTY_MESSAGE: 'Bạn chưa có bài viết nào',
+  LOADING: 'Đang tải...',
+  ERROR: 'Lỗi khi tải bài viết của bạn',
+  LABELS: {
+    TITLE: 'Tiêu đề:',
+    DESCRIPTION: 'Mô tả:',
+    CONTENT: 'Nội dung:',
+    CATEGORY: 'Danh mục:',
+    CURRENT_IMAGE: 'Ảnh hiện tại:',
+  },
+  PLACEHOLDERS: {
+    SELECT_CATEGORY: 'Chọn danh mục',
+  },
+  CATEGORIES: {
+    FOOD: 'Thực phẩm',
+    MENU: 'Thực đơn',
+    TIPS: 'Bí quyết',
+  },
+  BUTTONS: {
+    EDIT: 'Chỉnh sửa',
+    DELETE: 'Xóa',
+    SAVE: 'Lưu',
+    CANCEL: 'Hủy',
+  },
+  MESSAGES: {
+    DELETE_CONFIRM: 'Bạn có chắc chắn muốn xóa bài viết này?',
+    DELETE_ERROR: 'Lỗi khi xóa bài viết',
+    UPDATE_ERROR: 'Lỗi khi cập nhật bài viết',
+    CURRENT_IMAGE_KEPT: 'Ảnh hiện tại sẽ được giữ nguyên',
+    NO_IMAGE: 'Không có ảnh',
+    IMAGE_LOAD_ERROR: 'Failed to load my blog image: {url}',
+  },
+  META: {
+    CATEGORY: 'Danh mục: {category}',
+    CREATED_DATE: 'Ngày tạo: {date}',
+    LIKES_COUNT: 'Lượt thích: {count}',
+  },
+} as const;

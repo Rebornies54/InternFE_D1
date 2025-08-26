@@ -1,0 +1,807 @@
+@import '../../CalorieCalculation.css';
+
+/* Food Log Display - Enhanced Responsive Design */
+.food-log-display-wrapper {
+  margin: 20px 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+  border-radius: 12px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.section-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.section-title {
+  background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);
+}
+
+/* Food Log Table Container */
+.food-log-table-container {
+  margin-bottom: 20px;
+}
+
+/* No Logs State */
+.no-logs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.no-logs-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.no-logs h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+}
+
+.no-logs p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* MOBILE-FIRST: Card View (Default for all screen sizes) */
+.food-log-display-wrapper .card-view {
+  display: block !important;
+  width: 100%;
+}
+
+/* Log Cards - Mobile Design */
+.food-log-display-wrapper .log-card {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+/* Reduced hover effect - only subtle shadow change */
+.food-log-display-wrapper .log-card:hover {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+}
+
+.food-log-display-wrapper .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: linear-gradient(135deg, #e83e8c 0%, #d63384 100%);
+  color: white;
+  border-radius: 10px 10px 0 0;
+}
+
+.food-log-display-wrapper .food-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.food-log-display-wrapper .food-info .food-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.food-log-display-wrapper .food-info .food-category {
+  font-size: 12px;
+  opacity: 0.8;
+  color: white;
+  font-style: normal;
+}
+
+.food-log-display-wrapper .card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.food-log-display-wrapper .card-body {
+  padding: 16px;
+}
+
+.food-log-display-wrapper .log-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.food-log-display-wrapper .detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.food-log-display-wrapper .detail-item:last-child {
+  border-bottom: none;
+}
+
+.food-log-display-wrapper .detail-label {
+  font-weight: 500;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.food-log-display-wrapper .detail-value {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+/* Desktop: Table View (Hidden by default, shown on larger screens) */
+.food-log-display-wrapper .table-view {
+  display: none !important;
+  overflow-x: auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: #fff;
+}
+
+.food-log-display-wrapper .food-log-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  min-width: 800px;
+}
+
+.food-log-display-wrapper .food-log-table th {
+  background: linear-gradient(135deg, #e83e8c 0%, #d63384 100%);
+  color: white;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 2px solid #d63384;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.food-log-display-wrapper .food-log-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f3f4;
+  vertical-align: middle;
+  transition: background-color 0.2s ease;
+}
+
+/* Reduced hover effect for table rows */
+.food-log-display-wrapper .food-log-table tr:hover {
+  background: #f8f9fa;
+}
+
+/* Enhanced Log Row - removed transform hover */
+.food-log-display-wrapper .log-row {
+  transition: background-color 0.2s ease;
+}
+
+/* Food Name Cell */
+.food-log-display-wrapper .food-name-cell {
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.food-log-display-wrapper .food-name-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.food-log-display-wrapper .food-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.food-log-display-wrapper .food-category {
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Quantity Cell */
+.food-log-display-wrapper .quantity-cell {
+  text-align: center;
+  font-weight: 600;
+}
+
+.food-log-display-wrapper .quantity-value {
+  color: #e83e8c;
+  font-size: 16px;
+}
+
+.food-log-display-wrapper .quantity-unit {
+  color: #6c757d;
+  font-size: 12px;
+  margin-left: 2px;
+}
+
+/* Calories Cell */
+.food-log-display-wrapper .calories-cell {
+  text-align: center;
+  font-weight: 600;
+}
+
+.food-log-display-wrapper .calories-value {
+  color: #e83e8c;
+  font-size: 16px;
+}
+
+.food-log-display-wrapper .calories-unit {
+  color: #6c757d;
+  font-size: 12px;
+  margin-left: 2px;
+}
+
+/* Date Cell */
+.food-log-display-wrapper .date-cell {
+  text-align: center;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+/* Actions Cell */
+.food-log-display-wrapper .actions-cell {
+  text-align: center;
+  min-width: 120px;
+}
+
+.food-log-display-wrapper .action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Button Styles - Reduced hover effects */
+.food-log-display-wrapper .btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+}
+
+.food-log-display-wrapper .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.food-log-display-wrapper .btn-edit {
+  background: #007bff;
+  color: white;
+}
+
+.food-log-display-wrapper .btn-edit:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.food-log-display-wrapper .btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.food-log-display-wrapper .btn-delete:hover:not(:disabled) {
+  background: #c82333;
+}
+
+/* Pagination */
+.food-log-display-wrapper .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+}
+
+.food-log-display-wrapper .pagination-btn {
+  padding: 8px 16px;
+  border: 2px solid #d9d9d9;
+  background: #fff;
+  color: #333;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.food-log-display-wrapper .pagination-btn:hover:not(:disabled) {
+  border-color: #e83e8c;
+  background: #e83e8c;
+  color: white;
+}
+
+.food-log-display-wrapper .pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.food-log-display-wrapper .page-numbers {
+  display: flex;
+  gap: 4px;
+}
+
+.food-log-display-wrapper .page-number {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #d9d9d9;
+  background: #fff;
+  color: #333;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.food-log-display-wrapper .page-number:hover:not(:disabled) {
+  border-color: #e83e8c;
+  background: #e83e8c;
+  color: white;
+}
+
+.food-log-display-wrapper .page-number.active {
+  border-color: #e83e8c;
+  background: #e83e8c;
+  color: white;
+}
+
+.food-log-display-wrapper .page-number.ellipsis {
+  border: none;
+  background: transparent;
+  cursor: default;
+}
+
+.food-log-display-wrapper .page-number.ellipsis:hover {
+  background: transparent;
+  color: #333;
+}
+
+/* Edit Modal */
+.food-log-display-wrapper .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.food-log-display-wrapper .edit-modal {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.food-log-display-wrapper .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #dee2e6;
+  background: linear-gradient(135deg, #e83e8c 0%, #d63384 100%);
+  color: white;
+  border-radius: 12px 12px 0 0;
+}
+
+.food-log-display-wrapper .modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.food-log-display-wrapper .close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.food-log-display-wrapper .close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.food-log-display-wrapper .modal-body {
+  padding: 20px;
+}
+
+.food-log-display-wrapper .edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.food-log-display-wrapper .edit-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.food-log-display-wrapper .edit-form label {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.food-log-display-wrapper .edit-form .quantity-input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 2px solid #d9d9d9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.food-log-display-wrapper .edit-form .quantity-input-wrapper:focus-within {
+  border-color: #e83e8c;
+  box-shadow: 0 0 0 3px rgba(232, 62, 140, 0.1);
+}
+
+.food-log-display-wrapper .edit-form .quantity-input-wrapper .quantity-btn {
+  width: 40px;
+  height: 48px;
+  border: none;
+  background: #e83e8c;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.food-log-display-wrapper .edit-form .quantity-input-wrapper .quantity-btn:hover:not(:disabled) {
+  background: #d63384;
+}
+
+.food-log-display-wrapper .edit-form .quantity-input-wrapper .quantity-btn:disabled {
+  background: #d9d9d9;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.food-log-display-wrapper .edit-form .quantity-input {
+  flex: 1;
+  height: 48px;
+  border: none;
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  background: transparent;
+}
+
+.food-log-display-wrapper .edit-form .quantity-input:focus {
+  outline: none;
+}
+
+.food-log-display-wrapper .edit-form .calories-display {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 2px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: 600;
+}
+
+.food-log-display-wrapper .edit-form .calories-value {
+  color: #e83e8c;
+  font-size: 18px;
+  margin-right: 4px;
+}
+
+.food-log-display-wrapper .edit-form .calories-unit {
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.food-log-display-wrapper .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px;
+  border-top: 1px solid #dee2e6;
+}
+
+.food-log-display-wrapper .modal-footer .btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-height: 44px;
+}
+
+.food-log-display-wrapper .modal-footer .btn-primary {
+  background: linear-gradient(135deg, #e83e8c 0%, #d63384 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(232, 62, 140, 0.3);
+}
+
+.food-log-display-wrapper .modal-footer .btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #d63384 0%, #c82333 100%);
+}
+
+.food-log-display-wrapper .modal-footer .btn-secondary {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+.food-log-display-wrapper .modal-footer .btn-secondary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+}
+
+/* RESPONSIVE BREAKPOINTS */
+
+/* Mobile: Enhanced card view (default) */
+@media (max-width: 768px) {
+  .food-log-display-wrapper {
+    padding: 16px;
+    margin: 10px 0;
+  }
+
+  .section-title {
+    font-size: 16px;
+    padding: 12px 16px;
+  }
+
+  /* Ensure table is hidden on mobile */
+  .food-log-display-wrapper .table-view {
+    display: none !important;
+  }
+
+  /* Ensure cards are shown on mobile */
+  .food-log-display-wrapper .card-view {
+    display: block !important;
+  }
+
+  .food-log-display-wrapper .card-header {
+    padding: 12px;
+  }
+
+  .food-log-display-wrapper .food-info .food-name {
+    font-size: 14px;
+  }
+
+  .food-log-display-wrapper .food-info .food-category {
+    font-size: 11px;
+  }
+
+  .food-log-display-wrapper .card-body {
+    padding: 12px;
+  }
+
+  .food-log-display-wrapper .detail-item {
+    padding: 6px 0;
+  }
+
+  .food-log-display-wrapper .detail-label,
+  .food-log-display-wrapper .detail-value {
+    font-size: 13px;
+  }
+
+  .food-log-display-wrapper .card-actions .btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 28px;
+  }
+
+  /* Mobile Pagination */
+  .food-log-display-wrapper .pagination {
+    flex-direction: column;
+    gap: 16px;
+    padding: 12px;
+  }
+
+  .food-log-display-wrapper .page-numbers {
+    order: 2;
+  }
+
+  .food-log-display-wrapper .pagination-btn {
+    order: 1;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .food-log-display-wrapper .page-number {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  /* Mobile Modal */
+  .food-log-display-wrapper .modal-overlay {
+    padding: 10px;
+  }
+
+  .food-log-display-wrapper .edit-modal {
+    max-width: 100%;
+  }
+
+  .food-log-display-wrapper .modal-header {
+    padding: 16px;
+  }
+
+  .food-log-display-wrapper .modal-header h3 {
+    font-size: 16px;
+  }
+
+  .food-log-display-wrapper .modal-body {
+    padding: 16px;
+  }
+
+  .food-log-display-wrapper .modal-footer {
+    padding: 16px;
+    flex-direction: column;
+  }
+
+  .food-log-display-wrapper .modal-footer .btn {
+    width: 100%;
+  }
+
+  .food-log-display-wrapper .edit-form .quantity-input-wrapper .quantity-btn {
+    width: 36px;
+    height: 44px;
+  }
+
+  .food-log-display-wrapper .edit-form .quantity-input {
+    height: 44px;
+    font-size: 13px;
+  }
+
+  .food-log-display-wrapper .edit-form .calories-display {
+    height: 44px;
+  }
+
+  .food-log-display-wrapper .edit-form .calories-value {
+    font-size: 16px;
+  }
+}
+
+/* Tablet: Show table with scroll */
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Show table on tablet */
+  .food-log-display-wrapper .table-view {
+    display: block !important;
+  }
+
+  /* Hide cards on tablet */
+  .food-log-display-wrapper .card-view {
+    display: none !important;
+  }
+
+  .food-log-display-wrapper .food-log-table th,
+  .food-log-display-wrapper .food-log-table td {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .food-log-display-wrapper .food-log-table {
+    min-width: 700px;
+  }
+
+  .food-log-display-wrapper .food-name-cell {
+    min-width: 180px;
+    max-width: 250px;
+  }
+
+  .food-log-display-wrapper .quantity-value,
+  .food-log-display-wrapper .calories-value {
+    font-size: 15px;
+  }
+}
+
+/* Desktop: Full table view */
+@media (min-width: 1025px) {
+  /* Show table on desktop */
+  .food-log-display-wrapper .table-view {
+    display: block !important;
+  }
+
+  /* Hide cards on desktop */
+  .food-log-display-wrapper .card-view {
+    display: none !important;
+  }
+
+  .food-log-display-wrapper .food-log-table th,
+  .food-log-display-wrapper .food-log-table td {
+    padding: 16px 12px;
+    font-size: 14px;
+  }
+
+  .food-log-display-wrapper .food-log-table {
+    min-width: 800px;
+  }
+
+  .food-log-display-wrapper .food-name-cell {
+    min-width: 200px;
+    max-width: 300px;
+  }
+
+  .food-log-display-wrapper .quantity-value,
+  .food-log-display-wrapper .calories-value {
+    font-size: 16px;
+  }
+}
+
+/* Scrollbar Styling */
+.food-log-display-wrapper .food-log-table::-webkit-scrollbar {
+  height: 8px;
+}
+
+.food-log-display-wrapper .food-log-table::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.food-log-display-wrapper .food-log-table::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 4px;
+}
+
+.food-log-display-wrapper .food-log-table::-webkit-scrollbar-thumb:hover {
+  background: #dee2e6;
+}

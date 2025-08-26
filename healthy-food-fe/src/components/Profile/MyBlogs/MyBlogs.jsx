@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { blogAPI } from '../../../services/api';
+import { MY_BLOGS } from '../../../constants';
 import './MyBlogs.css';
 
 const MyBlogs = () => {
@@ -30,14 +31,14 @@ const MyBlogs = () => {
         setBlogs(response.data.data);
       }
     } catch (error) {
-      setError('Lỗi khi tải bài viết của bạn');
+      setError(MY_BLOGS.ERROR);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (blogId) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
+    if (!window.confirm(MY_BLOGS.MESSAGES.DELETE_CONFIRM)) {
       return;
     }
 
@@ -47,7 +48,7 @@ const MyBlogs = () => {
         setBlogs(blogs.filter(blog => blog.id !== blogId));
       }
     } catch (error) {
-      alert('Lỗi khi xóa bài viết');
+      alert(MY_BLOGS.MESSAGES.DELETE_ERROR);
     }
   };
 
@@ -81,7 +82,7 @@ const MyBlogs = () => {
         });
       }
     } catch (error) {
-      alert('Lỗi khi cập nhật bài viết');
+      alert(MY_BLOGS.MESSAGES.UPDATE_ERROR);
     }
   };
 
@@ -102,7 +103,7 @@ const MyBlogs = () => {
   };
 
   if (loading) {
-    return <div className="my-blogs-loading">Đang tải...</div>;
+    return <div className="my-blogs-loading">{MY_BLOGS.LOADING}</div>;
   }
 
   if (error) {
@@ -112,13 +113,13 @@ const MyBlogs = () => {
   return (
     <div className="my-blogs-container">
       <div className="my-blogs-header">
-        <h2>Quản lý bài viết của tôi</h2>
-        <p>Tổng cộng: {blogs.length} bài viết</p>
+        <h2>{MY_BLOGS.TITLE}</h2>
+        <p>{MY_BLOGS.SUBTITLE.replace('{count}', blogs.length)}</p>
       </div>
 
       {blogs.length === 0 ? (
         <div className="my-blogs-empty">
-          <p>Bạn chưa có bài viết nào</p>
+          <p>{MY_BLOGS.EMPTY_MESSAGE}</p>
         </div>
       ) : (
         <div className="my-blogs-list">
@@ -127,7 +128,7 @@ const MyBlogs = () => {
               {editingBlog?.id === blog.id ? (
                 <div className="my-blog-edit-form">
                   <div className="form-group">
-                    <label>Tiêu đề:</label>
+                    <label>{MY_BLOGS.LABELS.TITLE}</label>
                     <input
                       type="text"
                       value={editForm.title}
@@ -135,14 +136,14 @@ const MyBlogs = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Mô tả:</label>
+                    <label>{MY_BLOGS.LABELS.DESCRIPTION}</label>
                     <textarea
                       value={editForm.description}
                       onChange={(e) => setEditForm({...editForm, description: e.target.value})}
                     />
                   </div>
                   <div className="form-group">
-                    <label>Nội dung:</label>
+                    <label>{MY_BLOGS.LABELS.CONTENT}</label>
                     <textarea
                       value={editForm.content}
                       onChange={(e) => setEditForm({...editForm, content: e.target.value})}
@@ -150,31 +151,31 @@ const MyBlogs = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Danh mục:</label>
+                    <label>{MY_BLOGS.LABELS.CATEGORY}</label>
                     <select
                       value={editForm.category}
                       onChange={(e) => setEditForm({...editForm, category: e.target.value})}
                     >
-                      <option value="">Chọn danh mục</option>
-                      <option value="Thực phẩm">Thực phẩm</option>
-                      <option value="Thực đơn">Thực đơn</option>
-                      <option value="Bí quyết">Bí quyết</option>
+                      <option value="">{MY_BLOGS.PLACEHOLDERS.SELECT_CATEGORY}</option>
+                      <option value="Thực phẩm">{MY_BLOGS.CATEGORIES.FOOD}</option>
+                      <option value="Thực đơn">{MY_BLOGS.CATEGORIES.MENU}</option>
+                      <option value="Bí quyết">{MY_BLOGS.CATEGORIES.TIPS}</option>
                     </select>
                   </div>
                   <div className="form-group">
-                    <label>Ảnh hiện tại:</label>
+                    <label>{MY_BLOGS.LABELS.CURRENT_IMAGE}</label>
                     {editForm.image_url && editForm.image_url.trim() !== '' ? (
                       <div className="current-image">
                         <img src={editForm.image_url} alt="Current" className="my-blogs-current-image" />
-                        <p>Ảnh hiện tại sẽ được giữ nguyên</p>
+                        <p>{MY_BLOGS.MESSAGES.CURRENT_IMAGE_KEPT}</p>
                       </div>
                     ) : (
-                      <p>Không có ảnh</p>
+                      <p>{MY_BLOGS.MESSAGES.NO_IMAGE}</p>
                     )}
                   </div>
                   <div className="edit-actions">
-                    <button onClick={handleUpdate} className="btn-save">Lưu</button>
-                    <button onClick={handleCancelEdit} className="btn-cancel">Hủy</button>
+                    <button onClick={handleUpdate} className="btn-save">{MY_BLOGS.BUTTONS.SAVE}</button>
+                    <button onClick={handleCancelEdit} className="btn-cancel">{MY_BLOGS.BUTTONS.CANCEL}</button>
                   </div>
                 </div>
               ) : (
@@ -189,16 +190,16 @@ const MyBlogs = () => {
                           alt={blog.title} 
                           className="my-blogs-preview-image"
                           onError={(e) => {
-                            logWarning(`Failed to load my blog image: ${blog.image_url}`);
+                            logWarning(MY_BLOGS.MESSAGES.IMAGE_LOAD_ERROR.replace('{url}', blog.image_url));
                             e.target.style.display = 'none';
                           }}
                         />
                       </div>
                     )}
                     <div className="blog-meta">
-                      <span>Danh mục: {blog.category}</span>
-                      <span>Ngày tạo: {formatDate(blog.created_at)}</span>
-                      <span>Lượt thích: {blog.likes_count}</span>
+                      <span>{MY_BLOGS.META.CATEGORY.replace('{category}', blog.category)}</span>
+                      <span>{MY_BLOGS.META.CREATED_DATE.replace('{date}', formatDate(blog.created_at))}</span>
+                      <span>{MY_BLOGS.META.LIKES_COUNT.replace('{count}', blog.likes_count)}</span>
                     </div>
                   </div>
                   <div className="blog-actions">
@@ -206,13 +207,13 @@ const MyBlogs = () => {
                       onClick={() => handleEdit(blog)}
                       className="btn-edit"
                     >
-                      Chỉnh sửa
+                      {MY_BLOGS.BUTTONS.EDIT}
                     </button>
                     <button 
                       onClick={() => handleDelete(blog.id)}
                       className="btn-delete"
                     >
-                      Xóa
+                      {MY_BLOGS.BUTTONS.DELETE}
                     </button>
                   </div>
                 </div>
