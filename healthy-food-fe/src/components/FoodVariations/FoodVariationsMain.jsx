@@ -1,6 +1,7 @@
 import React from 'react';
 import { useFoodContext } from '../../context/FoodContext';
 import { X, Info, Star, ArrowLeft } from 'lucide-react';
+import { FOOD_VARIATIONS } from '../../constants';
 import './FoodVariationsMain.css';
 
 const FoodVariationsMain = () => {
@@ -21,11 +22,11 @@ const FoodVariationsMain = () => {
       <div className="food-variations-main-header">
         <button className="food-variations-back-btn" onClick={closeVariationsInMain}>
           <ArrowLeft size={20} />
-          <span>Quay lại</span>
+          <span>{FOOD_VARIATIONS.MAIN.BACK_BUTTON}</span>
         </button>
         <div className="food-variations-main-title">
           <h1>{selectedFood.name}</h1>
-          <p>Các loại và biến thể</p>
+          <p>{FOOD_VARIATIONS.MAIN.TITLE}</p>
         </div>
         <button className="food-variations-close-btn" onClick={closeVariationsInMain}>
           <X size={20} />
@@ -38,23 +39,23 @@ const FoodVariationsMain = () => {
             <div key={variation.id} className="food-variation-main-card">
               <div className="food-variation-main-header">
                 <h3 className="food-variation-main-name">{variation.name}</h3>
-                <div className="food-variation-main-calories">
-                  {variation.calories} cal
-                </div>
+                              <div className="food-variation-main-calories">
+                {variation.calories} {FOOD_VARIATIONS.NUTRITION.UNITS.CALORIES}
+              </div>
               </div>
 
               <div className="food-variation-main-nutrition">
                 <div className="nutrition-main-item">
-                  <span className="nutrition-main-label">Protein:</span>
-                  <span className="nutrition-main-value">{variation.protein}g</span>
+                  <span className="nutrition-main-label">{FOOD_VARIATIONS.NUTRITION.PROTEIN}</span>
+                  <span className="nutrition-main-value">{variation.protein}{FOOD_VARIATIONS.NUTRITION.UNITS.GRAMS}</span>
                 </div>
                 <div className="nutrition-main-item">
-                  <span className="nutrition-main-label">Carbs:</span>
-                  <span className="nutrition-main-value">{variation.carbs}g</span>
+                  <span className="nutrition-main-label">{FOOD_VARIATIONS.NUTRITION.CARBS}</span>
+                  <span className="nutrition-main-value">{variation.carbs}{FOOD_VARIATIONS.NUTRITION.UNITS.GRAMS}</span>
                 </div>
                 <div className="nutrition-main-item">
-                  <span className="nutrition-main-label">Fat:</span>
-                  <span className="nutrition-main-value">{variation.fat}g</span>
+                  <span className="nutrition-main-label">{FOOD_VARIATIONS.NUTRITION.FAT}</span>
+                  <span className="nutrition-main-value">{variation.fat}{FOOD_VARIATIONS.NUTRITION.UNITS.GRAMS}</span>
                 </div>
               </div>
 
@@ -68,13 +69,13 @@ const FoodVariationsMain = () => {
               <div className="food-variation-main-actions">
                 <button className="food-variation-main-btn primary">
                   <Star size={16} />
-                  Thêm vào yêu thích
+                  {FOOD_VARIATIONS.BUTTONS.ADD_TO_FAVORITES}
                 </button>
                 <button 
                   className="food-variation-main-btn secondary"
                   onClick={() => openFoodDetail(variation)}
                 >
-                  Xem chi tiết
+                  {FOOD_VARIATIONS.BUTTONS.VIEW_DETAILS}
                 </button>
               </div>
             </div>

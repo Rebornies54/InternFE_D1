@@ -32,7 +32,7 @@ const BodyIndex = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (contextFoodItems.length > 0 && contextCategories.length > 0) {
+    if (contextFoodItems && contextFoodItems.length > 0 && contextCategories && contextCategories.length > 0) {
       setFoodItems(contextFoodItems);
       setCategories(contextCategories);
     } else {
@@ -77,7 +77,6 @@ const BodyIndex = () => {
         generateRecommendations(bmiData.bmi.toString());
       }
     } catch (error) {
-      // BMI data not available or user not authenticated
     } finally {
       setBmiLoading(false);
     }
@@ -107,7 +106,6 @@ const BodyIndex = () => {
         });
         setCurrentBmi(parseFloat(bmiValue));
       } catch (error) {
-        // Could not save BMI data (user may not be authenticated)
       }
     }
   };

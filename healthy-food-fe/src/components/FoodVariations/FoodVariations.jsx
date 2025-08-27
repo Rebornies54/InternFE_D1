@@ -1,6 +1,7 @@
 import React from 'react';
 import { useFoodContext } from '../../context/FoodContext';
 import { X, Info, Star } from 'lucide-react';
+import { FOOD_VARIATIONS } from '../../constants';
 import './FoodVariations.css';
 
 const FoodVariations = () => {
@@ -16,7 +17,7 @@ const FoodVariations = () => {
         <div className="food-variations-header">
           <div className="food-variations-title">
             <h2>{selectedFood.name}</h2>
-            <p className="food-variations-subtitle">Các loại và biến thể</p>
+            <p className="food-variations-subtitle">{FOOD_VARIATIONS.MODAL.SUBTITLE}</p>
           </div>
           <button className="food-variations-close" onClick={closeFoodDetail}>
             <X size={20} />
@@ -34,16 +35,16 @@ const FoodVariations = () => {
 
             <div className="food-detail-nutrition">
               <div className="nutrition-item">
-                <span className="nutrition-label">Protein:</span>
-                <span className="nutrition-value">{selectedFood.protein || 0}g</span>
+                <span className="nutrition-label">{FOOD_VARIATIONS.NUTRITION.PROTEIN}</span>
+                <span className="nutrition-value">{selectedFood.protein || 0}{FOOD_VARIATIONS.NUTRITION.UNITS.GRAMS}</span>
               </div>
               <div className="nutrition-item">
-                <span className="nutrition-label">Carbs:</span>
-                <span className="nutrition-value">{selectedFood.carbs || 0}g</span>
+                <span className="nutrition-label">{FOOD_VARIATIONS.NUTRITION.CARBS}</span>
+                <span className="nutrition-value">{selectedFood.carbs || 0}{FOOD_VARIATIONS.NUTRITION.UNITS.GRAMS}</span>
               </div>
               <div className="nutrition-item">
-                <span className="nutrition-label">Fat:</span>
-                <span className="nutrition-value">{selectedFood.fat || 0}g</span>
+                <span className="nutrition-label">{FOOD_VARIATIONS.NUTRITION.FAT}</span>
+                <span className="nutrition-value">{selectedFood.fat || 0}{FOOD_VARIATIONS.NUTRITION.UNITS.GRAMS}</span>
               </div>
             </div>
 
@@ -57,10 +58,10 @@ const FoodVariations = () => {
             <div className="food-detail-actions">
               <button className="food-variation-btn primary">
                 <Star size={16} />
-                Thêm vào yêu thích
+                {FOOD_VARIATIONS.BUTTONS.ADD_TO_FAVORITES}
               </button>
               <button className="food-variation-btn secondary" onClick={closeFoodDetail}>
-                Đóng
+                {FOOD_VARIATIONS.BUTTONS.CLOSE}
               </button>
             </div>
           </div>

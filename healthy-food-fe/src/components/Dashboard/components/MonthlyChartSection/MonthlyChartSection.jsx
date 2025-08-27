@@ -13,6 +13,32 @@ const MonthlyChartSection = ({
   loading, 
   getMonthlyBarData 
 }) => {
+  const chartData = getMonthlyBarData();
+  const dataCount = chartData.length;
+
+  const getChartConfig = () => {
+    if (dataCount <= 1) {
+      return {
+        width: '60%',
+        margin: { top: 10, right: 20, left: 20, bottom: 5 },
+        barWidth: 100 
+      };
+    } else if (dataCount <= 3) {
+      return {
+        width: '80%',
+        margin: { top: 10, right: 20, left: 10, bottom: 5 },
+        barWidth: undefined
+      };
+    } else {
+      return {
+        width: '100%',
+        margin: { top: 10, right: 20, left: 0, bottom: 5 },
+        barWidth: undefined
+      };
+    }
+  };
+
+  const chartConfig = getChartConfig();
   return (
     <div className="dashboard-section">
       <div className="dashboard-filter-row">
@@ -32,11 +58,16 @@ const MonthlyChartSection = ({
           <LoadingSpinner size={50} />
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={DASHBOARD.CHART_CONFIG.BAR.HEIGHT}>
-          <BarChart 
-            data={getMonthlyBarData()} 
-            margin={{ top: 10, right: 20, left: 0, bottom: 5 }}
-          >
+        <div className="chart-container" style={{ 
+          display: 'flex', 
+          justifyContent: dataCount <= 1 ? 'center' : 'flex-start',
+          width: '100%'
+        }}>
+          <ResponsiveContainer width={chartConfig.width} height={DASHBOARD.CHART_CONFIG.BAR.HEIGHT}>
+            <BarChart 
+              data={chartData} 
+              margin={chartConfig.margin}
+            >
             <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
             <XAxis dataKey="week" tick={{ fill: '#555', fontSize: 12 }} />
             <YAxis tick={{ fill: '#555', fontSize: 12 }} />
@@ -46,10 +77,12 @@ const MonthlyChartSection = ({
               dataKey="total" 
               fill={DASHBOARD.COLORS.BAR} 
               name="Total Calories" 
-              radius={DASHBOARD.CHART_CONFIG.BAR.RADIUS} 
+              radius={DASHBOARD.CHART_CONFIG.BAR.RADIUS}
+              barSize={chartConfig.barWidth}
             />
           </BarChart>
         </ResponsiveContainer>
+        </div>
       )}
       <div className="dashboard-chart-desc">{DASHBOARD.CHART_TITLES.MONTHLY}</div>
     </div>

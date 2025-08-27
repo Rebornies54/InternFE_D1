@@ -71,8 +71,6 @@ const BlogDetail = ({ post, onBack, onLike, isLiked, likeCount }) => {
           <p key={idx}>{paragraph}</p>
         ))}
       </div>
-      
-      {/* Comments Section */}
       <Comment postId={post.id} />
     </div>
   );

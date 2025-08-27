@@ -24,7 +24,6 @@ const FoodRecommendations = ({
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFood, setSelectedFood] = useState(null);
-  const [activeImg, setActiveImg] = useState(0);
 
   const getBMICategoryClass = (bmi) => {
     if (bmi < BMI_RANGES.NORMAL.min) return BMI_CATEGORY_CLASSES.UNDERWEIGHT;
@@ -79,7 +78,6 @@ const FoodRecommendations = ({
   const openModal = (food) => {
     setSelectedFood(food);
     setModalOpen(true);
-    setActiveImg(0);
   };
 
   const closeModal = () => {
@@ -101,9 +99,9 @@ const FoodRecommendations = ({
 
         {loading ? (
           <div className="loading-message">Loading food recommendations...</div>
-        ) : (
-          <div className="recommended-food-list">
-            {recommendedFoods.length > 0 ? (
+                 ) : (
+           <div className="recommended-food-list">
+             {recommendedFoods && recommendedFoods.length > 0 ? (
               recommendedFoods.map((food) => (
                 <div className="food-item" key={food.id}>
                   <div className="food-img-container">
@@ -147,7 +145,7 @@ const FoodRecommendations = ({
         )}
       </div>
 
-      {pendingFoods.length > 0 && (
+             {pendingFoods && pendingFoods.length > 0 && (
         <div className="calorie-calculation-section">
           <div className="calorie-calculation-header">
             <h3>{CALORIE_CALCULATION.TITLE}</h3>

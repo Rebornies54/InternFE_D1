@@ -30,7 +30,6 @@ function Dashboard() {
     getRadarData,
     getWeeklyLineData,
     getMonthlyBarData,
-    setError
   } = useDashboardData();
 
   const [weekOptions, setWeekOptions] = useState([]);

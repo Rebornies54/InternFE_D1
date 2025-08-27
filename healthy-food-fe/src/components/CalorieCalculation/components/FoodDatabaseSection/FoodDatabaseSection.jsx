@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FOOD_DATABASE_SECTION } from '../../../../constants';
+import { logError } from '../../../../utils/errorHandler';
 import './FoodDatabaseSection.css';
 
 const FoodDatabaseSection = ({
@@ -11,6 +12,11 @@ const FoodDatabaseSection = ({
   dailyStats,
   selectedDate
 }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
   const getTableOptions = () => {
     const seen = new Set();
     return foodCategories
@@ -23,6 +29,39 @@ const FoodDatabaseSection = ({
         seen.add(option.label);
         return true;
       });
+  };
+
+  const filteredFoodItems = foodItems.filter(food =>
+    food.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const displayedFoodItems = searchQuery ? filteredFoodItems : foodItems.slice(0, 10);
+
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim() || submitting) return;
+
+    try {
+      setSubmitting(true);
+      const comment = {
+        id: Date.now(),
+        content: newComment.trim(),
+        author: FOOD_DATABASE_SECTION.COMMENTS.AUTHOR,
+        timestamp: new Date().toLocaleString(FOOD_DATABASE_SECTION.LOCALE),
+        categoryId: selectedCategory
+      };
+      
+      setComments(prev => [comment, ...prev]);
+      setNewComment('');
+    } catch (error) {
+      logError(FOOD_DATABASE_SECTION.COMMENTS.ERRORS.CREATE_FAILED, error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteComment = (commentId) => {
+    setComments(prev => prev.filter(comment => comment.id !== commentId));
   };
 
   return (
@@ -77,7 +116,7 @@ const FoodDatabaseSection = ({
               </tr>
             </thead>
             <tbody>
-              {foodItems.slice(0, 10).map((food, index) => (
+              {displayedFoodItems.map((food, index) => (
                 <tr key={food.id} className="food-row">
                   <td>{index + 1}</td>
                   <td className="food-name-cell">
@@ -90,9 +129,9 @@ const FoodDatabaseSection = ({
                   </td>
                   <td className="calories-cell">
                     <span className="calories-value">{food.caloriesPer100g || food.calories}</span>
-                    <span className="calories-unit">cal</span>
+                    <span className="calories-unit">{FOOD_DATABASE_SECTION.UNITS.CALORIES}</span>
                   </td>
-                  <td>{food.unit || 'g'}</td>
+                  <td>{food.unit || FOOD_DATABASE_SECTION.UNITS.GRAMS}</td>
                 </tr>
               ))}
             </tbody>
@@ -100,11 +139,40 @@ const FoodDatabaseSection = ({
         )}
       </div>
 
+      {/* Search Bar */}
+      <div className="food-search-section">
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder={FOOD_DATABASE_SECTION.SEARCH.PLACEHOLDER}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="food-search-input"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="clear-search-btn"
+              title={FOOD_DATABASE_SECTION.SEARCH.CLEAR_BUTTON}
+            >
+              ×
+            </button>
+          )}
+        </div>
+        {searchQuery && (
+          <div className="search-results-info">
+            {FOOD_DATABASE_SECTION.SEARCH.RESULTS_INFO
+              .replace('{count}', filteredFoodItems.length)
+              .replace('{query}', searchQuery)}
+          </div>
+        )}
+      </div>
+
       {/* Table Note */}
-      {foodItems.length > 10 && (
+      {foodItems.length > 10 && !searchQuery && (
         <div className="food-table-note">
           <p>
-            <strong>Lưu ý:</strong> {FOOD_DATABASE_SECTION.TABLE_NOTE.MESSAGE}
+            <strong>{FOOD_DATABASE_SECTION.TABLE_NOTE.LABEL}</strong> {FOOD_DATABASE_SECTION.TABLE_NOTE.MESSAGE}
           </p>
         </div>
       )}
@@ -119,11 +187,11 @@ const FoodDatabaseSection = ({
           <div className="statistics-summary">
             <div className="stat-card">
               <h3>{FOOD_DATABASE_SECTION.STATISTICS.SUMMARY.TOTAL_CALORIES}</h3>
-              <div className="stat-value">{dailyStats.summary?.total_calories || 0} cal</div>
+              <div className="stat-value">{dailyStats.summary?.total_calories || 0} {FOOD_DATABASE_SECTION.UNITS.CALORIES}</div>
             </div>
             <div className="stat-card">
               <h3>{FOOD_DATABASE_SECTION.STATISTICS.SUMMARY.TOTAL_QUANTITY}</h3>
-              <div className="stat-value">{dailyStats.summary?.total_quantity || 0}g</div>
+              <div className="stat-value">{dailyStats.summary?.total_quantity || 0}{FOOD_DATABASE_SECTION.UNITS.GRAMS}</div>
             </div>
             <div className="stat-card">
               <h3>{FOOD_DATABASE_SECTION.STATISTICS.SUMMARY.TOTAL_ENTRIES}</h3>
@@ -139,8 +207,8 @@ const FoodDatabaseSection = ({
                 {dailyStats.categoryStats.map((cat, index) => (
                   <div key={index} className="category-stat-card">
                     <h4>{cat.category_name}</h4>
-                    <p><strong>{FOOD_DATABASE_SECTION.STATISTICS.CATEGORY.LABELS.CALORIES}</strong> {cat.total_calories} cal</p>
-                    <p><strong>{FOOD_DATABASE_SECTION.STATISTICS.CATEGORY.LABELS.QUANTITY}</strong> {cat.total_quantity}g</p>
+                    <p><strong>{FOOD_DATABASE_SECTION.STATISTICS.CATEGORY.LABELS.CALORIES}</strong> {cat.total_calories} {FOOD_DATABASE_SECTION.UNITS.CALORIES}</p>
+                    <p><strong>{FOOD_DATABASE_SECTION.STATISTICS.CATEGORY.LABELS.QUANTITY}</strong> {cat.total_quantity}{FOOD_DATABASE_SECTION.UNITS.GRAMS}</p>
                     <p><strong>{FOOD_DATABASE_SECTION.STATISTICS.CATEGORY.LABELS.ENTRIES}</strong> {cat.entry_count}</p>
                   </div>
                 ))}
@@ -157,7 +225,7 @@ const FoodDatabaseSection = ({
                   <div key={index} className="top-food-item">
                     <div className="food-name">{food.food_name}</div>
                     <div className="food-category">({food.category_name})</div>
-                    <div className="food-calories">{food.total_calories} cal</div>
+                    <div className="food-calories">{food.total_calories} {FOOD_DATABASE_SECTION.UNITS.CALORIES}</div>
                   </div>
                 ))}
               </div>
@@ -165,6 +233,60 @@ const FoodDatabaseSection = ({
           )}
         </div>
       )}
+
+      {/* Comments Section */}
+      <div className="food-database-comments-section">
+        <h3 className="section-title">{FOOD_DATABASE_SECTION.COMMENTS.TITLE}</h3>
+        
+        {/* Comment Form */}
+        <form onSubmit={handleSubmitComment} className="comment-form">
+          <div className="comment-input-group">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder={FOOD_DATABASE_SECTION.COMMENTS.FORM.PLACEHOLDER}
+              className="comment-textarea"
+              rows="3"
+              disabled={submitting}
+            />
+            <button
+              type="submit"
+              className="comment-submit-btn"
+              disabled={!newComment.trim() || submitting}
+            >
+              {submitting ? FOOD_DATABASE_SECTION.COMMENTS.FORM.SUBMITTING : FOOD_DATABASE_SECTION.COMMENTS.FORM.SUBMIT}
+            </button>
+          </div>
+        </form>
+
+        {/* Comments List */}
+        <div className="comments-list">
+          {comments.length === 0 ? (
+            <div className="no-comments">
+              <p>{FOOD_DATABASE_SECTION.COMMENTS.LIST.NO_COMMENTS}</p>
+            </div>
+          ) : (
+            comments.map((comment) => (
+              <div key={comment.id} className="comment-item">
+                <div className="comment-header">
+                  <span className="comment-author">{comment.author}</span>
+                  <span className="comment-timestamp">{comment.timestamp}</span>
+                  <button
+                    onClick={() => handleDeleteComment(comment.id)}
+                    className="comment-delete-btn"
+                    title={FOOD_DATABASE_SECTION.COMMENTS.LIST.DELETE_BUTTON}
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="comment-content">
+                  {comment.content}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 };

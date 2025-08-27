@@ -7,7 +7,6 @@ import { format, parseISO, isValid } from 'date-fns';
 import { DATEPICKER } from '../../constants';
 import './DatePicker.css';
 
-// Cải thiện locale để hiển thị đúng ngày trong tuần
 const customViLocale = {
   ...vi,
   localize: {
@@ -29,7 +28,6 @@ const CustomDatePicker = ({
   disableFuture = true,
   clearable = true
 }) => {
-  // Tối ưu hàm xử lý thay đổi ngày với useCallback
   const handleDateChange = useCallback((date) => {
     if (!onChange) return;
     
@@ -45,7 +43,6 @@ const CustomDatePicker = ({
     }
   }, [onChange]);
 
-  // Tối ưu hàm lấy giá trị date
   const getSelectedDate = useCallback(() => {
     if (!value) return null;
     

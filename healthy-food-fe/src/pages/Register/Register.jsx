@@ -1,4 +1,4 @@
-import { UI_TEXT, VALIDATION, ERROR_MESSAGES } from '../../constants';
+import { UI_TEXT, VALIDATION, ERROR_MESSAGES, REGISTER } from '../../constants';
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -120,8 +120,8 @@ const Register = () => {
     <div className="register-container">
       <div className="register-box">
         <div className="register-head">
-          <p className="register-welcome">Welcome!</p>
-          <h2 className="register-title">Account Registration</h2>
+          <p className="register-welcome">{REGISTER.WELCOME}</p>
+          <h2 className="register-title">{REGISTER.TITLE}</h2>
         </div>
         
         <Formik
@@ -135,7 +135,7 @@ const Register = () => {
             <Form className="register-form">
               <div className="register-form-wrapper">
                 <FormField
-                  label="Full Name"
+                  label={REGISTER.LABELS.FULL_NAME}
                   name="name"
                   required={true}
                   className="register-input-fullname"
@@ -145,16 +145,16 @@ const Register = () => {
                 )}
                 <div className="register-form-row">
                   <FormField
-                    label="Birthday"
+                    label={REGISTER.LABELS.BIRTHDAY}
                     name="birthday"
                     type="date"
-                    placeholder="DD.MM.YYYY"
+                    placeholder={REGISTER.PLACEHOLDERS.BIRTHDAY}
                     className="register-input-birthday"
                     groupClassName="register-form-group-birthday"
                   />
                   
                   <FormField
-                    label="Email"
+                    label={REGISTER.LABELS.EMAIL}
                     name="email"
                     required={true}
                     placeholder={UI_TEXT.ENTER_EMAIL}
@@ -167,7 +167,7 @@ const Register = () => {
                 )}
                 <div className="register-form-row">
                   <FormField
-                    label="Password"
+                    label={REGISTER.LABELS.PASSWORD}
                     name="password"
                     type="password"
                     required={true}
@@ -177,10 +177,10 @@ const Register = () => {
                   />
                   
                   <FormField
-                    label="Phone Number"
+                    label={REGISTER.LABELS.PHONE_NUMBER}
                     name="phone"
                     required={true}
-                    placeholder="Enter your phone number"
+                    placeholder={REGISTER.PLACEHOLDERS.PHONE_NUMBER}
                     className="register-input-phone"
                     groupClassName="register-form-group-phone"
                   />
@@ -193,55 +193,55 @@ const Register = () => {
                 )}
               
                 <FormField
-                  label="Gender"
+                  label={REGISTER.LABELS.GENDER}
                   name="gender"
                   as="select"
-                  placeholder="Select gender"
+                  placeholder={REGISTER.SELECT_OPTIONS.SELECT_GENDER}
                   className="register-select-gender"
                 >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
+                  <option value="male">{REGISTER.GENDER_OPTIONS.MALE}</option>
+                  <option value="female">{REGISTER.GENDER_OPTIONS.FEMALE}</option>
+                  <option value="other">{REGISTER.GENDER_OPTIONS.OTHER}</option>
                 </FormField>
 
                 <FormField
-                  label="Province"
+                  label={REGISTER.LABELS.PROVINCE}
                   name="province"
                   as="select"
                   required={true}
-                  placeholder="Select province"
+                  placeholder={REGISTER.SELECT_OPTIONS.SELECT_PROVINCE}
                   className="register-select-province"
                 >
-                  <option value="tokyo">Tokyo</option>
-                  <option value="osaka">Osaka</option>
-                  <option value="kyoto">Kyoto</option>
+                  <option value="tokyo">{REGISTER.PROVINCE_OPTIONS.TOKYO}</option>
+                  <option value="osaka">{REGISTER.PROVINCE_OPTIONS.OSAKA}</option>
+                  <option value="kyoto">{REGISTER.PROVINCE_OPTIONS.KYOTO}</option>
                 </FormField>
                 {errors.province && touched.province && (
                   <div className="register-error">{errors.province}</div>
                 )}
 
                 <FormField
-                  label="District"
+                  label={REGISTER.LABELS.DISTRICT}
                   name="district"
                   as="select"
                   required={true}
-                  placeholder="Select district"
+                  placeholder={REGISTER.SELECT_OPTIONS.SELECT_DISTRICT}
                   className="register-select-district"
                 >
-                  <option value="Ishikari">Ishikari</option>
-                  <option value="Teshio">Teshio</option>
-                  <option value="Tokachi">Tokachi</option>
-                  <option value="Abuta">Abuta</option>
-                  <option value="Sorachi">Sorachi</option>
+                  <option value="Ishikari">{REGISTER.DISTRICT_OPTIONS.ISHIKARI}</option>
+                  <option value="Teshio">{REGISTER.DISTRICT_OPTIONS.TESHIO}</option>
+                  <option value="Tokachi">{REGISTER.DISTRICT_OPTIONS.TOKACHI}</option>
+                  <option value="Abuta">{REGISTER.DISTRICT_OPTIONS.ABUTA}</option>
+                  <option value="Sorachi">{REGISTER.DISTRICT_OPTIONS.SORACHI}</option>
                 </FormField>
                 {errors.district && touched.district && (
                   <div className="register-error">{errors.district}</div>
                 )}
 
                 <FormField
-                  label="Address"
+                  label={REGISTER.LABELS.ADDRESS}
                   name="address"
-                  placeholder="Enter your address"
+                  placeholder={REGISTER.PLACEHOLDERS.ADDRESS}
                   className="register-input-address"
                 />
               </div>
@@ -251,15 +251,15 @@ const Register = () => {
                 className="register-button"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Registering...' : 'Register'}
+                {isSubmitting ? REGISTER.BUTTONS.REGISTERING : REGISTER.BUTTONS.REGISTER}
               </button>
             </Form>
           )}
         </Formik>
         
         <div className="register-footer">
-          Already have an account?
-          <Link to="/login" className="register-link">Login</Link>
+          {REGISTER.FOOTER.ALREADY_HAVE_ACCOUNT}
+          <Link to="/login" className="register-link">{REGISTER.FOOTER.LOGIN}</Link>
         </div>
       </div>
 
@@ -267,16 +267,16 @@ const Register = () => {
         <div className="success-modal-overlay">
           <div className="success-modal">
             <div className="success-modal-content">
-              <h3 className="success-modal-title">Congratulations!</h3>
+              <h3 className="success-modal-title">{REGISTER.SUCCESS.TITLE}</h3>
               <p className="success-modal-message">
-                You have successfully registered!
+                {REGISTER.SUCCESS.MESSAGE}
               </p>
               <p className="success-modal-question">
-                Would you like to <span 
+                {REGISTER.SUCCESS.QUESTION} <span 
                   className="login-link-text" 
                   onClick={handleLoginNow}
                 >
-                  login now
+                  {REGISTER.SUCCESS.LOGIN_NOW}
                 </span>?
               </p>
               <div className="success-modal-buttons">
@@ -284,13 +284,13 @@ const Register = () => {
                   className="success-modal-btn success-modal-btn-secondary"
                   onClick={handleContinueToHome}
                 >
-                  Continue to home page
+                  {REGISTER.SUCCESS.CONTINUE_TO_HOME}
                 </button>
                 <button 
                   className="success-modal-btn success-modal-btn-primary"
                   onClick={handleLoginNow}
                 >
-                  Login now
+                  {REGISTER.SUCCESS.LOGIN_NOW_BUTTON}
                 </button>
               </div>
             </div>
@@ -300,9 +300,9 @@ const Register = () => {
 
       {showErrorModal && (
         <div className="error-modal-overlay">
-          <div className="error-modal">
-            <div className="error-modal-content">
-              <h3 className="error-modal-title">Registration Error</h3>
+                  <div className="error-modal">
+          <div className="error-modal-content">
+            <h3 className="error-modal-title">{REGISTER.ERROR.TITLE}</h3>
               <p className="error-modal-message">
                 {errorMessage}
               </p>
@@ -311,7 +311,7 @@ const Register = () => {
                   className="error-modal-btn error-modal-btn-primary"
                   onClick={handleCloseErrorModal}
                 >
-                  Close
+                  {REGISTER.BUTTONS.CLOSE}
                 </button>
               </div>
             </div>

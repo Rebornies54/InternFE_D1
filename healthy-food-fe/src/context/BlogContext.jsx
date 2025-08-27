@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { foodAPI, blogAPI } from '../services/api';
 import { PAGINATION, DEFAULTS, STORAGE_KEYS, ERROR_MESSAGES } from '../constants';
+import { logError } from '../utils/errorHandler';
 
 const BlogContext = createContext();
 
@@ -234,7 +235,8 @@ export const BlogProvider = ({ children }) => {
           if (likeResponse.data.success && likeResponse.data.liked) {
             likedComments.add(commentId);
           }
-        } catch (error) { /* Error handled */ }});
+                 } catch (error) { /* Error handled */ }
+       });
       
       await Promise.all(checkPromises);
       return likedComments;
@@ -759,7 +761,8 @@ export const BlogProvider = ({ children }) => {
             : post
         )
       );
-    } catch (error) { /* Error handled */ }};
+    } catch (error) { /* Error handled */ }
+  };
 
   const value = {
     posts,

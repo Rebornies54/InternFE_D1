@@ -65,31 +65,7 @@ const Blog = () => {
   const itemsPerPage = PAGINATION.BLOG_PAGE_SIZE;
   const [showCreate, setShowCreate] = useState(false);
   const blogContainerRef = useRef(null)
-  const [imageStates, setImageStates] = useState({});
   const { scrollToTop, scrollModalToTop, scrollToTopWithRetry } = useScrollToTop();
-  const handleImageLoad = useCallback((postId, type = 'blog') => {
-    setImageStates(prev => ({
-      ...prev,
-      [`${type}_${postId}`]: 'loaded'
-    }));
-  }, []);
-
-  const handleImageError = useCallback((postId, type = 'blog') => {
-    setImageStates(prev => ({
-      ...prev,
-      [`${type}_${postId}`]: 'error'
-    }));
-  }, []);
-
-  const shouldShowImage = useCallback((postId, imageUrl, type = 'blog') => {
-    const state = imageStates[`${type}_${postId}`];
-    return imageUrl && imageUrl.trim() !== '' && state !== 'error';
-  }, [imageStates]);
-
-  const shouldShowPlaceholder = useCallback((postId, imageUrl, type = 'blog') => {
-    const state = imageStates[`${type}_${postId}`];
-    return !imageUrl || imageUrl.trim() === '' || state === 'error';
-  }, [imageStates]);
 
   const handleTabChange = (newTab) => {
     setActiveTab(newTab);

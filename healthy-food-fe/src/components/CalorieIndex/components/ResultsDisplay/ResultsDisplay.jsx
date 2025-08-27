@@ -1,4 +1,5 @@
 import React from 'react';
+import { CALORIE_CALCULATOR } from '../../../../constants';
 import './ResultsDisplay.css';
 
 const ResultsDisplay = ({ 
@@ -14,72 +15,69 @@ const ResultsDisplay = ({
     <div className="results-container">
       <div className="results-card">
         <div className="total-calories">
-          <h2>Your Metabolic Information</h2>
+          <h2>{CALORIE_CALCULATOR.RESULTS.TITLE}</h2>
           <div className="metabolic-info">
             <div className="metabolic-item">
-              <div className="metabolic-label">BMR (Basal Metabolic Rate)</div>
-              <div className="metabolic-value">{calorieData.bmr} calories</div>
+              <div className="metabolic-label">{CALORIE_CALCULATOR.RESULTS.BMR_LABEL}</div>
+              <div className="metabolic-value">{calorieData.bmr} {CALORIE_CALCULATOR.RESULTS.UNITS.CALORIES}</div>
             </div>
             <div className="metabolic-item">
-              <div className="metabolic-label">TDEE (Total Daily Energy Expenditure)</div>
-              <div className="calorie-value">{calorieGoals.maintenance} calories</div>
+              <div className="metabolic-label">{CALORIE_CALCULATOR.RESULTS.TDEE_LABEL}</div>
+              <div className="calorie-value">{calorieGoals.maintenance} {CALORIE_CALCULATOR.RESULTS.UNITS.CALORIES}</div>
             </div>
           </div>
-          <p>Your TDEE is the estimated number of calories you burn daily with your activity level</p>
+          <p>{CALORIE_CALCULATOR.RESULTS.TDEE_DESCRIPTION}</p>
           {calorieData.calculatedDate && (
             <p className="calculation-date">
-              Calculated on: {formatDate(calorieData.calculatedDate)}
+              {CALORIE_CALCULATOR.RESULTS.CALCULATED_ON} {formatDate(calorieData.calculatedDate)}
             </p>
           )}
         </div>
         
         <div className="weight-scenarios">
-          <h3 className="scenarios-title">Weight Management Goals</h3>    
+          <h3 className="scenarios-title">{CALORIE_CALCULATOR.RESULTS.WEIGHT_MANAGEMENT_TITLE}</h3>    
           <div className="scenario-grid">
             <div className="scenario-column weight-loss">
-              <h4>Weight Loss</h4>
+              <h4>{CALORIE_CALCULATOR.RESULTS.WEIGHT_LOSS_TITLE}</h4>
               <div className="scenario-item">
-                <div className="scenario-label">Mild (0.25 kg/week)</div>
-                <div className="scenario-value">{calorieGoals.weightLoss.mild} calories</div>
+                <div className="scenario-label">{CALORIE_CALCULATOR.RESULTS.SCENARIOS.MILD_025}</div>
+                <div className="scenario-value">{calorieGoals.weightLoss.mild} {CALORIE_CALCULATOR.RESULTS.UNITS.CALORIES}</div>
               </div>
               <div className="scenario-item">
-                <div className="scenario-label">Moderate (0.5 kg/week)</div>
-                <div className="scenario-value">{calorieGoals.weightLoss.moderate} calories</div>
+                <div className="scenario-label">{CALORIE_CALCULATOR.RESULTS.SCENARIOS.MODERATE_05}</div>
+                <div className="scenario-value">{calorieGoals.weightLoss.moderate} {CALORIE_CALCULATOR.RESULTS.UNITS.CALORIES}</div>
               </div>
               <div className="scenario-item">
-                <div className="scenario-label">Aggressive (1 kg/week)</div>
-                <div className="scenario-value">{calorieGoals.weightLoss.aggressive} calories</div>
+                <div className="scenario-label">{CALORIE_CALCULATOR.RESULTS.SCENARIOS.AGGRESSIVE_1}</div>
+                <div className="scenario-value">{calorieGoals.weightLoss.aggressive} {CALORIE_CALCULATOR.RESULTS.UNITS.CALORIES}</div>
               </div>
             </div>
             
             <div className="scenario-column weight-gain">
-              <h4>Weight Gain</h4>
+              <h4>{CALORIE_CALCULATOR.RESULTS.WEIGHT_GAIN_TITLE}</h4>
               <div className="scenario-item">
-                <div className="scenario-label">Mild (0.25 kg/week)</div>
-                <div className="scenario-value">{calorieGoals.weightGain.mild} calories</div>
+                <div className="scenario-label">{CALORIE_CALCULATOR.RESULTS.SCENARIOS.MILD_025}</div>
+                <div className="scenario-value">{calorieGoals.weightGain.mild} {CALORIE_CALCULATOR.RESULTS.UNITS.CALORIES}</div>
               </div>
               <div className="scenario-item">
-                <div className="scenario-label">Moderate (0.5 kg/week)</div>
-                <div className="scenario-value">{calorieGoals.weightGain.moderate} calories</div>
+                <div className="scenario-label">{CALORIE_CALCULATOR.RESULTS.SCENARIOS.MODERATE_05}</div>
+                <div className="scenario-value">{calorieGoals.weightGain.moderate} {CALORIE_CALCULATOR.RESULTS.UNITS.CALORIES}</div>
               </div>
               <div className="scenario-item">
-                <div className="scenario-label">Aggressive (1 kg/week)</div>
-                <div className="scenario-value">{calorieGoals.weightGain.aggressive} calories</div>
+                <div className="scenario-label">{CALORIE_CALCULATOR.RESULTS.SCENARIOS.AGGRESSIVE_1}</div>
+                <div className="scenario-value">{calorieGoals.weightGain.aggressive} {CALORIE_CALCULATOR.RESULTS.UNITS.CALORIES}</div>
               </div>
             </div>
           </div>
         </div>
         
         <div className="bmr-explanation">
-          <h4>About BMR and TDEE</h4>
+          <h4>{CALORIE_CALCULATOR.RESULTS.EXPLANATION.TITLE}</h4>
           <p>
-            The Basal Metabolic Rate (BMR) is the number of calories your body needs while resting. 
-            This is the minimum amount of energy needed to keep your body functioning, including 
-            breathing and keeping your heart beating.
+            {CALORIE_CALCULATOR.RESULTS.EXPLANATION.BMR_DESCRIPTION}
           </p>
           <p>
-            Total Daily Energy Expenditure (TDEE) takes your BMR and adjusts it based on your 
-            activity level to estimate your total daily calorie needs.
+            {CALORIE_CALCULATOR.RESULTS.EXPLANATION.TDEE_DESCRIPTION}
           </p>
         </div>
       </div>

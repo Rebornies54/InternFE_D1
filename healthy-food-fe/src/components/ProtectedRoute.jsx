@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { PROTECTED_ROUTE } from '../constants';
 import './ProtectedRoute.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -9,7 +10,7 @@ const ProtectedRoute = ({ children }) => {
   if (loading) {
     return (
       <div className="protected-route-loading">
-        Đang tải...
+        {PROTECTED_ROUTE.LOADING}
       </div>
     );
   }

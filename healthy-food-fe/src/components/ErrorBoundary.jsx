@@ -1,5 +1,6 @@
 // Fixed import
 import React from 'react';
+import { ERROR_BOUNDARY } from '../constants';
 import './ErrorBoundary.css';
 
 class ErrorBoundary extends React.Component {
@@ -28,13 +29,13 @@ class ErrorBoundary extends React.Component {
       return (
         <div className="error-boundary-container">
           <div className="error-boundary-content">
-            <h2 className="error-boundary-title">Something went wrong</h2>
+            <h2 className="error-boundary-title">{ERROR_BOUNDARY.TITLE}</h2>
             <p className="error-boundary-message">
-              We're sorry, but something unexpected happened. Please try refreshing the page.
+              {ERROR_BOUNDARY.MESSAGE}
             </p>
             {import.meta.env.MODE === 'development' && this.state.error && (
               <details className="error-boundary-details">
-                <summary className="error-boundary-summary">Error Details</summary>
+                <summary className="error-boundary-summary">{ERROR_BOUNDARY.ERROR_DETAILS}</summary>
                 <pre className="error-boundary-stack">
                   {this.state.error && this.state.error.toString()}
                   <br />
@@ -46,7 +47,7 @@ class ErrorBoundary extends React.Component {
               className="error-boundary-button"
               onClick={() => window.location.reload()}
             >
-              Refresh Page
+              {ERROR_BOUNDARY.REFRESH_BUTTON}
             </button>
           </div>
         </div>

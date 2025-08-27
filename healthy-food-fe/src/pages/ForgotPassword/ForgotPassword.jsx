@@ -1,4 +1,4 @@
-import { UI_TEXT, VALIDATION, ERROR_MESSAGES } from '../../constants';
+import { UI_TEXT, VALIDATION, ERROR_MESSAGES, FORGOT_PASSWORD } from '../../constants';
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -65,7 +65,7 @@ const ForgotPassword = () => {
 
   const handleVerifyOTP = async () => {
     if (otp.length !== 6) {
-      setError('Please enter a 6-digit OTP');
+      setError(FORGOT_PASSWORD.MESSAGES.ENTER_6_DIGIT);
       return;
     }
 
@@ -132,12 +132,12 @@ const ForgotPassword = () => {
     <div className="forgot-password-container">
       <div className="forgot-password-box">
         <div className="forgot-password-head">
-          <p className="forgot-password-welcome">Welcome!</p>
+          <p className="forgot-password-welcome">{FORGOT_PASSWORD.WELCOME}</p>
           <h2 className="forgot-password-title">
-            {currentStep === 'email' && 'Forgot Password'}
-            {currentStep === 'otp' && 'Enter OTP'}
-            {currentStep === 'reset' && 'Reset Password'}
-            {currentStep === 'success' && 'Success!'}
+            {currentStep === 'email' && FORGOT_PASSWORD.STEPS.EMAIL}
+            {currentStep === 'otp' && FORGOT_PASSWORD.STEPS.OTP}
+            {currentStep === 'reset' && FORGOT_PASSWORD.STEPS.RESET}
+            {currentStep === 'success' && FORGOT_PASSWORD.STEPS.SUCCESS}
           </h2>
         </div>
         
@@ -159,7 +159,7 @@ const ForgotPassword = () => {
                   <div className="forgot-password-form-group">
                     <label htmlFor="email" className="forgot-password-label">
                       <span className="forgot-password-required-mark">*</span>
-                      Email
+                      {FORGOT_PASSWORD.LABELS.EMAIL}
                     </label>
                     <Field 
                       id="email" 
@@ -176,15 +176,15 @@ const ForgotPassword = () => {
                     className="forgot-password-button"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Sending OTP...' : 'Send OTP'}
+                    {isSubmitting ? FORGOT_PASSWORD.BUTTONS.SENDING_OTP : FORGOT_PASSWORD.BUTTONS.SEND_OTP}
                   </button>
                 </Form>
               )}
             </Formik>
             
             <div className="forgot-password-footer">
-              Remember your password?
-              <Link to="/login" className="forgot-password-link">Login</Link>
+              {FORGOT_PASSWORD.MESSAGES.REMEMBER_PASSWORD}
+              <Link to="/login" className="forgot-password-link">{FORGOT_PASSWORD.MESSAGES.LOGIN}</Link>
             </div>
           </>
         )}
@@ -192,13 +192,13 @@ const ForgotPassword = () => {
           <>
             <div className="otp-section">
               <p className="otp-instruction">
-                We've sent a 6-digit OTP to <strong>{userEmail}</strong>
+                {FORGOT_PASSWORD.MESSAGES.OTP_SENT} <strong>{userEmail}</strong>
               </p>
               
               <div className="otp-input-group">
                 <label className="forgot-password-label">
                   <span className="forgot-password-required-mark">*</span>
-                  Enter OTP
+                  {FORGOT_PASSWORD.LABELS.OTP}
                 </label>
                 <input
                   type="text"
@@ -216,13 +216,13 @@ const ForgotPassword = () => {
                   onClick={handleVerifyOTP}
                   disabled={otp.length !== 6 || isVerifying}
                 >
-                  {isVerifying ? 'Verifying...' : 'Verify OTP'}
+                  {isVerifying ? FORGOT_PASSWORD.BUTTONS.VERIFYING : FORGOT_PASSWORD.BUTTONS.VERIFY_OTP}
                 </button>
                 
                 <div className="resend-section">
                   {!canResend ? (
                     <span className="countdown-text">
-                      Resend OTP in {formatCountdown()}
+                      {FORGOT_PASSWORD.MESSAGES.RESEND_OTP_IN} {formatCountdown()}
                     </span>
                   ) : (
                     <button 
@@ -230,7 +230,7 @@ const ForgotPassword = () => {
                       onClick={handleResendOTP}
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? 'Sending...' : 'Resend OTP'}
+                      {isSubmitting ? FORGOT_PASSWORD.MESSAGES.SENDING : FORGOT_PASSWORD.MESSAGES.RESEND_OTP}
                     </button>
                   )}
                 </div>
@@ -242,7 +242,7 @@ const ForgotPassword = () => {
                 className="back-btn"
                 onClick={handleBackToEmail}
               >
-                ← Back to Email
+                {FORGOT_PASSWORD.BUTTONS.BACK_TO_EMAIL}
               </button>
             </div>
           </>
@@ -260,13 +260,13 @@ const ForgotPassword = () => {
                   <div className="forgot-password-form-group">
                     <label htmlFor="newPassword" className="forgot-password-label">
                       <span className="forgot-password-required-mark">*</span>
-                      New Password
+                      {FORGOT_PASSWORD.LABELS.NEW_PASSWORD}
                     </label>
                     <Field 
                       id="newPassword" 
                       name="newPassword" 
                       type="password" 
-                      placeholder="Enter new password" 
+                      placeholder={FORGOT_PASSWORD.PLACEHOLDERS.NEW_PASSWORD} 
                       className="forgot-password-input" 
                     />
                     <ErrorMessage name="newPassword" component="div" className="forgot-password-error" />
@@ -275,13 +275,13 @@ const ForgotPassword = () => {
                   <div className="forgot-password-form-group">
                     <label htmlFor="confirmPassword" className="forgot-password-label">
                       <span className="forgot-password-required-mark">*</span>
-                      Confirm Password
+                      {FORGOT_PASSWORD.LABELS.CONFIRM_PASSWORD}
                     </label>
                     <Field 
                       id="confirmPassword" 
                       name="confirmPassword" 
                       type="password" 
-                      placeholder="Confirm new password" 
+                      placeholder={FORGOT_PASSWORD.PLACEHOLDERS.CONFIRM_PASSWORD} 
                       className="forgot-password-input" 
                     />
                     <ErrorMessage name="confirmPassword" component="div" className="forgot-password-error" />
@@ -292,7 +292,7 @@ const ForgotPassword = () => {
                     className="forgot-password-button"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Resetting...' : 'Reset Password'}
+                    {isSubmitting ? FORGOT_PASSWORD.BUTTONS.RESETTING : FORGOT_PASSWORD.BUTTONS.RESET_PASSWORD}
                   </button>
                 </Form>
               )}
@@ -303,7 +303,7 @@ const ForgotPassword = () => {
                 className="back-btn"
                 onClick={handleBackToOTP}
               >
-                ← Back to OTP
+                {FORGOT_PASSWORD.BUTTONS.BACK_TO_OTP}
               </button>
             </div>
           </>
@@ -314,7 +314,7 @@ const ForgotPassword = () => {
         <div className="success-modal-overlay">
           <div className="success-modal">
             <div className="success-modal-content">
-              <h3 className="success-modal-title">Password Reset Success!</h3>
+              <h3 className="success-modal-title">{FORGOT_PASSWORD.SUCCESS.TITLE}</h3>
               <p className="success-modal-message">
                 {successMessage}
               </p>
@@ -324,13 +324,13 @@ const ForgotPassword = () => {
                   className="success-modal-btn success-modal-btn-secondary"
                   onClick={handleBackToLogin}
                 >
-                  Back to Login
+                  {FORGOT_PASSWORD.SUCCESS.BACK_TO_LOGIN}
                 </button>
                 <button 
                   className="success-modal-btn success-modal-btn-primary"
                   onClick={handleContinueToHome}
                 >
-                  Continue to Home
+                  {FORGOT_PASSWORD.SUCCESS.CONTINUE_TO_HOME}
                 </button>
               </div>
             </div>

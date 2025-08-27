@@ -1,5 +1,5 @@
 // Fixed import
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { blogAPI } from '../../services/api';
 import { PAGINATION, ERROR_MESSAGES, COMMENT } from '../../constants';
@@ -7,7 +7,6 @@ import { Heart, MessageCircle, MoreVertical, Edit, Trash, Reply } from 'lucide-r
 import { 
   AnimatedButton, 
   FadeIn, 
-  SlideInLeft, 
   StaggeredList, 
   StaggeredItem,
   LoadingSpinner

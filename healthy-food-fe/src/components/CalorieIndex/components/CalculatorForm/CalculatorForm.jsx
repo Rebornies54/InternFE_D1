@@ -1,5 +1,6 @@
 import React from 'react';
 import CheckboxOption from '../CheckboxOption';
+import { CALORIE_CALCULATOR, VALIDATION } from '../../../../constants';
 import './CalculatorForm.css';
 
 const CalculatorForm = ({
@@ -12,14 +13,12 @@ const CalculatorForm = ({
   onToggleHistory,
   showHistory
 }) => {
-  // Get height unit label based on unit system
   const getHeightUnitLabel = () => {
-    return calorieData.unitSystem === 'metric' ? 'cm' : 'in';
+    return calorieData.unitSystem === 'metric' ? CALORIE_CALCULATOR.UNITS.CM : CALORIE_CALCULATOR.UNITS.IN;
   };
 
-  // Get weight unit label based on unit system
   const getWeightUnitLabel = () => {
-    return calorieData.unitSystem === 'metric' ? 'kg' : 'lb';
+    return calorieData.unitSystem === 'metric' ? CALORIE_CALCULATOR.UNITS.KG : CALORIE_CALCULATOR.UNITS.LB;
   };
 
   return (
@@ -27,71 +26,71 @@ const CalculatorForm = ({
       <form className="calculator-form">
         {/* Unit system selector */}
         <div className="unit-system-selector">
-          <label>Unit System:</label>
+          <label>{CALORIE_CALCULATOR.LABELS.UNIT_SYSTEM}</label>
           <div className="unit-buttons">
             <button 
               type="button" 
               className={`unit-btn ${calorieData.unitSystem === 'metric' ? 'active' : ''}`}
               onClick={() => onUnitChange('metric')}
             >
-              Metric
+              {CALORIE_CALCULATOR.BUTTONS.METRIC}
             </button>
             <button 
               type="button" 
               className={`unit-btn ${calorieData.unitSystem === 'imperial' ? 'active' : ''}`}
               onClick={() => onUnitChange('imperial')}
             >
-              Imperial
+              {CALORIE_CALCULATOR.BUTTONS.IMPERIAL}
             </button>
           </div>
         </div>
         
         <div className="form-grid">
           <div className="form-group">
-            <label htmlFor="age">Age</label>
+            <label htmlFor="age">{CALORIE_CALCULATOR.LABELS.AGE}</label>
             <div className="input-unit-group">
               <input 
                 type="number" 
                 id="age" 
                 value={calorieData.age}
                 onChange={(e) => updateCalorieData({ age: e.target.value })}
-                min="15"
-                max="80"
+                min={VALIDATION.MIN_AGE}
+                max={VALIDATION.MAX_AGE}
               />
-              <span className="unit-label">years</span>
+              <span className="unit-label">{CALORIE_CALCULATOR.UNITS.YEARS}</span>
             </div>
           </div>
           
           <div className="form-group">
-            <label htmlFor="height">Height</label>
+            <label htmlFor="height">{CALORIE_CALCULATOR.LABELS.HEIGHT}</label>
             <div className="input-unit-group">
               <input 
                 type="number" 
                 id="height" 
                 value={calorieData.height}
                 onChange={(e) => updateCalorieData({ height: e.target.value })}
-                min="1"
+                min={VALIDATION.MIN_HEIGHT}
               />
               <span className="unit-label">{getHeightUnitLabel()}</span>
             </div>
           </div>
           
           <div className="form-group">
-            <label htmlFor="weight">Weight</label>
+            <label htmlFor="weight">{CALORIE_CALCULATOR.LABELS.WEIGHT}</label>
             <div className="input-unit-group">
               <input 
                 type="number" 
                 id="weight" 
                 value={calorieData.weight}
                 onChange={(e) => updateCalorieData({ weight: e.target.value })}
-                min="1"
+                min={VALIDATION.MIN_WEIGHT}
               />
               <span className="unit-label">{getWeightUnitLabel()}</span>
             </div>
           </div>
           
           <div className="form-group">
-            <label>Gender</label>
+            <label>{CALORIE_CALCULATOR.LABELS.GENDER}</label>
             <div className="gender-options">
               <CheckboxOption
                 id="gender-female"
@@ -99,7 +98,7 @@ const CalculatorForm = ({
                 value="Female"
                 checked={calorieData.gender === 'Female'}
                 onChange={() => updateCalorieData({ gender: 'Female' })}
-                label="Female"
+                label={CALORIE_CALCULATOR.BUTTONS.FEMALE}
               />
               <CheckboxOption
                 id="gender-male"
@@ -107,7 +106,7 @@ const CalculatorForm = ({
                 value="Male"
                 checked={calorieData.gender === 'Male'}
                 onChange={() => updateCalorieData({ gender: 'Male' })}
-                label="Male"
+                label={CALORIE_CALCULATOR.BUTTONS.MALE}
               />
             </div>
           </div>
@@ -115,42 +114,42 @@ const CalculatorForm = ({
         
         {/* Formula selection */}
         <div className="form-group formula-group">
-          <label>BMR Formula</label>
+          <label>{CALORIE_CALCULATOR.LABELS.BMR_FORMULA}</label>
           <div className="formula-options">
             <CheckboxOption
               id="formula-mifflin"
               name="formula"
-              value="mifflin"
-              checked={calorieData.formula === 'mifflin'}
-              onChange={() => updateCalorieData({ formula: 'mifflin' })}
-              label="Mifflin-St Jeor"
-              description="Most accurate for most people"
+              value={CALORIE_CALCULATOR.FORMULAS.MIFFLIN.VALUE}
+              checked={calorieData.formula === CALORIE_CALCULATOR.FORMULAS.MIFFLIN.VALUE}
+              onChange={() => updateCalorieData({ formula: CALORIE_CALCULATOR.FORMULAS.MIFFLIN.VALUE })}
+              label={CALORIE_CALCULATOR.FORMULAS.MIFFLIN.LABEL}
+              description={CALORIE_CALCULATOR.FORMULAS.MIFFLIN.DESCRIPTION}
             />
             <CheckboxOption
               id="formula-harris"
               name="formula"
-              value="harris"
-              checked={calorieData.formula === 'harris'}
-              onChange={() => updateCalorieData({ formula: 'harris' })}
-              label="Harris-Benedict"
-              description="Traditional formula, slightly less accurate"
+              value={CALORIE_CALCULATOR.FORMULAS.HARRIS.VALUE}
+              checked={calorieData.formula === CALORIE_CALCULATOR.FORMULAS.HARRIS.VALUE}
+              onChange={() => updateCalorieData({ formula: CALORIE_CALCULATOR.FORMULAS.HARRIS.VALUE })}
+              label={CALORIE_CALCULATOR.FORMULAS.HARRIS.LABEL}
+              description={CALORIE_CALCULATOR.FORMULAS.HARRIS.DESCRIPTION}
             />
             <CheckboxOption
               id="formula-katch"
               name="formula"
-              value="katch"
-              checked={calorieData.formula === 'katch'}
-              onChange={() => updateCalorieData({ formula: 'katch' })}
-              label="Katch-McArdle"
-              description="Requires body fat percentage"
+              value={CALORIE_CALCULATOR.FORMULAS.KATCH.VALUE}
+              checked={calorieData.formula === CALORIE_CALCULATOR.FORMULAS.KATCH.VALUE}
+              onChange={() => updateCalorieData({ formula: CALORIE_CALCULATOR.FORMULAS.KATCH.VALUE })}
+              label={CALORIE_CALCULATOR.FORMULAS.KATCH.LABEL}
+              description={CALORIE_CALCULATOR.FORMULAS.KATCH.DESCRIPTION}
             />
           </div>
         </div>
         
         {/* Body Fat Percentage (only show when Katch-McArdle is selected) */}
-        {calorieData.formula === 'katch' && (
+        {calorieData.formula === CALORIE_CALCULATOR.FORMULAS.KATCH.VALUE && (
           <div className="form-group body-fat-group">
-            <label htmlFor="bodyFat">Body Fat Percentage</label>
+            <label htmlFor="bodyFat">{CALORIE_CALCULATOR.LABELS.BODY_FAT}</label>
             <div className="input-unit-group">
               <input 
                 type="number" 
@@ -160,26 +159,25 @@ const CalculatorForm = ({
                 min="1"
                 max="70"
               />
-              <span className="unit-label">%</span>
+              <span className="unit-label">{CALORIE_CALCULATOR.UNITS.PERCENT}</span>
             </div>
           </div>
         )}
         
         <div className="form-group activity-group">
-          <label htmlFor="activity">Activity Level</label>
+          <label htmlFor="activity">{CALORIE_CALCULATOR.LABELS.ACTIVITY_LEVEL}</label>
           <div className="select-wrapper">
             <select 
               id="activity"
               value={calorieData.activityLevel}
               onChange={(e) => updateCalorieData({ activityLevel: e.target.value })}
               className="activity-select">
-              <option value="">Select activity level</option>
-              <option value="Sedentary: Little or no exercise">Sedentary: Little or no exercise</option>
-              <option value="Lightly active: 1-3 times/week">Lightly active: 1-3 times/week</option>
-              <option value="Moderately active: 4-5 times/week">Moderately active: 4-5 times/week</option>
-              <option value="Very active: 6 times/week or more">Very active: 6 times/week or more</option>
-              <option value="Extra active: Physical job or twice daily training">Extra active: Physical job or twice daily training</option>
-              <option value="Professional athlete">Professional athlete</option>
+              <option value="">{CALORIE_CALCULATOR.LABELS.SELECT_ACTIVITY}</option>
+              {CALORIE_CALCULATOR.ACTIVITY_LEVELS.map((level, index) => (
+                <option key={index} value={level.VALUE}>
+                  {level.LABEL}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -187,19 +185,31 @@ const CalculatorForm = ({
         {error && <div className="error-message">{error}</div>}
         
         <div className="button-group">
-          <button type="button" onClick={onCalculate} className="calculate-btn">Calculate</button>
-          <button type="button" onClick={onReset} className="reset-btn">Reset</button>
+          <button type="button" onClick={onCalculate} className="calculate-btn">
+            {CALORIE_CALCULATOR.LABELS.CALCULATE}
+          </button>
+          <button type="button" onClick={onReset} className="reset-btn">
+            {CALORIE_CALCULATOR.LABELS.RESET}
+          </button>
           <button 
             type="button" 
             onClick={onToggleHistory} 
             className="history-btn"
           >
-            {showHistory ? 'Hide History' : 'Show History'}
+            {showHistory ? CALORIE_CALCULATOR.LABELS.HIDE_HISTORY : CALORIE_CALCULATOR.LABELS.SHOW_HISTORY}
           </button>
         </div>
         
         <div className="calculator-note">
-          <p>This calculator uses the {calorieData.formula === 'mifflin' ? 'Mifflin-St Jeor' : calorieData.formula === 'harris' ? 'Harris-Benedict' : 'Katch-McArdle'} formula for BMR calculation.</p>
+          <p>
+            {CALORIE_CALCULATOR.MESSAGES.FORMULA_NOTE(
+              calorieData.formula === CALORIE_CALCULATOR.FORMULAS.MIFFLIN.VALUE 
+                ? CALORIE_CALCULATOR.FORMULAS.MIFFLIN.LABEL 
+                : calorieData.formula === CALORIE_CALCULATOR.FORMULAS.HARRIS.VALUE 
+                  ? CALORIE_CALCULATOR.FORMULAS.HARRIS.LABEL 
+                  : CALORIE_CALCULATOR.FORMULAS.KATCH.LABEL
+            )}
+          </p>
         </div>
       </form>
     </div>

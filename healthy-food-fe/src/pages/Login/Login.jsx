@@ -1,4 +1,4 @@
-import { UI_TEXT, VALIDATION, ERROR_MESSAGES } from '../../constants';
+import { UI_TEXT, VALIDATION, ERROR_MESSAGES, LOGIN } from '../../constants';
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -106,7 +106,7 @@ const Login = () => {
         <FadeIn delay={0.2}>
           <div className="login-box">
             <SlideInLeft delay={0.3}>
-              <h2 className="login-title">Login</h2>
+              <h2 className="login-title">{LOGIN.TITLE}</h2>
             </SlideInLeft>
             
             <Formik
@@ -120,7 +120,7 @@ const Login = () => {
               {({ isSubmitting, errors, touched }) => (
                 <Form className="login-form">
                   <div className="login-form-group">
-                    <label htmlFor="email" className="login-label">Email</label>
+                    <label htmlFor="email" className="login-label">{LOGIN.LABELS.EMAIL}</label>
                     <Field 
                       id="email" 
                       name="email" 
@@ -136,7 +136,7 @@ const Login = () => {
                     )}
                   </div>
                   <div className="login-form-group">
-                    <label htmlFor="password" className="login-label password-label">Password</label>
+                    <label htmlFor="password" className="login-label password-label">{LOGIN.LABELS.PASSWORD}</label>
                     <div className="password-input-container">
                       <Field 
                         id="password" 
@@ -180,7 +180,7 @@ const Login = () => {
                         onChange={handleRememberPasswordChange}
                         className="remember-password-checkbox"
                       />
-                                             <span className="remember-password-text">{UI_TEXT.REMEMBER_PASSWORD}</span>
+                                             <span className="remember-password-text">{LOGIN.OPTIONS.REMEMBER_PASSWORD}</span>
                     </label>
                   </div>
                   
@@ -189,7 +189,7 @@ const Login = () => {
                     className="login-button"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Logging in...' : 'Login'}
+                    {isSubmitting ? LOGIN.BUTTONS.LOGGING_IN : LOGIN.BUTTONS.LOGIN}
                   </AnimatedButton>
                 </Form>
               )}
@@ -197,13 +197,13 @@ const Login = () => {
             
             <div className="forgot-password-link">
                              <Link to="/forgot-password" className="forgot-password-text">
-                 {UI_TEXT.FORGOT_PASSWORD}
+                 {LOGIN.LINKS.FORGOT_PASSWORD}
                </Link>
             </div>
             
             <div className="login-footer">
-                             <span>{UI_TEXT.DONT_HAVE_ACCOUNT}</span>
-               <Link to="/register" className="login-link">{UI_TEXT.REGISTER_NOW}</Link>
+                             <span>{LOGIN.LINKS.DONT_HAVE_ACCOUNT}</span>
+               <Link to="/register" className="login-link">{LOGIN.LINKS.REGISTER_NOW}</Link>
             </div>
           </div>
         </FadeIn>
@@ -212,7 +212,7 @@ const Login = () => {
       <AnimatedModal isOpen={showErrorModal} onClose={handleCloseErrorModal}>
         <div className="error-modal">
           <div className="error-modal-content">
-            <h3 className="error-modal-title">Login Error</h3>
+            <h3 className="error-modal-title">{LOGIN.ERROR.TITLE}</h3>
             <p className="error-modal-message">
               {errorMessage}
             </p>
@@ -221,7 +221,7 @@ const Login = () => {
                 className="error-modal-btn error-modal-btn-primary"
                 onClick={handleCloseErrorModal}
               >
-                Close
+                {LOGIN.BUTTONS.CLOSE}
               </AnimatedButton>
             </div>
           </div>

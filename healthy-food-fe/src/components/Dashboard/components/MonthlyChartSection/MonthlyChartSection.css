@@ -1,1 +1,21 @@
 @import '../../Dashboard.css';
+
+/* Chart Container for Single Data Point */
+.chart-container {
+  transition: all 0.3s ease;
+}
+
+.chart-container .recharts-responsive-container {
+  transition: width 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chart-container {
+    justify-content: center !important;
+  }
+  
+  .chart-container .recharts-responsive-container {
+    width: 90% !important;
+  }
+}

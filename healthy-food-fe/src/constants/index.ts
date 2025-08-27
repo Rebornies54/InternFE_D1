@@ -166,6 +166,108 @@ export const VALIDATION = {
   FILE_MAX_SIZE: 5242880, // 5MB in bytes 
 } as const;
 
+export const CALORIE_CALCULATOR = {
+  LABELS: {
+    UNIT_SYSTEM: 'Unit System:',
+    AGE: 'Age',
+    HEIGHT: 'Height',
+    WEIGHT: 'Weight',
+    GENDER: 'Gender',
+    BMR_FORMULA: 'BMR Formula',
+    BODY_FAT: 'Body Fat Percentage',
+    ACTIVITY_LEVEL: 'Activity Level',
+    SELECT_ACTIVITY: 'Select activity level',
+    CALCULATE: 'Calculate',
+    RESET: 'Reset',
+    SHOW_HISTORY: 'Show History',
+    HIDE_HISTORY: 'Hide History',
+  },
+  UNITS: {
+    YEARS: 'years',
+    CM: 'cm',
+    IN: 'in',
+    KG: 'kg',
+    LB: 'lb',
+    PERCENT: '%',
+  },
+  BUTTONS: {
+    METRIC: 'Metric',
+    IMPERIAL: 'Imperial',
+    FEMALE: 'Female',
+    MALE: 'Male',
+  },
+  FORMULAS: {
+    MIFFLIN: {
+      VALUE: 'mifflin',
+      LABEL: 'Mifflin-St Jeor',
+      DESCRIPTION: 'Most accurate for most people',
+    },
+    HARRIS: {
+      VALUE: 'harris',
+      LABEL: 'Harris-Benedict',
+      DESCRIPTION: 'Traditional formula, slightly less accurate',
+    },
+    KATCH: {
+      VALUE: 'katch',
+      LABEL: 'Katch-McArdle',
+      DESCRIPTION: 'Requires body fat percentage',
+    },
+  },
+  ACTIVITY_LEVELS: [
+    {
+      VALUE: 'Sedentary: Little or no exercise',
+      LABEL: 'Sedentary: Little or no exercise',
+    },
+    {
+      VALUE: 'Lightly active: 1-3 times/week',
+      LABEL: 'Lightly active: 1-3 times/week',
+    },
+    {
+      VALUE: 'Moderately active: 4-5 times/week',
+      LABEL: 'Moderately active: 4-5 times/week',
+    },
+    {
+      VALUE: 'Very active: 6 times/week or more',
+      LABEL: 'Very active: 6 times/week or more',
+    },
+    {
+      VALUE: 'Extra active: Physical job or twice daily training',
+      LABEL: 'Extra active: Physical job or twice daily training',
+    },
+    {
+      VALUE: 'Professional athlete',
+      LABEL: 'Professional athlete',
+    },
+  ],
+  MESSAGES: {
+    FORMULA_NOTE: (formula: string) => 
+      `This calculator uses the ${formula} formula for BMR calculation.`,
+  },
+  RESULTS: {
+    TITLE: 'Your Metabolic Information',
+    BMR_LABEL: 'BMR (Basal Metabolic Rate)',
+    TDEE_LABEL: 'TDEE (Total Daily Energy Expenditure)',
+    TDEE_DESCRIPTION: 'Your TDEE is the estimated number of calories you burn daily with your activity level',
+    CALCULATED_ON: 'Calculated on:',
+    WEIGHT_MANAGEMENT_TITLE: 'Weight Management Goals',
+    WEIGHT_LOSS_TITLE: 'Weight Loss',
+    WEIGHT_GAIN_TITLE: 'Weight Gain',
+    SCENARIOS: {
+      MILD_025: 'Mild (0.25 kg/week)',
+      MODERATE_05: 'Moderate (0.5 kg/week)',
+      AGGRESSIVE_1: 'Aggressive (1 kg/week)',
+    },
+    EXPLANATION: {
+      TITLE: 'About BMR and TDEE',
+      BMR_DESCRIPTION: 'The Basal Metabolic Rate (BMR) is the number of calories your body needs while resting. This is the minimum amount of energy needed to keep your body functioning, including breathing and keeping your heart beating.',
+      TDEE_DESCRIPTION: 'Total Daily Energy Expenditure (TDEE) takes your BMR and adjusts it based on your activity level to estimate your total daily calorie needs.',
+    },
+    UNITS: {
+      CALORIES: 'calories',
+    },
+  },
+} as const;
+
 export const ALLOWED_FILE_TYPES = [
   'image/jpeg',
   'image/jpg',
@@ -891,6 +993,11 @@ export const FOOD_DATABASE_SECTION = {
     CALORIES: 'Calo/100g',
     UNIT: 'Đơn vị',
   },
+  UNITS: {
+    CALORIES: 'cal',
+    GRAMS: 'g',
+  },
+  LOCALE: 'vi-VN',
   LOADING: {
     TEXT: 'Đang tải dữ liệu...',
   },
@@ -900,7 +1007,13 @@ export const FOOD_DATABASE_SECTION = {
     MESSAGE: 'Vui lòng chọn danh mục khác hoặc thử lại sau.',
   },
   TABLE_NOTE: {
-    MESSAGE: 'Hiển thị 10 mục đầu tiên. Sử dụng thanh tìm kiếm bên dưới để xem tất cả.',
+    LABEL: 'Lưu ý:',
+    MESSAGE: 'Hiển thị 10 mục đầu tiên. Sử dụng thanh tìm kiếm bên trên để xem tất cả.',
+  },
+  SEARCH: {
+    PLACEHOLDER: 'Tìm kiếm thực phẩm...',
+    CLEAR_BUTTON: 'Xóa tìm kiếm',
+    RESULTS_INFO: 'Tìm thấy {count} kết quả cho "{query}"',
   },
   STATISTICS: {
     TITLE: 'Thống kê dinh dưỡng ngày',
@@ -919,6 +1032,22 @@ export const FOOD_DATABASE_SECTION = {
     },
     TOP_FOODS: {
       TITLE: 'Top món ăn tiêu thụ',
+    },
+  },
+  COMMENTS: {
+    TITLE: 'Bình luận về thực phẩm',
+    FORM: {
+      PLACEHOLDER: 'Viết bình luận của bạn về thực phẩm này...',
+      SUBMIT: 'Gửi bình luận',
+      SUBMITTING: 'Đang gửi...',
+    },
+    LIST: {
+      NO_COMMENTS: 'Chưa có bình luận nào. Hãy là người đầu tiên bình luận!',
+      DELETE_BUTTON: 'Xóa bình luận',
+    },
+    AUTHOR: 'Người dùng',
+    ERRORS: {
+      CREATE_FAILED: 'Lỗi khi tạo comment',
     },
   },
 } as const;
@@ -997,6 +1126,31 @@ export const FOOD_LOG_DISPLAY = {
   },
   CARD: {
     DATE_LABEL: 'Ngày:',
+  },
+} as const;
+
+// Food Variations Constants
+export const FOOD_VARIATIONS = {
+  MODAL: {
+    SUBTITLE: 'Các loại và biến thể',
+  },
+  MAIN: {
+    TITLE: 'Các loại và biến thể',
+    BACK_BUTTON: 'Quay lại',
+  },
+  NUTRITION: {
+    PROTEIN: 'Protein:',
+    CARBS: 'Carbs:',
+    FAT: 'Fat:',
+    UNITS: {
+      GRAMS: 'g',
+      CALORIES: 'cal',
+    },
+  },
+  BUTTONS: {
+    ADD_TO_FAVORITES: 'Thêm vào yêu thích',
+    CLOSE: 'Đóng',
+    VIEW_DETAILS: 'Xem chi tiết',
   },
 } as const;
 
@@ -1164,5 +1318,220 @@ export const MY_BLOGS = {
     CATEGORY: 'Danh mục: {category}',
     CREATED_DATE: 'Ngày tạo: {date}',
     LIKES_COUNT: 'Lượt thích: {count}',
+  },
+} as const;
+
+// Error Boundary Constants
+export const ERROR_BOUNDARY = {
+  TITLE: 'Something went wrong',
+  MESSAGE: "We're sorry, but something unexpected happened. Please try refreshing the page.",
+  ERROR_DETAILS: 'Error Details',
+  REFRESH_BUTTON: 'Refresh Page',
+} as const;
+
+// Protected Route Constants
+export const PROTECTED_ROUTE = {
+  LOADING: 'Đang tải...',
+} as const;
+
+// Forgot Password Constants
+export const FORGOT_PASSWORD = {
+  TITLE: 'Forgot Password',
+  WELCOME: 'Welcome!',
+  STEPS: {
+    EMAIL: 'Forgot Password',
+    OTP: 'Enter OTP',
+    RESET: 'Reset Password',
+    SUCCESS: 'Success!',
+  },
+  LABELS: {
+    EMAIL: 'Email',
+    OTP: 'Enter OTP',
+    NEW_PASSWORD: 'New Password',
+    CONFIRM_PASSWORD: 'Confirm Password',
+  },
+  PLACEHOLDERS: {
+    NEW_PASSWORD: 'Enter new password',
+    CONFIRM_PASSWORD: 'Confirm new password',
+  },
+  BUTTONS: {
+    SEND_OTP: 'Send OTP',
+    SENDING_OTP: 'Sending OTP...',
+    VERIFY_OTP: 'Verify OTP',
+    VERIFYING: 'Verifying...',
+    RESET_PASSWORD: 'Reset Password',
+    RESETTING: 'Resetting...',
+    BACK_TO_EMAIL: '← Back to Email',
+    BACK_TO_OTP: '← Back to OTP',
+  },
+  MESSAGES: {
+    OTP_SENT: "We've sent a 6-digit OTP to",
+    ENTER_6_DIGIT: 'Please enter a 6-digit OTP',
+    RESEND_OTP_IN: 'Resend OTP in',
+    RESEND_OTP: 'Resend OTP',
+    SENDING: 'Sending...',
+    REMEMBER_PASSWORD: 'Remember your password?',
+    LOGIN: 'Login',
+  },
+  SUCCESS: {
+    TITLE: 'Password Reset Success!',
+    BACK_TO_LOGIN: 'Back to Login',
+    CONTINUE_TO_HOME: 'Continue to Home',
+  },
+} as const;
+
+// Login Constants
+export const LOGIN = {
+  TITLE: 'Login',
+  LABELS: {
+    EMAIL: 'Email',
+    PASSWORD: 'Password',
+  },
+  BUTTONS: {
+    LOGIN: 'Login',
+    LOGGING_IN: 'Logging in...',
+    CLOSE: 'Close',
+  },
+  OPTIONS: {
+    REMEMBER_PASSWORD: 'Remember password',
+  },
+  LINKS: {
+    FORGOT_PASSWORD: 'Forgot Password?',
+    DONT_HAVE_ACCOUNT: "Don't have an account?",
+    REGISTER_NOW: 'Register now',
+  },
+  ERROR: {
+    TITLE: 'Login Error',
+  },
+} as const;
+
+// Register Constants
+export const REGISTER = {
+  WELCOME: 'Welcome!',
+  TITLE: 'Account Registration',
+  LABELS: {
+    FULL_NAME: 'Full Name',
+    BIRTHDAY: 'Birthday',
+    EMAIL: 'Email',
+    PASSWORD: 'Password',
+    PHONE_NUMBER: 'Phone Number',
+    GENDER: 'Gender',
+    PROVINCE: 'Province',
+    DISTRICT: 'District',
+    ADDRESS: 'Address',
+  },
+  PLACEHOLDERS: {
+    BIRTHDAY: 'DD.MM.YYYY',
+    PHONE_NUMBER: 'Enter your phone number',
+    ADDRESS: 'Enter your address',
+  },
+  SELECT_OPTIONS: {
+    SELECT_GENDER: 'Select gender',
+    SELECT_PROVINCE: 'Select province',
+    SELECT_DISTRICT: 'Select district',
+  },
+  GENDER_OPTIONS: {
+    MALE: 'Male',
+    FEMALE: 'Female',
+    OTHER: 'Other',
+  },
+  PROVINCE_OPTIONS: {
+    TOKYO: 'Tokyo',
+    OSAKA: 'Osaka',
+    KYOTO: 'Kyoto',
+  },
+  DISTRICT_OPTIONS: {
+    ISHIKARI: 'Ishikari',
+    TESHIO: 'Teshio',
+    TOKACHI: 'Tokachi',
+    ABUTA: 'Abuta',
+    SORACHI: 'Sorachi',
+  },
+  BUTTONS: {
+    REGISTER: 'Register',
+    REGISTERING: 'Registering...',
+    CLOSE: 'Close',
+  },
+  SUCCESS: {
+    TITLE: 'Congratulations!',
+    MESSAGE: 'You have successfully registered!',
+    QUESTION: 'Would you like to',
+    LOGIN_NOW: 'login now',
+    CONTINUE_TO_HOME: 'Continue to home page',
+    LOGIN_NOW_BUTTON: 'Login now',
+  },
+  ERROR: {
+    TITLE: 'Registration Error',
+  },
+  FOOTER: {
+    ALREADY_HAVE_ACCOUNT: 'Already have an account?',
+    LOGIN: 'Login',
+  },
+} as const;
+
+// Home Constants
+export const HOME = {
+  NAV_TABS: {
+    BLOG: 'Blog',
+    BODY_INDEX: 'Body Index',
+    HOME: 'HOME',
+    CALORIE_INDEX: 'Calorie Index',
+    CALORIE_CALCULATION: 'Calorie Calculation',
+    DASHBOARD: 'Dashboard',
+  },
+  HEADER: {
+    APP_NAME: 'HEALTHY FOOD',
+    MENU: 'Menu',
+    PROFILE: 'Profile',
+    LOG_OUT: 'Log out',
+  },
+  SIDEBAR: {
+    TITLE: 'Menu',
+    SEARCH_PLACEHOLDER: 'Tìm kiếm thực phẩm...',
+    MENU_SECTIONS: {
+      ALACARTE: 'À la carte Menu',
+      SEASONAL: 'Seasonal Menu',
+      DAILY: 'Menu by Time',
+      WEEKDAY: 'Menu by Day',
+      POPULAR: 'Popular Menu',
+    },
+    SUBMENUS: {
+      BY_CATEGORY: 'By Category',
+      BY_SEASON: 'By Season',
+      BY_POPULARITY: 'By Popularity',
+    },
+    TIMES: {
+      MORNING: 'Morning',
+      AFTERNOON: 'Afternoon',
+      EVENING: 'Evening',
+    },
+    SEASONS: {
+      SPRING: 'Spring',
+      SUMMER: 'Summer',
+      AUTUMN: 'Autumn',
+      WINTER: 'Winter',
+    },
+    DAYS: {
+      MONDAY: 'Monday',
+      TUESDAY: 'Tuesday',
+      WEDNESDAY: 'Wednesday',
+      THURSDAY: 'Thursday',
+      FRIDAY: 'Friday',
+      SATURDAY: 'Saturday',
+      SUNDAY: 'Sunday',
+    },
+    POPULAR_CATEGORIES: {
+      HIGH_CALORIES: 'High Calories',
+      VIETNAMESE_FAVORITES: 'Vietnamese Favorites',
+      INTERNATIONAL_FAVORITES: 'International Favorites',
+    },
+    BUTTONS: {
+      SHOW_MORE: '+ Xem thêm',
+      SHOW_LESS: '- Thu gọn',
+    },
+  },
+  USER: {
+    GREETING: 'Hello,',
+    USER: 'User',
   },
 } as const;

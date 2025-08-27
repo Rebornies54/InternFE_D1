@@ -5,7 +5,7 @@ import { User, ChevronDown, ChevronRight, LogOut, Search, Clock, Calendar, Star,
 import { useAuth } from '../../context/AuthContext';
 import { useBlogContext } from '../../context/BlogContext';
 import { useFoodContext } from '../../context/FoodContext';
-import { STORAGE_KEYS } from '../../constants';
+import { STORAGE_KEYS, HOME } from '../../constants';
 import ScrollToTop from '../../components/ScrollToTop';
 import { getFallbackImage } from '../../utils/updateFoodImages';
 
@@ -22,12 +22,12 @@ import HomePage from '../../components/HomePage/HomePage';
 import FoodVariations from '../../components/FoodVariations/FoodVariations';
 
 const navTabs = [
-  { label: 'Blog', path: '/home/blog', key: 'blog' },
-  { label: 'Body Index', path: '/home/body-index', key: 'body' },
-  { label: 'HOME', path: '/home', key: 'home', isHome: true },
-  { label: 'Calorie Index', path: '/home/calorie-index', key: 'calorie' },
-  { label: 'Calorie Calculation', path: '/home/calorie-calculation', key: 'calculation' },
-  { label: 'Dashboard', path: '/home/dashboard', key: 'dashboard' },
+  { label: HOME.NAV_TABS.BLOG, path: '/home/blog', key: 'blog' },
+  { label: HOME.NAV_TABS.BODY_INDEX, path: '/home/body-index', key: 'body' },
+  { label: HOME.NAV_TABS.HOME, path: '/home', key: 'home', isHome: true },
+  { label: HOME.NAV_TABS.CALORIE_INDEX, path: '/home/calorie-index', key: 'calorie' },
+  { label: HOME.NAV_TABS.CALORIE_CALCULATION, path: '/home/calorie-calculation', key: 'calculation' },
+  { label: HOME.NAV_TABS.DASHBOARD, path: '/home/dashboard', key: 'dashboard' },
 ];
 
 const NavLink = ({ to, children, className, onClick }) => {
@@ -101,7 +101,7 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
       <div className="home-header-content">
         <div className="home-logo-group" onClick={() => navigate('/home')} style={{ cursor: 'pointer' }}>
           <img src={logo} alt="Healthy Food Logo" className="home-logo-img" />
-          <span className="home-app-name">HEALTHY FOOD</span>
+          <span className="home-app-name">{HOME.HEADER.APP_NAME}</span>
         </div>
         
         <div className="home-nav-container">
@@ -130,16 +130,16 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
         <div className="home-user-group">
           <div className="user-link" onClick={toggleUserDropdown}>
             <User size={20} className="user-icon" />
-            <span className="user-name">{user?.name || 'User'}</span>
+            <span className="user-name">{user?.name || HOME.USER.USER}</span>
             <ChevronDown size={14} className={`dropdown-arrow ${showUserDropdown ? 'rotated' : ''}`} />
           </div>
           
           {showUserDropdown && (
             <div className="user-dropdown">
               <div className="user-dropdown-header">
-                <div className="user-dropdown-greeting">
-                  Hello, <span className="user-dropdown-name">{user?.name || 'User'}</span>!
-                </div>
+                              <div className="user-dropdown-greeting">
+                {HOME.USER.GREETING} <span className="user-dropdown-name">{user?.name || HOME.USER.USER}</span>!
+              </div>
               </div>
               <div className="user-dropdown-divider"></div>
               <div className="user-dropdown-menu">
@@ -151,11 +151,11 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
                   }}
                 >
                   <User size={16} />
-                  <span>Profile</span>
+                  <span>{HOME.HEADER.PROFILE}</span>
                 </Link>
                 <button className="user-dropdown-item logout-btn" onClick={handleLogout}>
                   <LogOut size={16} />
-                  <span>Log out</span>
+                  <span>{HOME.HEADER.LOG_OUT}</span>
                 </button>
               </div>
             </div>
@@ -166,7 +166,7 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
       <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'open' : ''}`}>
         <nav className="home-nav mobile-nav">
           <div className="mobile-nav-header">
-            <span className="mobile-nav-title">Menu</span>
+            <span className="mobile-nav-title">{HOME.HEADER.MENU}</span>
             <button 
               className="mobile-nav-close"
               onClick={toggleMobileMenu}
@@ -190,7 +190,7 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
           <div className="mobile-nav-footer">
             <div className="mobile-user-info">
               <User size={16} />
-              <span>{user?.name || 'User'}</span>
+              <span>{user?.name || HOME.USER.USER}</span>
             </div>
             <button 
               className="mobile-logout-btn"
@@ -200,7 +200,7 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu }) => {
               }}
             >
               <LogOut size={16} />
-              <span>Log out</span>
+              <span>{HOME.HEADER.LOG_OUT}</span>
             </button>
           </div>
         </nav>
@@ -490,7 +490,7 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
             className="sidebar-show-more-btn"
             onClick={() => toggleShowAll(key)}
           >
-            + Xem thêm ({foods.length - limit})
+            {HOME.SIDEBAR.BUTTONS.SHOW_MORE} ({foods.length - limit})
           </button>
         )}
         {hasMore && showAll && (
@@ -498,7 +498,7 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
             className="sidebar-show-less-btn"
             onClick={() => toggleShowAll(key)}
           >
-            - Thu gọn
+            {HOME.SIDEBAR.BUTTONS.SHOW_LESS}
           </button>
         )}
       </div>
@@ -508,13 +508,13 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
   return (
     <aside className="home-sidebar">
       <div className="home-sidebar-section">
-        <h3 className="home-sidebar-title">Menu</h3>
+        <h3 className="home-sidebar-title">{HOME.SIDEBAR.TITLE}</h3>
         
         <div className="sidebar-search">
           <Search size={16} className="search-icon" />
           <input
             type="text"
-            placeholder="Tìm kiếm thực phẩm..."
+            placeholder={HOME.SIDEBAR.SEARCH_PLACEHOLDER}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="sidebar-search-input"
@@ -525,11 +525,11 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
           <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('alacarte')}>
             {expandedMenus.alacarte ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Utensils size={16} />
-            <span>À la carte Menu</span>
+            <span>{HOME.SIDEBAR.MENU_SECTIONS.ALACARTE}</span>
           </div>
-          {expandedMenus.alacarte && (
+                      {expandedMenus.alacarte && (
             <div className="sidebar-submenu">
-              <div className="sidebar-submenu-title">By Category</div>
+              <div className="sidebar-submenu-title">{HOME.SIDEBAR.SUBMENUS.BY_CATEGORY}</div>
               {uniqueCategories.map(category => (
                 <div key={category.id}>
                   <div className="sidebar-submenu-title home-sidebar-menu-item-clickable" onClick={() => toggleDay(`category-${category.id}`)}>
@@ -545,12 +545,12 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
           <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('seasonal')}>
             {expandedMenus.seasonal ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Calendar size={16} />
-            <span>Seasonal Menu</span>
+            <span>{HOME.SIDEBAR.MENU_SECTIONS.SEASONAL}</span>
           </div>
-          {expandedMenus.seasonal && (
+                      {expandedMenus.seasonal && (
             <div className="sidebar-submenu">
-              <div className="sidebar-submenu-title">By Season</div>
-              {['Spring', 'Summer', 'Autumn', 'Winter'].map(season => (
+              <div className="sidebar-submenu-title">{HOME.SIDEBAR.SUBMENUS.BY_SEASON}</div>
+              {[HOME.SIDEBAR.SEASONS.SPRING, HOME.SIDEBAR.SEASONS.SUMMER, HOME.SIDEBAR.SEASONS.AUTUMN, HOME.SIDEBAR.SEASONS.WINTER].map(season => (
                 <div key={season}>
                   <div className="sidebar-submenu-title home-sidebar-menu-item-clickable" onClick={() => toggleDay(`season-${season}`)}>
                     {expandedDays[`season-${season}`] ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
@@ -565,25 +565,25 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
           <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('daily')}>
             {expandedMenus.daily ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Clock size={16} />
-            <span>Menu by Time</span>
+            <span>{HOME.SIDEBAR.MENU_SECTIONS.DAILY}</span>
           </div>
                      {expandedMenus.daily && (
              <div className="sidebar-submenu">
                <div className="sidebar-submenu-title home-sidebar-menu-item-clickable" onClick={() => toggleTime('morning')}>
                  {expandedTimes.morning ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
-                 Morning
+                 {HOME.SIDEBAR.TIMES.MORNING}
                </div>
                {expandedTimes.morning && renderFoodItemsWithLimit(getTimeBasedMenu('morning'), 3, 'morning')}
                
                <div className="sidebar-submenu-title home-sidebar-menu-item-clickable" onClick={() => toggleTime('afternoon')}>
                  {expandedTimes.afternoon ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
-                 Afternoon
+                 {HOME.SIDEBAR.TIMES.AFTERNOON}
                </div>
                {expandedTimes.afternoon && renderFoodItemsWithLimit(getTimeBasedMenu('afternoon'), 3, 'afternoon')}
                
                <div className="sidebar-submenu-title home-sidebar-menu-item-clickable" onClick={() => toggleTime('evening')}>
                  {expandedTimes.evening ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
-                 Evening
+                 {HOME.SIDEBAR.TIMES.EVENING}
                </div>
                {expandedTimes.evening && renderFoodItemsWithLimit(getTimeBasedMenu('evening'), 3, 'evening')}
              </div>
@@ -592,11 +592,11 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
           <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('weekday')}>
             {expandedMenus.weekday ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Calendar size={16} />
-            <span>Menu by Day</span>
+            <span>{HOME.SIDEBAR.MENU_SECTIONS.WEEKDAY}</span>
           </div>
                      {expandedMenus.weekday && (
              <div className="sidebar-submenu">
-               {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
+               {[HOME.SIDEBAR.DAYS.MONDAY, HOME.SIDEBAR.DAYS.TUESDAY, HOME.SIDEBAR.DAYS.WEDNESDAY, HOME.SIDEBAR.DAYS.THURSDAY, HOME.SIDEBAR.DAYS.FRIDAY, HOME.SIDEBAR.DAYS.SATURDAY, HOME.SIDEBAR.DAYS.SUNDAY].map(day => (
                  <div key={day}>
                    <div className="sidebar-submenu-title home-sidebar-menu-item-clickable" onClick={() => toggleDay(day)}>
                      {expandedDays[day] ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
@@ -611,12 +611,12 @@ const Sidebar = ({ expandedMenus, toggleMenu }) => {
           <div className="home-sidebar-menu-item home-sidebar-menu-item-clickable" onClick={() => toggleMenu('popular')}>
             {expandedMenus.popular ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <Star size={16} />
-            <span>Popular Menu</span>
+            <span>{HOME.SIDEBAR.MENU_SECTIONS.POPULAR}</span>
           </div>
-          {expandedMenus.popular && (
+                      {expandedMenus.popular && (
             <div className="sidebar-submenu">
-              <div className="sidebar-submenu-title">By Popularity</div>
-              {['High Calories', 'Vietnamese Favorites', 'International Favorites'].map(category => (
+              <div className="sidebar-submenu-title">{HOME.SIDEBAR.SUBMENUS.BY_POPULARITY}</div>
+              {[HOME.SIDEBAR.POPULAR_CATEGORIES.HIGH_CALORIES, HOME.SIDEBAR.POPULAR_CATEGORIES.VIETNAMESE_FAVORITES, HOME.SIDEBAR.POPULAR_CATEGORIES.INTERNATIONAL_FAVORITES].map(category => (
                 <div key={category}>
                   <div className="sidebar-submenu-title home-sidebar-menu-item-clickable" onClick={() => toggleDay(`popular-${category}`)}>
                     {expandedDays[`popular-${category}`] ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
