@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { foodAPI } from '../services/api';
-import { ERROR_MESSAGES } from '../constants';
+import { ERROR_MESSAGES, API_CONFIG } from '../constants';
 
 export const useDashboardData = () => {
   const [dailyStats, setDailyStats] = useState(null);
@@ -27,12 +27,14 @@ export const useDashboardData = () => {
       });
     }
 
-    for (let i = 0; i < 6; i++) {
-      const monthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+    // Tạo tất cả 12 tháng trong năm hiện tại
+    const currentYear = currentDate.getFullYear();
+    for (let month = 1; month <= 12; month++) {
+      const monthDate = new Date(currentYear, month - 1, 1);
       months.push({
-        label: monthDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-        year: monthDate.getFullYear(),
-        month: monthDate.getMonth() + 1
+        label: `${month.toString().padStart(2, '0')}/${currentYear}`,
+        year: currentYear,
+        month: month
       });
     }
 
@@ -116,22 +118,34 @@ export const useDashboardData = () => {
   const getMonthlyBarData = useCallback(() => {
     if (!monthlyStats?.weeklyBreakdown) return [];
     
-    return monthlyStats.weeklyBreakdown.map(week => {
-      const weekData = {
-        week: `Week ${week.week_number}`,
-        total: Math.round(week.weekly_calories)
-      };
+    // Trả về dữ liệu weeklyBreakdown trực tiếp để xử lý trong chartDataProcessor
+    return monthlyStats.weeklyBreakdown;
+  }, [monthlyStats]);
+
+  // Thêm function để lấy dữ liệu daily breakdown cho tháng
+  const getMonthlyDailyData = useCallback(async (selectedMonth) => {
+    try {
+      // Tạo monthOptions từ generateDateOptions
+      const { months } = generateDateOptions();
+      const month = months.find(m => m.label === selectedMonth);
+      if (!month) return [];
+
+      // Tính toán start và end date cho tháng
+      const startDate = new Date(month.year, month.month - 1, 1).toISOString().split('T')[0];
+      const endDate = new Date(month.year, month.month, 0).toISOString().split('T')[0];
       
-      if (monthlyStats.categoryBreakdown) {
-        monthlyStats.categoryBreakdown.slice(0, 5).forEach((category, index) => {
-          const colors = ['#7ef9a2', '#b388ff', '#ffb3c6', '#ffd6a5', '#7ad7f0'];
-          weekData[`category_${index}`] = Math.round(category.total_calories / 4);
-        });
+      // Sử dụng weekly statistics API để lấy daily breakdown
+      const response = await foodAPI.getWeeklyStatistics(startDate, endDate);
+      if (response.data.success && response.data.data.dailyBreakdown) {
+        return response.data.data.dailyBreakdown;
       }
       
-      return weekData;
-    });
-  }, [monthlyStats]);
+      return [];
+    } catch (error) {
+      console.error('Error fetching monthly daily data:', error);
+      return [];
+    }
+  }, [generateDateOptions]);
 
   return {
     dailyStats,
@@ -146,6 +160,10 @@ export const useDashboardData = () => {
     getRadarData,
     getWeeklyLineData,
     getMonthlyBarData,
+    getMonthlyDailyData,
     setError
   };
-}; 
+};
+
+
+

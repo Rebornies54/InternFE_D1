@@ -847,6 +847,7 @@ export const DASHBOARD = {
     RADAR: 'Calories by Food Category',
     WEEKLY: 'Daily calorie intake for the selected week',
     MONTHLY: 'Weekly calorie intake for the selected month',
+    MONTHLY_DETAILED: 'Biểu đồ thống kê lượng calo nạp vào theo các tuần trong tháng',
   },
   LABELS: {
     SELECT_DATE: 'Select date',
@@ -980,6 +981,24 @@ export const DATEPICKER = {
     INPUT_LABEL: 'Chọn ngày',
     FOCUS_OUTLINE: '2px solid rgba(124, 58, 237, 0.4)',
     FOCUS_OFFSET: 2,
+  },
+} as const;
+
+// Monthly Chart Constants
+export const MONTHLY_CHART = {
+  TITLE: 'Biểu đồ thống kê lượng calo nạp vào theo từng ngày trong tháng',
+  SUMMARY: {
+    TITLE: 'Tổng quan tháng',
+    TOTAL_CALORIES: 'Tổng calo:',
+    AVG_PER_WEEK: 'Trung bình/ngày:',
+    HIGHEST_WEEK: 'Ngày cao nhất:',
+  },
+  TOOLTIP: {
+    TOTAL: 'Tổng:',
+    CALORIES_UNIT: 'cal',
+  },
+  LABELS: {
+    MONTH: 'Tháng:',
   },
 } as const;
 

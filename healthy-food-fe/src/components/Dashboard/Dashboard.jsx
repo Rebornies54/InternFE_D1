@@ -30,6 +30,7 @@ function Dashboard() {
     getRadarData,
     getWeeklyLineData,
     getMonthlyBarData,
+    getMonthlyDailyData,
   } = useDashboardData();
 
   const [weekOptions, setWeekOptions] = useState([]);
@@ -41,7 +42,14 @@ function Dashboard() {
     setMonthOptions(months);
     
     if (weeks.length > 0) setSelectedWeek(weeks[0].label);
-    if (months.length > 0) setSelectedMonth(months[0].label);
+    
+    // Chọn tháng hiện tại làm mặc định
+    if (months.length > 0) {
+      const currentMonth = new Date().getMonth() + 1;
+      const currentYear = new Date().getFullYear();
+      const currentMonthLabel = `${currentMonth.toString().padStart(2, '0')}/${currentYear}`;
+      setSelectedMonth(currentMonthLabel);
+    }
   }, [generateDateOptions]);
 
   useEffect(() => {
@@ -97,6 +105,7 @@ function Dashboard() {
           monthOptions={monthOptions}
           loading={loading}
           getMonthlyBarData={getMonthlyBarData}
+          getMonthlyDailyData={getMonthlyDailyData}
         />
       </div>
     </FadeIn>

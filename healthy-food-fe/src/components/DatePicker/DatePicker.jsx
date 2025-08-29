@@ -78,7 +78,6 @@ const CustomDatePicker = ({
           maxDate={maxDate}
           minDate={minDate}
           disableFuture={disableFuture}
-          clearable={clearable}
           slotProps={{
             textField: {
               placeholder: placeholder,

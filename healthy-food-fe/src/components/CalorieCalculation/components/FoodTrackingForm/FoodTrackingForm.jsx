@@ -117,8 +117,8 @@ const FoodTrackingForm = ({
             <div className="form-group date-group">
               <label htmlFor="date-picker">{FOOD_TRACKING_FORM.LABELS.DATE}</label>
               <DatePicker
-                selectedDate={selectedDate}
-                onDateChange={onDateChange}
+                value={selectedDate}
+                onChange={onDateChange}
                 disabled={loading}
               />
             </div>
