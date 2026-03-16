@@ -1,0 +1,21 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # Job này sẽ chạy khi push code
+  # Railway và Render sẽ tự động deploy từ GitHub
+  # File này chỉ để reference và có thể thêm các bước khác
+  
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment Started
+        run: |
+          echo "🚀 Deployment started for branch ${{ github.ref }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Author: ${{ github.actor }}"

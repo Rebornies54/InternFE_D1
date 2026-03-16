@@ -1,0 +1,58 @@
+services:
+  # Backend Service
+  - type: web
+    name: healthy-food-backend
+    env: node
+    buildCommand: cd healthy-food-be && npm install
+    startCommand: cd healthy-food-be && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: DB_HOST
+        fromDatabase:
+          name: healthy-food-db
+          property: host
+      - key: DB_USER
+        fromDatabase:
+          name: healthy-food-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: healthy-food-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: healthy-food-db
+          property: database
+      - key: DB_PORT
+        value: 5432
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CORS_ORIGIN
+        sync: false  # Set manually
+      - key: EMAIL_USER
+        sync: false  # Set manually
+      - key: EMAIL_APP_PASSWORD
+        sync: false  # Set manually
+      - key: FRONTEND_URL
+        sync: false  # Set manually
+
+  # Frontend Service
+  - type: web
+    name: healthy-food-frontend
+    env: static
+    buildCommand: cd healthy-food-fe && npm install && npm run build
+    staticPublishPath: healthy-food-fe/dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false  # Set manually to backend URL
+
+databases:
+  - name: healthy-food-db
+    plan: free
+    databaseName: healthyfood
+    user: healthyfood_user

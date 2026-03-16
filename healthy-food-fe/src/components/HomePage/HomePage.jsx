@@ -1,8 +1,8 @@
-// Fixed import
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useBlogContext } from '../../context/BlogContext';
+import { authAPI } from '../../services/api';
 import Banner from './components/Banner/Banner';
 import MenuCarousel from './components/MenuCarousel/MenuCarousel';
 import Features from './components/Features/Features';
@@ -17,19 +17,27 @@ const HomePage = () => {
   const latestPosts = posts.slice(0, 3);
   const [currentBmi, setCurrentBmi] = useState(null);
 
-  // Cleanup body styles on mount
   useEffect(() => {
-    // Reset any inline styles
     document.body.removeAttribute('style');
     document.documentElement.removeAttribute('style');
   }, []);
 
-  // Use BMI from AuthContext instead of making duplicate API calls
-  const { currentBmi: authBmi } = useAuth();
-  
   useEffect(() => {
-    setCurrentBmi(authBmi);
-  }, [authBmi]);
+    const loadBmi = async () => {
+      if (!user) return;
+      try {
+        const res = await authAPI.getBMIData();
+        if (res.data?.success && res.data?.data) {
+          setCurrentBmi(Number(res.data.data.bmi));
+        } else {
+          setCurrentBmi(null);
+        }
+      } catch (_) {
+        setCurrentBmi(null);
+      }
+    };
+    loadBmi();
+  }, [user]);
 
   return (
     <>
