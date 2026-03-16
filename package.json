@@ -7,7 +7,7 @@
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd healthy-food-be && npm run dev",
     "dev:frontend": "cd healthy-food-fe && npm run dev",
-    "build": "cd healthy-food-fe && npm run build",
+    "build": "cd healthy-food-fe && npm install && npm run build",
     "setup-db": "cd healthy-food-be && npm run setup-db",
     "start:backend": "cd healthy-food-be && npm start",
     "start:frontend": "cd healthy-food-fe && npm run preview"
